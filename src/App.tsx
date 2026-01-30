@@ -1,5 +1,5 @@
+import { lazy, Suspense } from 'react';
 import MouseLight from './components/MouseLight/MouseLight';
-import RotatingCube from './components/RotatingCube/RotatingCube';
 import GradientMesh from './components/GradientMesh/GradientMesh';
 import ParticleField from './components/ParticleField/ParticleField';
 import ColorReveal from './components/ColorReveal/ColorReveal';
@@ -7,12 +7,15 @@ import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import Hero from './components/sections/Hero';
-import About from './components/sections/About';
-import Projects from './components/sections/Projects';
-import Experience from './components/sections/Experience';
-import Skills from './components/sections/Skills';
-import Contact from './components/sections/Contact';
 import './App.css';
+
+// Lazy load heavy components
+const RotatingCube = lazy(() => import('./components/RotatingCube/RotatingCube'));
+const About = lazy(() => import('./components/sections/About'));
+const Projects = lazy(() => import('./components/sections/Projects'));
+const Experience = lazy(() => import('./components/sections/Experience'));
+const Skills = lazy(() => import('./components/sections/Skills'));
+const Contact = lazy(() => import('./components/sections/Contact'));
 
 const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'];
 
@@ -24,17 +27,21 @@ function App() {
       <ParticleField />
       <ColorReveal />
       <MouseLight />
-      <RotatingCube />
+      <Suspense fallback={<div style={{ display: 'none' }} />}>
+        <RotatingCube />
+      </Suspense>
       <Sidebar />
       <ScrollIndicator sections={sections} />
 
       <main className="main-content">
         <Hero />
-        <About />
-        <Projects />
-        <Experience />
-        <Skills />
-        <Contact />
+        <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+          <About />
+          <Projects />
+          <Experience />
+          <Skills />
+          <Contact />
+        </Suspense>
       </main>
     </div>
   );

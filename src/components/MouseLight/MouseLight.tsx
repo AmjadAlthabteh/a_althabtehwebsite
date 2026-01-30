@@ -86,12 +86,11 @@ const MouseLight = () => {
   }, []);
 
   const now = Date.now();
-  const speed = Math.sqrt(velocityRef.current.vx ** 2 + velocityRef.current.vy ** 2);
   const dynamicHue = currentHue % 360;
 
   return (
     <>
-      {trails.map((trail, index) => {
+      {trails.map((trail) => {
         const age = now - trail.timestamp;
         const normalizedAge = Math.min(1, age / 800);
         const opacity = (1 - normalizedAge) * 0.3;
