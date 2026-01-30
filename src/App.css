@@ -1,0 +1,18 @@
+.app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.main-content {
+  margin-left: 80px;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-bottom: 70px;
+  }
+}

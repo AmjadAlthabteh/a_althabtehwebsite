@@ -1,0 +1,71 @@
+.rotating-cube-container {
+  position: fixed;
+  top: 50%;
+  right: 8%;
+  transform: translateY(-50%);
+  width: 400px;
+  height: 400px;
+  z-index: 3;
+  pointer-events: auto;
+  opacity: 0.7;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  filter: drop-shadow(0 0 40px hsla(180, 80%, 50%, 0.3))
+          drop-shadow(0 0 60px hsla(280, 80%, 50%, 0.2));
+}
+
+.rotating-cube-container:hover {
+  opacity: 0.9;
+  transform: translateY(-50%) scale(1.05);
+  filter: drop-shadow(0 0 60px hsla(180, 80%, 50%, 0.4))
+          drop-shadow(0 0 90px hsla(280, 80%, 50%, 0.3));
+}
+
+
+.cube-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle,
+    hsla(180, 75%, 50%, 0.15) 0%,
+    hsla(280, 75%, 50%, 0.1) 40%,
+    transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: pulse-cube 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulse-cube {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@media (max-width: 1200px) {
+  .rotating-cube-container {
+    width: 320px;
+    height: 320px;
+    right: 5%;
+    opacity: 0.6;
+  }
+
+  .cube-glow {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rotating-cube-container {
+    display: none;
+  }
+}

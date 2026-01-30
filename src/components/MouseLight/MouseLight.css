@@ -1,0 +1,83 @@
+.mouse-light {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.mouse-light-glow {
+  position: fixed;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  animation: pulse-glow 3s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.mouse-light-core {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  filter: blur(15px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.mouse-light-outer {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  filter: blur(70px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.mouse-trail {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@media (max-width: 768px) {
+  .mouse-light,
+  .mouse-light-glow,
+  .mouse-light-core,
+  .mouse-light-outer,
+  .mouse-trail {
+    display: none;
+  }
+}

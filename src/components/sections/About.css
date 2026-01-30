@@ -1,0 +1,114 @@
+.about {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-2xl) 0;
+  position: relative;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 400;
+  margin-bottom: var(--spacing-xl);
+  background: linear-gradient(135deg,
+    var(--color-primary),
+    var(--color-secondary),
+    var(--color-accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-flow 8s ease infinite;
+  letter-spacing: -0.02em;
+}
+
+.about-content {
+  max-width: 800px;
+  margin-bottom: var(--spacing-xl);
+}
+
+.about-text {
+  font-size: 1.1rem;
+  line-height: 2;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-secondary);
+}
+
+.about-text .highlight {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.about-text strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.about-visual {
+  max-width: 600px;
+}
+
+.code-block {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.code-header {
+  background: rgba(26, 26, 26, 0.6);
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.code-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+
+.code-dot:nth-child(1) {
+  background: #ff5f56;
+}
+
+.code-dot:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.code-dot:nth-child(3) {
+  background: #27c93f;
+}
+
+.code-content {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  overflow-x: auto;
+}
+
+.code-content code {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .about-text {
+    font-size: 1rem;
+  }
+
+  .code-content {
+    font-size: 0.75rem;
+    padding: 1rem;
+  }
+}
