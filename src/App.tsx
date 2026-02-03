@@ -1,16 +1,13 @@
 import { lazy, Suspense } from 'react';
-import MouseLight from './components/MouseLight/MouseLight';
-import GradientMesh from './components/GradientMesh/GradientMesh';
-import ParticleField from './components/ParticleField/ParticleField';
-import ColorReveal from './components/ColorReveal/ColorReveal';
 import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import Hero from './components/sections/Hero';
+import LoadingScreen from './components/LoadingScreen/LoadingScreen';
+import MouseCube from './components/MouseCube/MouseCube';
 import './App.css';
 
 // Lazy load heavy components
-const RotatingCube = lazy(() => import('./components/RotatingCube/RotatingCube'));
 const About = lazy(() => import('./components/sections/About'));
 const Projects = lazy(() => import('./components/sections/Projects'));
 const Experience = lazy(() => import('./components/sections/Experience'));
@@ -22,14 +19,9 @@ const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'
 function App() {
   return (
     <div className="app">
+      <LoadingScreen />
+      <MouseCube />
       <WelcomeBanner />
-      <GradientMesh />
-      <ParticleField />
-      <ColorReveal />
-      <MouseLight />
-      <Suspense fallback={<div style={{ display: 'none' }} />}>
-        <RotatingCube />
-      </Suspense>
       <Sidebar />
       <ScrollIndicator sections={sections} />
 

@@ -6,39 +6,52 @@ interface ExperienceItem {
   id: number;
   role: string;
   company: string;
+  location: string;
   period: string;
   highlights: string[];
+  tech?: string[];
 }
 
 const experiences: ExperienceItem[] = [
   {
     id: 1,
-    role: 'Software Engineer',
-    company: 'Your Company',
-    period: '2023 - Present',
+    role: 'SWE Intern',
+    company: 'Immersalab Graphics',
+    location: 'Detroit, MI',
+    period: 'Sep 2025',
     highlights: [
-      'Developed high-performance rendering systems with optimized GPU pipelines',
-      'Implemented custom memory allocators reducing allocation overhead by 40%',
+      'Architected real-time rendering engine in C++20 and OpenGL with GPU-driven rendering',
+      'Built internal UI and asset-authoring tools using JSON-driven pipelines',
+      'Implemented data-driven rendering optimizations with AI-guided heuristics',
+      'Designed modular rendering subsystems with clear ownership boundaries',
+      'Added GPU-side profiling and frame-timing instrumentation',
     ],
+    tech: ['Unreal', 'C++'],
   },
   {
     id: 2,
-    role: 'Game Developer',
-    company: 'Previous Company',
-    period: '2021 - 2023',
+    role: 'Indie Game Developer',
+    company: 'AAA Game Project',
+    location: 'Ann Arbor, MI',
+    period: 'Apr 2025 - Aug 2025',
     highlights: [
-      'Built real-time physics simulation engine for multiplayer games',
-      'Optimized frame time from 60ms to 16ms through profiling and refactoring',
+      'Developed gameplay systems using C++20 and Visual Scripting',
+      'Created 3D environments and characters, rigging for animation',
+      'Produced 90+ second real-time cinematic using MetaHumans and Sequencer',
+      'Built dynamic animation-control layer with Animation Blueprints',
+      'Implemented event-driven state transitions for gameplay and cinematic sync',
     ],
   },
   {
     id: 3,
-    role: 'Junior Developer',
-    company: 'First Company',
-    period: '2020 - 2021',
+    role: 'Software Development Intern',
+    company: 'Rare Munchies',
+    location: 'Ann Arbor, MI',
+    period: 'Sep 2023 - Apr 2024',
     highlights: [
-      'Designed and implemented gameplay systems and tools',
-      'Collaborated with artists to develop custom shader pipelines',
+      'Integrated UI components using TypeScript',
+      'Improved page transitions and interaction flow',
+      'Resolved cross-browser compatibility issues',
     ],
   },
 ];
@@ -92,12 +105,19 @@ const Experience = () => {
                   <h3 className="timeline-role">{exp.role}</h3>
                   <span className="timeline-period">{exp.period}</span>
                 </div>
-                <p className="timeline-company">{exp.company}</p>
+                <p className="timeline-company">{exp.company} • {exp.location}</p>
                 <ul className="timeline-highlights">
                   {exp.highlights.map((highlight, idx) => (
                     <li key={idx}>{highlight}</li>
                   ))}
                 </ul>
+                {exp.tech && (
+                  <div className="timeline-tech">
+                    {exp.tech.map((tech, idx) => (
+                      <span key={idx} className="tech-badge">{tech}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}

@@ -129,6 +129,14 @@
   }
 }
 
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  position: relative;
+}
+
 .project-preview-icon {
   font-size: 4rem;
   font-weight: 400;

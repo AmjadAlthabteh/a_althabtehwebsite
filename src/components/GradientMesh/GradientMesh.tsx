@@ -70,9 +70,9 @@ const GradientMesh = () => {
 
         if (distance < 500) {
           const force = (500 - distance) / 500;
-          this.x = this.baseX + dx * force * 0.3;
-          this.y = this.baseY + dy * force * 0.3;
-          this.radius = this.baseRadius * (1 + force * 0.5);
+          this.x = this.baseX + dx * force * 0.5;
+          this.y = this.baseY + dy * force * 0.5;
+          this.radius = this.baseRadius * (1 + force * 0.8);
         } else {
           this.x = this.baseX;
           this.y = this.baseY;
@@ -111,8 +111,8 @@ const GradientMesh = () => {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Apply blur for blending
-      ctx.filter = 'blur(80px)';
+      // Apply blur for blending (reduced from 80px to 40px for performance)
+      ctx.filter = 'blur(40px)';
 
       blobs.forEach(blob => {
         blob.update();
@@ -121,17 +121,17 @@ const GradientMesh = () => {
 
       ctx.filter = 'none';
 
-      // Draw subtle mouse glow
+      // Draw visible mouse glow
       const mouseHue = (time * 30) % 360;
-      const mouseGradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 200);
-      mouseGradient.addColorStop(0, `hsla(${mouseHue}, 75%, 55%, 0.08)`);
-      mouseGradient.addColorStop(0.5, `hsla(${mouseHue + 60}, 70%, 50%, 0.04)`);
-      mouseGradient.addColorStop(1, `hsla(${mouseHue + 120}, 70%, 45%, 0)`);
+      const mouseGradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 250);
+      mouseGradient.addColorStop(0, `hsla(${mouseHue}, 85%, 65%, 0.25)`);
+      mouseGradient.addColorStop(0.5, `hsla(${mouseHue + 60}, 80%, 60%, 0.15)`);
+      mouseGradient.addColorStop(1, `hsla(${mouseHue + 120}, 75%, 55%, 0)`);
 
-      ctx.filter = 'blur(50px)';
+      ctx.filter = 'blur(40px)';
       ctx.fillStyle = mouseGradient;
       ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 200, 0, Math.PI * 2);
+      ctx.arc(mouseX, mouseY, 250, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.filter = 'none';
