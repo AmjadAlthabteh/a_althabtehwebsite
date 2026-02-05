@@ -85,7 +85,7 @@ const Experience = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="section-title"
         >
-          Experience
+          experience
         </motion.h2>
 
         <motion.div

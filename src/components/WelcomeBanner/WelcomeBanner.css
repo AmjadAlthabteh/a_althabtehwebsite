@@ -23,33 +23,6 @@
   transform: scale(1.1);
 }
 
-.welcome-background-effect {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle,
-    rgba(99, 102, 241, 0.4) 0%,
-    rgba(139, 92, 246, 0.3) 30%,
-    rgba(236, 72, 153, 0.2) 60%,
-    transparent 80%);
-  border-radius: 50%;
-  filter: blur(100px);
-  animation: welcome-pulse 3s ease-in-out infinite;
-}
-
-@keyframes welcome-pulse {
-  0%, 100% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
-}
 
 .welcome-content {
   text-align: center;
@@ -59,32 +32,240 @@
 }
 
 .welcome-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 400;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1rem;
-  animation: fadeInUp 1s ease 0.2s backwards;
-  letter-spacing: -0.02em;
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  text-transform: lowercase;
+}
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  animation: glitch-shift 2s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff0000;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #ffffff;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-shift {
+  0%, 90%, 100% {
+    transform: translate(0);
+  }
+  92% {
+    transform: translate(-2px, 2px);
+  }
+  94% {
+    transform: translate(2px, -2px);
+  }
+  96% {
+    transform: translate(-2px, -2px);
+  }
+}
+
+@keyframes glitch-anim-1 {
+  0% {
+    clip: rect(29px, 9999px, 94px, 0);
+    transform: skew(0.2deg);
+  }
+  5% {
+    clip: rect(71px, 9999px, 21px, 0);
+    transform: skew(0.8deg);
+  }
+  10% {
+    clip: rect(44px, 9999px, 3px, 0);
+    transform: skew(0.5deg);
+  }
+  15% {
+    clip: rect(88px, 9999px, 60px, 0);
+    transform: skew(0.3deg);
+  }
+  20% {
+    clip: rect(12px, 9999px, 99px, 0);
+    transform: skew(0.7deg);
+  }
+  25% {
+    clip: rect(65px, 9999px, 40px, 0);
+    transform: skew(0.4deg);
+  }
+  30% {
+    clip: rect(33px, 9999px, 77px, 0);
+    transform: skew(0.9deg);
+  }
+  35% {
+    clip: rect(92px, 9999px, 15px, 0);
+    transform: skew(0.2deg);
+  }
+  40% {
+    clip: rect(7px, 9999px, 85px, 0);
+    transform: skew(0.6deg);
+  }
+  45% {
+    clip: rect(50px, 9999px, 38px, 0);
+    transform: skew(0.8deg);
+  }
+  50% {
+    clip: rect(76px, 9999px, 52px, 0);
+    transform: skew(0.3deg);
+  }
+  55% {
+    clip: rect(19px, 9999px, 66px, 0);
+    transform: skew(0.5deg);
+  }
+  60% {
+    clip: rect(98px, 9999px, 8px, 0);
+    transform: skew(0.7deg);
+  }
+  65% {
+    clip: rect(41px, 9999px, 73px, 0);
+    transform: skew(0.4deg);
+  }
+  70% {
+    clip: rect(58px, 9999px, 27px, 0);
+    transform: skew(0.9deg);
+  }
+  75% {
+    clip: rect(84px, 9999px, 45px, 0);
+    transform: skew(0.2deg);
+  }
+  80% {
+    clip: rect(25px, 9999px, 91px, 0);
+    transform: skew(0.6deg);
+  }
+  85% {
+    clip: rect(62px, 9999px, 34px, 0);
+    transform: skew(0.8deg);
+  }
+  90% {
+    clip: rect(10px, 9999px, 79px, 0);
+    transform: skew(0.3deg);
+  }
+  95% {
+    clip: rect(47px, 9999px, 56px, 0);
+    transform: skew(0.5deg);
+  }
+  100% {
+    clip: rect(82px, 9999px, 18px, 0);
+    transform: skew(0.7deg);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip: rect(65px, 9999px, 100px, 0);
+    transform: skew(0.5deg);
+  }
+  5% {
+    clip: rect(22px, 9999px, 77px, 0);
+    transform: skew(0.9deg);
+  }
+  10% {
+    clip: rect(90px, 9999px, 35px, 0);
+    transform: skew(0.3deg);
+  }
+  15% {
+    clip: rect(13px, 9999px, 88px, 0);
+    transform: skew(0.7deg);
+  }
+  20% {
+    clip: rect(58px, 9999px, 42px, 0);
+    transform: skew(0.4deg);
+  }
+  25% {
+    clip: rect(80px, 9999px, 19px, 0);
+    transform: skew(0.8deg);
+  }
+  30% {
+    clip: rect(38px, 9999px, 95px, 0);
+    transform: skew(0.2deg);
+  }
+  35% {
+    clip: rect(71px, 9999px, 54px, 0);
+    transform: skew(0.6deg);
+  }
+  40% {
+    clip: rect(26px, 9999px, 83px, 0);
+    transform: skew(0.9deg);
+  }
+  45% {
+    clip: rect(94px, 9999px, 11px, 0);
+    transform: skew(0.3deg);
+  }
+  50% {
+    clip: rect(45px, 9999px, 68px, 0);
+    transform: skew(0.5deg);
+  }
+  55% {
+    clip: rect(77px, 9999px, 31px, 0);
+    transform: skew(0.7deg);
+  }
+  60% {
+    clip: rect(8px, 9999px, 96px, 0);
+    transform: skew(0.4deg);
+  }
+  65% {
+    clip: rect(63px, 9999px, 48px, 0);
+    transform: skew(0.8deg);
+  }
+  70% {
+    clip: rect(30px, 9999px, 72px, 0);
+    transform: skew(0.2deg);
+  }
+  75% {
+    clip: rect(86px, 9999px, 24px, 0);
+    transform: skew(0.6deg);
+  }
+  80% {
+    clip: rect(52px, 9999px, 89px, 0);
+    transform: skew(0.9deg);
+  }
+  85% {
+    clip: rect(17px, 9999px, 61px, 0);
+    transform: skew(0.3deg);
+  }
+  90% {
+    clip: rect(75px, 9999px, 36px, 0);
+    transform: skew(0.5deg);
+  }
+  95% {
+    clip: rect(40px, 9999px, 92px, 0);
+    transform: skew(0.7deg);
+  }
+  100% {
+    clip: rect(69px, 9999px, 14px, 0);
+    transform: skew(0.4deg);
+  }
 }
 
 .welcome-subtitle {
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  color: rgba(248, 250, 252, 0.7);
-  margin-bottom: 0.5rem;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: rgba(255, 255, 255, 0.5);
   animation: fadeInUp 1s ease 0.4s backwards;
   font-weight: 300;
-  letter-spacing: 0.05em;
-}
-
-.welcome-message {
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
-  color: rgba(99, 102, 241, 0.8);
-  animation: fadeInUp 1s ease 0.6s backwards;
-  font-weight: 300;
-  font-style: italic;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
 }
 
 @keyframes fadeInUp {

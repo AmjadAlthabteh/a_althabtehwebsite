@@ -16,42 +16,42 @@ interface Project {
 const projects: Project[] = [
   {
     id: 0,
-    title: 'Maple',
-    description: 'Influencer-inspired platform with auto-editing capabilities. Built for cinematic content creation, inspired by Unreal Engine cinematics project. Features automated paragraph editing and image processing.',
-    tech: ['React', 'TypeScript', 'Netlify'],
-    demo: 'https://themaple.netlify.app/',
-    image: '/images/maple_picture.png',
-  },
-  {
-    id: 1,
-    title: 'No One Answers Short Clip',
-    description: 'Short film clip',
-    tech: ['Video Production'],
-    youtube: 'https://www.youtube.com/watch?v=Fe1U5l1r19o',
-    image: '/images/video_clip_nooneanwsers.png',
-  },
-  {
-    id: 2,
-    title: 'Glint3D',
-    description: 'Lightweight 3D rendering engine with cross-platform support for desktop and web. Features PBR materials, CPU raytracing, JSON-based scripting, and headless rendering for CI/CD pipelines.',
-    tech: ['C++', 'OpenGL', 'WebGL', 'TypeScript', 'React', 'Emscripten'],
+    title: 'glint3d',
+    description: 'lightweight 3d rendering engine with cross-platform support for desktop and web. features pbr materials, cpu raytracing, json-based scripting, and headless rendering for ci/cd pipelines.',
+    tech: ['c++', 'opengl', 'webgl', 'typescript', 'react', 'emscripten'],
     github: 'https://github.com/AmjadAlthabteh/glint_3d_frk',
     image: '/images/glint3d.png',
   },
   {
-    id: 3,
-    title: 'AI Debugger',
-    description: 'Advanced C++ debugging tool that analyzes crash stack traces to automatically identify root causes, explain bugs in natural language, and generate fix suggestions with confidence scoring.',
-    tech: ['C++', 'LLVM', 'CMake', 'Machine Learning', 'Static Analysis'],
+    id: 1,
+    title: 'ai debugger',
+    description: 'advanced c++ debugging tool that analyzes crash stack traces to automatically identify root causes, explain bugs in natural language, and generate fix suggestions with confidence scoring.',
+    tech: ['c++', 'llvm', 'cmake', 'machine learning', 'static analysis'],
     github: 'https://github.com/AmjadAlthabteh/LLVM_Opt_ml',
     image: '/images/llvm_debugger_c++.png',
   },
   {
-    id: 4,
-    title: 'Opsmind',
-    description: 'Production-grade incident management system. Real-time detection and root cause analysis.',
-    tech: ['Python', 'FastAPI', 'React', 'Docker', 'Kubernetes'],
+    id: 2,
+    title: 'maple',
+    description: 'influencer-inspired platform with auto-editing capabilities. built for cinematic content creation, inspired by unreal engine cinematics project. features automated paragraph editing and image processing.',
+    tech: ['react', 'typescript', 'netlify'],
+    demo: 'https://themaple.netlify.app/',
+    image: '/images/maple_picture.png',
+  },
+  {
+    id: 3,
+    title: 'opsmind',
+    description: 'production-grade incident management system. real-time detection and root cause analysis.',
+    tech: ['python', 'fastapi', 'react', 'docker', 'kubernetes'],
     github: 'https://github.com/AmjadAlthabteh/Opsmind',
+  },
+  {
+    id: 4,
+    title: 'no one answers',
+    description: 'short film clip showcasing narrative storytelling and cinematography.',
+    tech: ['video production', 'cinematography'],
+    youtube: 'https://www.youtube.com/watch?v=Fe1U5l1r19o',
+    image: '/images/video_clip_nooneanwsers.png',
   },
 ];
 
@@ -84,7 +84,7 @@ const Projects = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="section-title"
         >
-          Featured Projects
+          projects
         </motion.h2>
 
         <motion.div
@@ -122,7 +122,7 @@ const Projects = () => {
                       rel="noopener noreferrer"
                       className="project-link"
                     >
-                      GitHub
+                      github →
                     </a>
                   )}
                   {project.demo && (
@@ -132,7 +132,7 @@ const Projects = () => {
                       rel="noopener noreferrer"
                       className="project-link"
                     >
-                      Demo
+                      live demo →
                     </a>
                   )}
                   {project.youtube && (
@@ -142,7 +142,7 @@ const Projects = () => {
                       rel="noopener noreferrer"
                       className="project-link"
                     >
-                      Watch on YouTube
+                      watch →
                     </a>
                   )}
                 </div>

@@ -26,10 +26,8 @@
 .logo-text {
   font-size: 1.5rem;
   font-weight: 400;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text-primary);
+  text-transform: lowercase;
 }
 
 .sidebar-nav {
@@ -59,7 +57,7 @@
   transform: translateY(-50%);
   width: 3px;
   height: 0;
-  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-primary);
   transition: height 0.3s ease;
 }
 
@@ -68,11 +66,11 @@
 }
 
 .nav-item:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(255, 0, 0, 0.05);
 }
 
 .nav-item.active {
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(255, 0, 0, 0.08);
 }
 
 .nav-dot {
@@ -93,7 +91,7 @@
 }
 
 .nav-item.active .nav-dot {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-primary);
   border-color: var(--color-primary);
   box-shadow: 0 0 20px var(--color-primary);
   width: 12px;

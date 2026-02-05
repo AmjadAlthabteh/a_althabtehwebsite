@@ -33,12 +33,12 @@ const Contact = () => {
           className="contact-content"
         >
           <motion.h2 variants={itemVariants} className="section-title">
-            Let's Build Something Cool
+            let's work together
           </motion.h2>
 
           <motion.p variants={itemVariants} className="contact-description">
-            I'm always interested in hearing about new projects and opportunities.
-            Whether you have a question or just want to say hi, feel free to reach out!
+            interested in hearing about new projects and opportunities.
+            have a question or just want to say hi? reach out.
           </motion.p>
 
           <motion.div variants={itemVariants} className="contact-links">
@@ -47,7 +47,7 @@ const Contact = () => {
               className="contact-card glass-card"
             >
               <div className="contact-info">
-                <h3>Email</h3>
+                <h3>email</h3>
                 <p>amjadjamalshadi@gmail.com</p>
               </div>
             </a>
@@ -59,8 +59,8 @@ const Contact = () => {
               className="contact-card glass-card"
             >
               <div className="contact-info">
-                <h3>GitHub</h3>
-                <p>@AmjadAlthabteh</p>
+                <h3>github</h3>
+                <p>@amjadalthabteh</p>
               </div>
             </a>
 
@@ -71,15 +71,15 @@ const Contact = () => {
               className="contact-card glass-card"
             >
               <div className="contact-info">
-                <h3>LinkedIn</h3>
-                <p>Amjad Althabteh</p>
+                <h3>linkedin</h3>
+                <p>amjad althabteh</p>
               </div>
             </a>
           </motion.div>
 
           <motion.div variants={itemVariants} className="contact-footer">
-            <p>Designed & Built by Amjad Althabteh</p>
-            <p className="copyright">© 2025 • Made with passion for performance</p>
+            <p>designed & built by amjad althabteh</p>
+            <p className="copyright">© 2025</p>
           </motion.div>
         </motion.div>
       </div>

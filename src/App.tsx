@@ -4,7 +4,8 @@ import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import Hero from './components/sections/Hero';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
-import MouseCube from './components/MouseCube/MouseCube';
+import FloatingShapes from './components/FloatingShapes/FloatingShapes';
+import RoboticCursor from './components/RoboticCursor/RoboticCursor';
 import './App.css';
 
 // Lazy load heavy components
@@ -20,7 +21,8 @@ function App() {
   return (
     <div className="app">
       <LoadingScreen />
-      <MouseCube />
+      <FloatingShapes />
+      <RoboticCursor />
       <WelcomeBanner />
       <Sidebar />
       <ScrollIndicator sections={sections} />

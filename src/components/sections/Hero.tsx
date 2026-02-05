@@ -14,7 +14,7 @@ const Hero = () => {
           }}
         >
           <h1 className="hero-title">
-            Hey, I'm <span className="highlight">Amjad.</span>
+            hey, i'm <span className="highlight">amjad.</span>
           </h1>
         </motion.div>
 
@@ -28,7 +28,7 @@ const Hero = () => {
           }}
         >
           <h2 className="hero-subtitle">
-            Software Engineer • Game Developer • Systems Programmer
+            software engineer • game developer • systems programmer
           </h2>
         </motion.div>
 
@@ -42,7 +42,7 @@ const Hero = () => {
             ease: [0.22, 1, 0.36, 1]
           }}
         >
-          I build performant systems, real-time visuals, and immersive interactive experiences.
+          i build performant systems, real-time visuals, and immersive interactive experiences.
         </motion.p>
 
         <motion.div
@@ -56,7 +56,7 @@ const Hero = () => {
           }}
         >
           <a href="#projects" className="btn btn-primary">
-            View Projects
+            view projects
           </a>
           <a
             href="https://github.com/AmjadAlthabteh"
@@ -64,10 +64,10 @@ const Hero = () => {
             rel="noopener noreferrer"
             className="btn btn-secondary"
           >
-            GitHub
+            github
           </a>
           <a href="/assets/AmjadSAlthabtehResume.pdf" download className="btn btn-outline">
-            Resume
+            resume
           </a>
         </motion.div>
       </div>

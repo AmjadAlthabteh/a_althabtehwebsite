@@ -32,7 +32,7 @@ const About = () => {
           animate={inView ? 'visible' : 'hidden'}
         >
           <motion.h2 variants={itemVariants} className="section-title">
-            About Me
+            about
           </motion.h2>
 
           <motion.div variants={itemVariants} className="about-content">

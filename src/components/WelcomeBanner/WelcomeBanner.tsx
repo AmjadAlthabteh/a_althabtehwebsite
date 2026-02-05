@@ -14,11 +14,11 @@ const WelcomeBanner = () => {
 
   return (
     <div className={`welcome-banner ${hide ? 'hide' : ''}`}>
-      <div className="welcome-background-effect" />
       <div className="welcome-content">
-        <h1 className="welcome-title">Welcome</h1>
-        <p className="welcome-subtitle">Experience Interactive Design</p>
-        <p className="welcome-message">Move your mouse and explore</p>
+        <h1 className="welcome-title">
+          <span className="glitch" data-text="welcome">welcome</span>
+        </h1>
+        <p className="welcome-subtitle">amjad althabteh</p>
       </div>
     </div>
   );

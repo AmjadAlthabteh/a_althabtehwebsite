@@ -9,26 +9,26 @@ interface SkillCategory {
 
 const skillCategories: SkillCategory[] = [
   {
-    title: 'Languages',
-    skills: ['C++', 'C#', 'TypeScript', 'JavaScript', 'Python', 'GLSL', 'HLSL'],
+    title: 'languages',
+    skills: ['c++', 'c#', 'typescript', 'javascript', 'python', 'glsl', 'hlsl'],
   },
   {
-    title: 'Engines & Graphics',
-    skills: ['Unreal Engine', 'Unity', 'OpenGL', 'Vulkan', 'DirectX', 'WebGL', 'Three.js'],
+    title: 'engines & graphics',
+    skills: ['unreal engine', 'unity', 'opengl', 'vulkan', 'directx', 'webgl', 'three.js'],
   },
   {
-    title: 'Frameworks & Tools',
-    skills: ['React', 'Node.js', 'Git', 'CMake', 'Visual Studio', 'RenderDoc', 'Nsight'],
+    title: 'frameworks & tools',
+    skills: ['react', 'node.js', 'git', 'cmake', 'visual studio', 'renderdoc', 'nsight'],
   },
   {
-    title: 'Systems & Concepts',
+    title: 'systems & concepts',
     skills: [
-      'Memory Management',
-      'Multithreading',
-      'Data Structures',
-      'Performance Optimization',
-      'Rendering Pipelines',
-      'Physics Simulation',
+      'memory management',
+      'multithreading',
+      'data structures',
+      'performance optimization',
+      'rendering pipelines',
+      'physics simulation',
     ],
   },
 ];
@@ -67,7 +67,7 @@ const Skills = () => {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           className="section-title"
         >
-          Skills & Tech Stack
+          skills
         </motion.h2>
 
         <motion.div
