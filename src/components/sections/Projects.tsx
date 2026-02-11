@@ -53,6 +53,13 @@ const projects: Project[] = [
     youtube: 'https://www.youtube.com/watch?v=Fe1U5l1r19o',
     image: '/images/video_clip_nooneanwsers.png',
   },
+  {
+    id: 5,
+    title: 'echos of sacrifice',
+    description: '2d horror platformer game developed in godot. atmospheric survival game with dark storytelling and challenging platforming mechanics. created as a collaborative small team project.',
+    tech: ['godot', 'gdscript', 'game design', '2d art'],
+    image: '/images/EOS1.png',
+  },
 ];
 
 const Projects = () => {
