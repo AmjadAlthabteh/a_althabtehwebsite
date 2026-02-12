@@ -55,10 +55,10 @@ const projects: Project[] = [
   },
   {
     id: 5,
-    title: 'echos of sacrifice',
-    description: '2d horror platformer game developed in godot. atmospheric survival game with dark storytelling and challenging platforming mechanics. created as a collaborative small team project.',
-    tech: ['godot', 'gdscript', 'game design', '2d art'],
-    image: '/images/EOS1.png',
+    title: 'hdt tradebook',
+    description: 'comprehensive trading journal and analytics platform. tracks trades, analyzes performance metrics, and provides insights for strategy optimization.',
+    tech: ['react', 'typescript', 'node.js', 'postgresql'],
+    github: 'https://github.com/AmjadAlthabteh/HDT-Tradebook',
   },
 ];
 
