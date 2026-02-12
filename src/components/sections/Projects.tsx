@@ -55,10 +55,11 @@ const projects: Project[] = [
   },
   {
     id: 5,
-    title: 'hdt tradebook',
-    description: 'comprehensive trading journal and analytics platform. tracks trades, analyzes performance metrics, and provides insights for strategy optimization.',
-    tech: ['react', 'typescript', 'node.js', 'postgresql'],
-    github: 'https://github.com/AmjadAlthabteh/HDT-Tradebook',
+    title: 'hft orderbook engine',
+    description: 'high-frequency trading algorithm with low-latency limit orderbook. implements fifo matching logic, spread crossing detection, and trade aggregation using cache-efficient containers. features microsecond-precision benchmarking and lock-free architecture for optimal performance.',
+    tech: ['c++20', 'low-latency', 'lock-free', 'cache-optimization', 'performance'],
+    github: 'https://github.com/AmjadAlthabteh/hft-orderbook-engine_2',
+    image: '/images/hft_orderbook.svg',
   },
 ];
 
