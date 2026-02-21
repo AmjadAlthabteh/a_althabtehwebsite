@@ -10,6 +10,7 @@ import './App.css';
 
 // Lazy load heavy components
 const About = lazy(() => import('./components/sections/About'));
+const Stats = lazy(() => import('./components/sections/Stats'));
 const Projects = lazy(() => import('./components/sections/Projects'));
 const Experience = lazy(() => import('./components/sections/Experience'));
 const Skills = lazy(() => import('./components/sections/Skills'));
@@ -31,6 +32,7 @@ function App() {
         <Hero />
         <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
           <About />
+          <Stats />
           <Projects />
           <Experience />
           <Skills />

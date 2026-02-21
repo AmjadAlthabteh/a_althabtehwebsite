@@ -2,33 +2,63 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import './Skills.css';
 
+interface Skill {
+  name: string;
+  icon: string;
+  color: string;
+}
+
 interface SkillCategory {
   title: string;
-  skills: string[];
+  skills: Skill[];
 }
 
 const skillCategories: SkillCategory[] = [
   {
     title: 'languages',
-    skills: ['c++', 'c#', 'typescript', 'javascript', 'python', 'glsl', 'hlsl'],
+    skills: [
+      { name: 'c++', icon: '⚡', color: '#00599C' },
+      { name: 'c#', icon: '🎯', color: '#239120' },
+      { name: 'typescript', icon: '📘', color: '#3178C6' },
+      { name: 'javascript', icon: '📜', color: '#F7DF1E' },
+      { name: 'python', icon: '🐍', color: '#3776AB' },
+      { name: 'glsl', icon: '🎨', color: '#5586A4' },
+      { name: 'hlsl', icon: '🔷', color: '#0078D7' },
+    ],
   },
   {
     title: 'engines & graphics',
-    skills: ['unreal engine', 'unity', 'opengl', 'vulkan', 'directx', 'webgl', 'three.js'],
+    skills: [
+      { name: 'unreal engine', icon: '🎮', color: '#0E1128' },
+      { name: 'unity', icon: '🕹️', color: '#000000' },
+      { name: 'opengl', icon: '🔺', color: '#5586A4' },
+      { name: 'vulkan', icon: '🌋', color: '#AC162C' },
+      { name: 'directx', icon: '💎', color: '#0078D7' },
+      { name: 'webgl', icon: '🌐', color: '#990000' },
+      { name: 'three.js', icon: '🎲', color: '#000000' },
+    ],
   },
   {
     title: 'frameworks & tools',
-    skills: ['react', 'node.js', 'git', 'cmake', 'visual studio', 'renderdoc', 'nsight'],
+    skills: [
+      { name: 'react', icon: '⚛️', color: '#61DAFB' },
+      { name: 'node.js', icon: '📗', color: '#339933' },
+      { name: 'git', icon: '🔀', color: '#F05032' },
+      { name: 'cmake', icon: '🔧', color: '#064F8C' },
+      { name: 'visual studio', icon: '💻', color: '#5C2D91' },
+      { name: 'renderdoc', icon: '📊', color: '#EF5350' },
+      { name: 'nsight', icon: '📈', color: '#76B900' },
+    ],
   },
   {
     title: 'systems & concepts',
     skills: [
-      'memory management',
-      'multithreading',
-      'data structures',
-      'performance optimization',
-      'rendering pipelines',
-      'physics simulation',
+      { name: 'memory management', icon: '🧠', color: '#FF6B6B' },
+      { name: 'multithreading', icon: '🔄', color: '#4ECDC4' },
+      { name: 'data structures', icon: '🗂️', color: '#95E1D3' },
+      { name: 'performance optimization', icon: '⚡', color: '#F38181' },
+      { name: 'rendering pipelines', icon: '🎬', color: '#AA96DA' },
+      { name: 'physics simulation', icon: '🌊', color: '#FCBAD3' },
     ],
   },
 ];
@@ -92,8 +122,12 @@ const Skills = () => {
                     className="skill-badge"
                     whileHover={{ scale: 1.1, y: -5 }}
                     transition={{ type: 'spring', stiffness: 300 }}
+                    style={{
+                      '--skill-color': skill.color,
+                    } as React.CSSProperties}
                   >
-                    {skill}
+                    <span className="skill-icon">{skill.icon}</span>
+                    <span className="skill-name">{skill.name}</span>
                   </motion.span>
                 ))}
               </motion.div>
