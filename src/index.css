@@ -7,7 +7,7 @@
 }
 
 :root {
-  /* Color Palette - minimal black/white/red */
+  /* Color Palette - enhanced with blues/purples for visual hierarchy */
   --color-bg: #000000;
   --color-bg-secondary: #0a0a0a;
   --color-surface: #1a1a1a;
@@ -15,9 +15,14 @@
   --color-primary: #ff0000;
   --color-secondary: #cc0000;
   --color-accent: #ff3333;
+  --color-blue: #3b82f6;
+  --color-blue-light: #60a5fa;
+  --color-purple: #8b5cf6;
+  --color-purple-light: #a78bfa;
+  --color-cyan: #06b6d4;
   --color-highlight: #ffffff;
   --color-warning: #ff0000;
-  --color-info: #ffffff;
+  --color-info: #3b82f6;
 
   --color-text-primary: #ffffff;
   --color-text-secondary: #cccccc;
@@ -25,8 +30,15 @@
 
   /* Glassmorphism */
   --glass-bg: rgba(20, 20, 20, 0.6);
+  --glass-bg-light: rgba(30, 30, 40, 0.5);
   --glass-border: rgba(255, 255, 255, 0.05);
   --glass-blur: 12px;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+  --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --gradient-mixed: linear-gradient(135deg, #ff0000 0%, #8b5cf6 50%, #3b82f6 100%);
 
   /* Spacing */
   --spacing-xs: 0.5rem;
@@ -154,13 +166,31 @@ button {
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  transition: var(--transition-normal);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.glass-card:hover::before {
+  left: 100%;
 }
 
 .glass-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 8px 32px rgba(255, 0, 0, 0.15);
-  transform: translateY(-4px);
+  border-color: var(--color-blue);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2), 0 0 60px rgba(139, 92, 246, 0.1);
+  transform: translateY(-6px) scale(1.02);
+  background: var(--glass-bg-light);
 }
 
 /* Glow Effect */

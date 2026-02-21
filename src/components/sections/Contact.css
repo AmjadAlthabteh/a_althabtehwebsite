@@ -4,6 +4,24 @@
   align-items: center;
   padding: var(--spacing-2xl) 0;
   position: relative;
+  overflow: hidden;
+}
+
+.contact::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(59, 130, 246, 0.06) 40%,
+    transparent 70%);
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
 }
 
 .contact-content {
@@ -48,7 +66,8 @@
   width: 0;
   height: 0;
   background: radial-gradient(circle,
-    rgba(99, 102, 241, 0.12),
+    rgba(59, 130, 246, 0.15),
+    rgba(139, 92, 246, 0.1),
     transparent 70%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -56,14 +75,14 @@
 }
 
 .contact-card:hover::before {
-  width: 400px;
-  height: 400px;
+  width: 450px;
+  height: 450px;
 }
 
 .contact-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.25);
-  transform: translateY(-8px);
+  border-color: var(--color-blue);
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3), 0 6px 20px rgba(139, 92, 246, 0.2);
+  transform: translateY(-10px) scale(1.02);
 }
 
 .contact-info {
@@ -87,7 +106,7 @@
 }
 
 .contact-card:hover .contact-info h3 {
-  color: var(--color-primary);
+  color: var(--color-blue-light);
 }
 
 .contact-card:hover .contact-info p {
