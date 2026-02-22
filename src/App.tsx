@@ -3,7 +3,6 @@ import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import Hero from './components/sections/Hero';
-import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import FloatingShapes from './components/FloatingShapes/FloatingShapes';
 import RoboticCursor from './components/RoboticCursor/RoboticCursor';
 import './App.css';
@@ -21,7 +20,6 @@ const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'
 function App() {
   return (
     <div className="app">
-      <LoadingScreen />
       <FloatingShapes />
       <RoboticCursor />
       <WelcomeBanner />
