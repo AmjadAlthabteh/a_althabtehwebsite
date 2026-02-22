@@ -4,15 +4,15 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #000000;
+  background: radial-gradient(circle at center, #0a0a0f 0%, #000000 100%);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 1;
-  transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 1.5s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 1s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   overflow: hidden;
 }
@@ -20,261 +20,364 @@
 .welcome-banner.hide {
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
+/* Animated background shapes */
+.welcome-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: float-shape 20s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent);
+  top: -10%;
+  left: -10%;
+  animation-duration: 25s;
+}
+
+.shape-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), transparent);
+  bottom: -10%;
+  right: -10%;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.shape-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.3), transparent);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 20s;
+  animation-delay: -10s;
+}
+
+.shape-4 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.2), transparent);
+  top: 20%;
+  right: 20%;
+  animation-duration: 28s;
+  animation-delay: -15s;
+}
+
+.shape-5 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
+  bottom: 20%;
+  left: 20%;
+  animation-duration: 32s;
+  animation-delay: -8s;
+}
+
+@keyframes float-shape {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(50px, -50px) scale(1.1);
+  }
+  50% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+  75% {
+    transform: translate(30px, 50px) scale(1.05);
+  }
+}
+
+/* Particle grid */
+.particle-grid {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 20px;
+  padding: 40px;
+  opacity: 0.2;
+}
+
+.particle {
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+  border-radius: 50%;
+  animation: particle-pulse calc(2s + var(--i) * 0.1s) ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes particle-pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
 
 .welcome-content {
   text-align: center;
-  animation: fadeInUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: fadeInScale 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
-.welcome-title {
-  font-size: clamp(4rem, 10vw, 8rem);
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.1em;
-  color: #ffffff;
-  text-transform: lowercase;
-}
-
-.glitch {
+/* Logo symbol with rotating rings */
+.logo-symbol {
   position: relative;
-  display: inline-block;
-  animation: glitch-shift 2s infinite;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1rem;
 }
 
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
+.symbol-ring {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 2px solid;
+  transform: translate(-50%, -50%);
 }
 
-.glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 #ff0000;
-  clip: rect(24px, 550px, 90px, 0);
-  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+.ring-1 {
+  width: 120px;
+  height: 120px;
+  border-color: rgba(59, 130, 246, 0.6);
+  animation: rotate-ring 4s linear infinite;
 }
 
-.glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 #ffffff;
-  clip: rect(85px, 550px, 140px, 0);
-  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+.ring-2 {
+  width: 90px;
+  height: 90px;
+  border-color: rgba(139, 92, 246, 0.6);
+  animation: rotate-ring 3s linear infinite reverse;
 }
 
-@keyframes glitch-shift {
-  0%, 90%, 100% {
-    transform: translate(0);
-  }
-  92% {
-    transform: translate(-2px, 2px);
-  }
-  94% {
-    transform: translate(2px, -2px);
-  }
-  96% {
-    transform: translate(-2px, -2px);
-  }
+.ring-3 {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(6, 182, 212, 0.6);
+  animation: rotate-ring 2s linear infinite;
 }
 
-@keyframes glitch-anim-1 {
+.symbol-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.6);
+  animation: pulse-core 2s ease-in-out infinite;
+}
+
+@keyframes rotate-ring {
   0% {
-    clip: rect(29px, 9999px, 94px, 0);
-    transform: skew(0.2deg);
-  }
-  5% {
-    clip: rect(71px, 9999px, 21px, 0);
-    transform: skew(0.8deg);
-  }
-  10% {
-    clip: rect(44px, 9999px, 3px, 0);
-    transform: skew(0.5deg);
-  }
-  15% {
-    clip: rect(88px, 9999px, 60px, 0);
-    transform: skew(0.3deg);
-  }
-  20% {
-    clip: rect(12px, 9999px, 99px, 0);
-    transform: skew(0.7deg);
+    transform: translate(-50%, -50%) rotate(0deg);
+    border-style: solid;
   }
   25% {
-    clip: rect(65px, 9999px, 40px, 0);
-    transform: skew(0.4deg);
-  }
-  30% {
-    clip: rect(33px, 9999px, 77px, 0);
-    transform: skew(0.9deg);
-  }
-  35% {
-    clip: rect(92px, 9999px, 15px, 0);
-    transform: skew(0.2deg);
-  }
-  40% {
-    clip: rect(7px, 9999px, 85px, 0);
-    transform: skew(0.6deg);
-  }
-  45% {
-    clip: rect(50px, 9999px, 38px, 0);
-    transform: skew(0.8deg);
+    border-style: dashed;
   }
   50% {
-    clip: rect(76px, 9999px, 52px, 0);
-    transform: skew(0.3deg);
-  }
-  55% {
-    clip: rect(19px, 9999px, 66px, 0);
-    transform: skew(0.5deg);
-  }
-  60% {
-    clip: rect(98px, 9999px, 8px, 0);
-    transform: skew(0.7deg);
-  }
-  65% {
-    clip: rect(41px, 9999px, 73px, 0);
-    transform: skew(0.4deg);
-  }
-  70% {
-    clip: rect(58px, 9999px, 27px, 0);
-    transform: skew(0.9deg);
+    border-style: solid;
   }
   75% {
-    clip: rect(84px, 9999px, 45px, 0);
-    transform: skew(0.2deg);
-  }
-  80% {
-    clip: rect(25px, 9999px, 91px, 0);
-    transform: skew(0.6deg);
-  }
-  85% {
-    clip: rect(62px, 9999px, 34px, 0);
-    transform: skew(0.8deg);
-  }
-  90% {
-    clip: rect(10px, 9999px, 79px, 0);
-    transform: skew(0.3deg);
-  }
-  95% {
-    clip: rect(47px, 9999px, 56px, 0);
-    transform: skew(0.5deg);
+    border-style: dotted;
   }
   100% {
-    clip: rect(82px, 9999px, 18px, 0);
-    transform: skew(0.7deg);
+    transform: translate(-50%, -50%) rotate(360deg);
+    border-style: solid;
   }
 }
 
-@keyframes glitch-anim-2 {
-  0% {
-    clip: rect(65px, 9999px, 100px, 0);
-    transform: skew(0.5deg);
-  }
-  5% {
-    clip: rect(22px, 9999px, 77px, 0);
-    transform: skew(0.9deg);
-  }
-  10% {
-    clip: rect(90px, 9999px, 35px, 0);
-    transform: skew(0.3deg);
-  }
-  15% {
-    clip: rect(13px, 9999px, 88px, 0);
-    transform: skew(0.7deg);
-  }
-  20% {
-    clip: rect(58px, 9999px, 42px, 0);
-    transform: skew(0.4deg);
-  }
-  25% {
-    clip: rect(80px, 9999px, 19px, 0);
-    transform: skew(0.8deg);
-  }
-  30% {
-    clip: rect(38px, 9999px, 95px, 0);
-    transform: skew(0.2deg);
-  }
-  35% {
-    clip: rect(71px, 9999px, 54px, 0);
-    transform: skew(0.6deg);
-  }
-  40% {
-    clip: rect(26px, 9999px, 83px, 0);
-    transform: skew(0.9deg);
-  }
-  45% {
-    clip: rect(94px, 9999px, 11px, 0);
-    transform: skew(0.3deg);
+@keyframes pulse-core {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.6);
   }
   50% {
-    clip: rect(45px, 9999px, 68px, 0);
-    transform: skew(0.5deg);
-  }
-  55% {
-    clip: rect(77px, 9999px, 31px, 0);
-    transform: skew(0.7deg);
-  }
-  60% {
-    clip: rect(8px, 9999px, 96px, 0);
-    transform: skew(0.4deg);
-  }
-  65% {
-    clip: rect(63px, 9999px, 48px, 0);
-    transform: skew(0.8deg);
-  }
-  70% {
-    clip: rect(30px, 9999px, 72px, 0);
-    transform: skew(0.2deg);
-  }
-  75% {
-    clip: rect(86px, 9999px, 24px, 0);
-    transform: skew(0.6deg);
-  }
-  80% {
-    clip: rect(52px, 9999px, 89px, 0);
-    transform: skew(0.9deg);
-  }
-  85% {
-    clip: rect(17px, 9999px, 61px, 0);
-    transform: skew(0.3deg);
-  }
-  90% {
-    clip: rect(75px, 9999px, 36px, 0);
-    transform: skew(0.5deg);
-  }
-  95% {
-    clip: rect(40px, 9999px, 92px, 0);
-    transform: skew(0.7deg);
-  }
-  100% {
-    clip: rect(69px, 9999px, 14px, 0);
-    transform: skew(0.4deg);
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 1), 0 0 80px rgba(139, 92, 246, 0.8);
   }
 }
 
-.welcome-subtitle {
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.5);
-  animation: fadeInUp 1s ease 0.4s backwards;
+/* Loading text */
+.loading-text {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 300;
-  letter-spacing: 0.2em;
+  color: white;
+  letter-spacing: 0.3em;
   text-transform: lowercase;
+  font-family: var(--font-display);
 }
 
-@keyframes fadeInUp {
+.load-letter {
+  display: inline-block;
+  animation: float-letter 0.6s ease var(--delay) both;
+}
+
+.load-dots span {
+  display: inline-block;
+  animation: float-letter 0.6s ease var(--delay) both, blink-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes float-letter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-dot {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Progress bar */
+.progress-container {
+  width: 300px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-blue), var(--color-purple), var(--color-cyan));
+  background-size: 200% 100%;
+  border-radius: 10px;
+  transition: width 0.1s linear;
+  animation: gradient-slide 2s linear infinite;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+@keyframes gradient-slide {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.progress-glow {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
+  filter: blur(15px);
+  transform: translate(-50%, -50%);
+  transition: left 0.1s linear;
+  pointer-events: none;
+}
+
+.progress-text {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  font-family: var(--font-mono);
+  animation: fadeIn 0.5s ease 0.5s both;
+}
+
+@keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: translateY(60px) scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .logo-symbol {
+    width: 80px;
+    height: 80px;
+  }
+
+  .ring-1 {
+    width: 80px;
+    height: 80px;
+  }
+
+  .ring-2 {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ring-3 {
+    width: 40px;
+    height: 40px;
+  }
+
+  .symbol-core {
+    width: 15px;
+    height: 15px;
+  }
+
+  .progress-container {
+    width: 250px;
+  }
+
+  .particle-grid {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .shape {
+    filter: blur(60px);
   }
 }
