@@ -30,39 +30,48 @@ const WelcomeBanner = () => {
 
   return (
     <div className={`welcome-banner ${hide ? 'hide' : ''}`}>
-      {/* Animated background shapes */}
-      <div className="welcome-shapes">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-        <div className="shape shape-3"></div>
-        <div className="shape shape-4"></div>
-        <div className="shape shape-5"></div>
-      </div>
-
-      {/* Particle grid */}
-      <div className="particle-grid">
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div key={i} className="particle" style={{ '--i': i } as React.CSSProperties}></div>
+      {/* Stars background */}
+      <div className="stars-layer">
+        {Array.from({ length: 100 }).map((_, i) => (
+          <div key={i} className="star" style={{
+            '--x': `${Math.random() * 100}%`,
+            '--y': `${Math.random() * 100}%`,
+            '--delay': `${Math.random() * 3}s`,
+            '--duration': `${2 + Math.random() * 2}s`
+          } as React.CSSProperties}></div>
         ))}
       </div>
 
       <div className="welcome-content">
-        {/* Logo symbol with enhanced design */}
-        <div className="logo-symbol">
-          <div className="symbol-ring ring-1"></div>
-          <div className="symbol-ring ring-2"></div>
-          <div className="symbol-ring ring-3"></div>
-          <div className="symbol-ring ring-4"></div>
-          <div className="symbol-core"></div>
-          {/* Energy burst lines */}
-          <div className="energy-lines">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="energy-line" style={{ '--angle': `${i * 30}deg` } as React.CSSProperties}></div>
-            ))}
+        {/* Target Planet */}
+        <div className="planet">
+          <div className="planet-surface">
+            <div className="crater crater-1"></div>
+            <div className="crater crater-2"></div>
+            <div className="crater crater-3"></div>
           </div>
+          <div className="planet-atmosphere"></div>
+          <div className="planet-shadow"></div>
         </div>
 
-        {/* Sleek progress bar */}
+        {/* Spaceship */}
+        <div className="spaceship">
+          <div className="ship-body">
+            <div className="ship-cockpit"></div>
+            <div className="ship-wing ship-wing-left"></div>
+            <div className="ship-wing ship-wing-right"></div>
+            <div className="ship-engine">
+              <div className="engine-flame"></div>
+              <div className="engine-glow"></div>
+            </div>
+          </div>
+          <div className="ship-trail"></div>
+        </div>
+
+        {/* Impact effect */}
+        <div className="impact-ring"></div>
+
+        {/* Progress bar */}
         <div className="progress-container">
           <div className="progress-bar" style={{ width: `${progress}%` }}></div>
           <div className="progress-glow" style={{ left: `${progress}%` }}></div>

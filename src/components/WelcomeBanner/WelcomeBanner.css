@@ -23,112 +23,30 @@
   transform: scale(1.1);
 }
 
-/* Animated background shapes */
-.welcome-shapes {
+/* Stars background */
+.stars-layer {
   position: absolute;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.shape {
+.star {
   position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 2px;
+  height: 2px;
+  background: white;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.15;
-  animation: float-shape 20s ease-in-out infinite;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  animation: twinkle var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
 }
 
-.shape-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(30, 30, 40, 0.8), transparent);
-  top: -15%;
-  left: -15%;
-  animation-duration: 25s;
-}
-
-.shape-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(20, 20, 30, 0.8), transparent);
-  bottom: -15%;
-  right: -15%;
-  animation-duration: 30s;
-  animation-delay: -5s;
-}
-
-.shape-3 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(25, 25, 35, 0.7), transparent);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation-duration: 20s;
-  animation-delay: -10s;
-}
-
-.shape-4 {
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(15, 15, 25, 0.6), transparent);
-  top: 20%;
-  right: 20%;
-  animation-duration: 28s;
-  animation-delay: -15s;
-}
-
-.shape-5 {
-  width: 550px;
-  height: 550px;
-  background: radial-gradient(circle, rgba(20, 20, 30, 0.7), transparent);
-  bottom: 20%;
-  left: 20%;
-  animation-duration: 32s;
-  animation-delay: -8s;
-}
-
-@keyframes float-shape {
+@keyframes twinkle {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(50px, -50px) scale(1.1);
-  }
-  50% {
-    transform: translate(-30px, 30px) scale(0.9);
-  }
-  75% {
-    transform: translate(30px, 50px) scale(1.05);
-  }
-}
-
-/* Particle grid */
-.particle-grid {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 20px;
-  padding: 40px;
-  opacity: 0.2;
-}
-
-.particle {
-  width: 3px;
-  height: 3px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  border-radius: 50%;
-  animation: particle-pulse calc(2s + var(--i) * 0.1s) ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
-}
-
-@keyframes particle-pulse {
-  0%, 100% {
-    opacity: 0.2;
+    opacity: 0.3;
     transform: scale(1);
   }
   50% {
@@ -148,151 +66,295 @@
   gap: 2rem;
 }
 
-/* Logo symbol with rotating rings */
-.logo-symbol {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  margin-bottom: 2rem;
-  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.3));
-}
-
-.symbol-ring {
+/* Planet */
+.planet {
   position: absolute;
   top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  border: 2px solid;
-  transform: translate(-50%, -50%);
-}
-
-.ring-1 {
-  width: 150px;
-  height: 150px;
-  border-color: rgba(255, 255, 255, 0.3);
-  animation: rotate-ring 4s linear infinite;
-  border-width: 1px;
-}
-
-.ring-2 {
-  width: 115px;
-  height: 115px;
-  border-color: rgba(255, 255, 255, 0.4);
-  animation: rotate-ring 3s linear infinite reverse;
-  border-width: 1.5px;
-}
-
-.ring-3 {
-  width: 80px;
-  height: 80px;
-  border-color: rgba(255, 255, 255, 0.5);
-  animation: rotate-ring 2.5s linear infinite;
-  border-width: 2px;
-}
-
-.ring-4 {
-  width: 45px;
-  height: 45px;
-  border-color: rgba(255, 255, 255, 0.6);
-  animation: rotate-ring 2s linear infinite reverse;
-  border-width: 2px;
-}
-
-.symbol-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 25px;
-  height: 25px;
-  background: radial-gradient(circle, #ffffff, rgba(255, 255, 255, 0.8));
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.8),
-    0 0 40px rgba(255, 255, 255, 0.6),
-    0 0 60px rgba(255, 255, 255, 0.4);
-  animation: pulse-core 2s ease-in-out infinite;
-}
-
-@keyframes rotate-ring {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-    border-style: solid;
-  }
-  25% {
-    border-style: dashed;
-  }
-  50% {
-    border-style: solid;
-  }
-  75% {
-    border-style: dotted;
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-    border-style: solid;
-  }
-}
-
-@keyframes pulse-core {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow:
-      0 0 20px rgba(255, 255, 255, 0.8),
-      0 0 40px rgba(255, 255, 255, 0.6),
-      0 0 60px rgba(255, 255, 255, 0.4);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.3);
-    box-shadow:
-      0 0 30px rgba(255, 255, 255, 1),
-      0 0 60px rgba(255, 255, 255, 0.8),
-      0 0 90px rgba(255, 255, 255, 0.6);
-  }
-}
-
-/* Energy lines radiating from core */
-.energy-lines {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  right: 20%;
+  transform: translateY(-50%);
   width: 200px;
   height: 200px;
-  transform: translate(-50%, -50%);
-  animation: rotate-energy 10s linear infinite;
+  animation: planet-appear 0.8s ease-out forwards;
 }
 
-.energy-line {
+.planet-surface {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 30%, #4a90e2, #2c5aa0, #1a3a6e);
+  border-radius: 50%;
+  box-shadow:
+    inset -20px -20px 50px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(74, 144, 226, 0.4);
+  overflow: hidden;
+  animation: planet-rotate 20s linear infinite;
+}
+
+.crater {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.crater-1 {
+  width: 30px;
+  height: 30px;
+  top: 40%;
+  left: 30%;
+}
+
+.crater-2 {
+  width: 20px;
+  height: 20px;
+  top: 60%;
+  left: 50%;
+}
+
+.crater-3 {
+  width: 25px;
+  height: 25px;
+  top: 25%;
+  left: 60%;
+}
+
+.planet-atmosphere {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
+  background: radial-gradient(circle, transparent 60%, rgba(100, 180, 255, 0.2) 80%, transparent 100%);
+  border-radius: 50%;
+  animation: atmosphere-pulse 3s ease-in-out infinite;
+}
+
+.planet-shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 70% 70%, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+  border-radius: 50%;
+}
+
+@keyframes planet-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes planet-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes atmosphere-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Spaceship */
+.spaceship {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  width: 120px;
+  height: 60px;
+  animation: ship-flight 2s ease-in-out forwards;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+}
+
+.ship-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ship-body::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 80px solid #e0e0e0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  filter: brightness(1.2);
+}
+
+.ship-cockpit {
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 20px;
+  background: radial-gradient(circle, #00d9ff, #0099cc);
+  border-radius: 50% 50% 0 0 / 60% 60% 40% 40%;
+  box-shadow:
+    0 0 20px rgba(0, 217, 255, 0.8),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.ship-wing {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  width: 50px;
+  height: 8px;
+  background: linear-gradient(135deg, #b0b0b0, #808080);
+  transform-origin: left center;
+}
+
+.ship-wing-left {
+  transform: translateY(-50%) rotate(-15deg) translateY(-15px);
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+}
+
+.ship-wing-right {
+  transform: translateY(-50%) rotate(15deg) translateY(15px);
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+}
+
+.ship-engine {
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 30px;
+  background: linear-gradient(180deg, #606060, #404040);
+  border-radius: 0 50% 50% 0;
+}
+
+.engine-flame {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 20px;
+  background: linear-gradient(90deg,
+    rgba(255, 100, 0, 0.9),
+    rgba(255, 200, 0, 0.7),
+    transparent
+  );
+  border-radius: 50% 0 0 50%;
+  animation: flame-flicker 0.1s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+.engine-glow {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 40px;
+  background: radial-gradient(ellipse, rgba(255, 150, 0, 0.4), transparent);
+  animation: glow-pulse 0.2s ease-in-out infinite;
+  filter: blur(10px);
+}
+
+.ship-trail {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  animation: trail-fade 0.5s ease-out infinite;
+}
+
+@keyframes ship-flight {
+  0% {
+    left: -20%;
+    transform: translateY(-50%) scale(0.8);
+  }
+  70% {
+    left: 45%;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    left: 45%;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@keyframes flame-flicker {
+  0%, 100% {
+    width: 60px;
+    opacity: 1;
+  }
+  50% {
+    width: 50px;
+    opacity: 0.8;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes trail-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Impact effect */
+.impact-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
+  transform: translate(-50%, -50%);
+  width: 100px;
   height: 100px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), transparent);
-  transform-origin: top center;
-  transform: translate(-50%, 0) rotate(var(--angle));
-  opacity: 0;
-  animation: energy-pulse 3s ease-in-out infinite;
-  animation-delay: calc(var(--angle) / 360deg * 2s);
+  border: 3px solid rgba(255, 255, 255, 0);
+  border-radius: 50%;
+  animation: impact-wave 0.8s ease-out 1.8s forwards;
+  pointer-events: none;
 }
 
-@keyframes rotate-energy {
+@keyframes impact-wave {
   0% {
-    transform: translate(-50%, -50%) rotate(0deg);
+    width: 100px;
+    height: 100px;
+    border-color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@keyframes energy-pulse {
-  0%, 100% {
+    width: 400px;
+    height: 400px;
+    border-color: rgba(255, 255, 255, 0);
     opacity: 0;
-    height: 60px;
-  }
-  50% {
-    opacity: 0.6;
-    height: 90px;
   }
 }
 
@@ -363,55 +425,80 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .logo-symbol {
-    width: 100px;
-    height: 100px;
+  .planet {
+    width: 120px;
+    height: 120px;
+    right: 10%;
   }
 
-  .ring-1 {
-    width: 100px;
-    height: 100px;
+  .spaceship {
+    width: 80px;
+    height: 40px;
+    left: 5%;
   }
 
-  .ring-2 {
-    width: 75px;
-    height: 75px;
+  .ship-body::before {
+    border-left-width: 50px;
+    border-top-width: 15px;
+    border-bottom-width: 15px;
   }
 
-  .ring-3 {
+  .ship-cockpit {
+    left: 40px;
+    width: 20px;
+    height: 15px;
+  }
+
+  .ship-wing {
+    width: 35px;
+    height: 6px;
+    left: 15px;
+  }
+
+  .ship-wing-left {
+    transform: translateY(-50%) rotate(-15deg) translateY(-10px);
+  }
+
+  .ship-wing-right {
+    transform: translateY(-50%) rotate(15deg) translateY(10px);
+  }
+
+  .ship-engine {
+    right: 50px;
+    width: 15px;
+    height: 20px;
+  }
+
+  .engine-flame {
+    width: 40px;
+    height: 15px;
+  }
+
+  .engine-glow {
     width: 50px;
-    height: 50px;
+    height: 25px;
   }
 
-  .ring-4 {
-    width: 30px;
-    height: 30px;
+  .ship-trail {
+    width: 60px;
   }
 
-  .symbol-core {
-    width: 18px;
-    height: 18px;
-  }
-
-  .energy-lines {
-    width: 150px;
-    height: 150px;
-  }
-
-  .energy-line {
-    height: 75px;
+  @keyframes ship-flight {
+    0% {
+      left: -20%;
+      transform: translateY(-50%) scale(0.8);
+    }
+    70% {
+      left: 35%;
+      transform: translateY(-50%) scale(1);
+    }
+    100% {
+      left: 35%;
+      transform: translateY(-50%) scale(1);
+    }
   }
 
   .progress-container {
     width: 280px;
-  }
-
-  .particle-grid {
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-  }
-
-  .shape {
-    filter: blur(70px);
   }
 }
