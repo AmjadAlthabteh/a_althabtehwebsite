@@ -11,32 +11,7 @@ interface Stat {
   prefix?: string;
 }
 
-const stats: Stat[] = [
-  {
-    id: 1,
-    value: 100000,
-    label: 'Lines of Code',
-    suffix: '+',
-  },
-  {
-    id: 2,
-    value: 20,
-    label: 'Projects Completed',
-    suffix: '+',
-  },
-  {
-    id: 3,
-    value: 15,
-    label: 'Technologies',
-    suffix: '+',
-  },
-  {
-    id: 4,
-    value: 3,
-    label: 'Years Experience',
-    suffix: '+',
-  },
-];
+const stats: Stat[] = [];
 
 const Stats = () => {
   const [ref, inView] = useInView({
