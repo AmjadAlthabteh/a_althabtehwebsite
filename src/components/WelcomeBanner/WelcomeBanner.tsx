@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -244,6 +244,21 @@ const Planet = ({
   const planetRef = useRef<THREE.Mesh>(null);
   const ringRef = useRef<THREE.Mesh>(null);
 
+  // Create a more detailed planet surface with deterministic pattern
+  const planetTexture = useMemo(() => {
+    // Use position to create a unique seed for each planet
+    const seed = Math.floor(position[0] * 100 + position[1] * 10 + position[2]);
+    const textureData = createPlanetTextureData(seed);
+    const texture = new THREE.DataTexture(
+      textureData,
+      256,
+      256,
+      THREE.RGBAFormat
+    );
+    texture.needsUpdate = true;
+    return texture;
+  }, [position]);
+
   useFrame(() => {
     if (planetRef.current) {
       planetRef.current.rotation.y += rotationSpeed;
@@ -252,15 +267,6 @@ const Planet = ({
       ringRef.current.rotation.z += rotationSpeed * 0.5;
     }
   });
-
-  // Create a more detailed planet surface
-  const planetTexture = new THREE.DataTexture(
-    new Uint8Array(256 * 256 * 4).map(() => Math.random() * 255),
-    256,
-    256,
-    THREE.RGBAFormat
-  );
-  planetTexture.needsUpdate = true;
 
   return (
     <group position={position}>
@@ -341,6 +347,17 @@ const Planet = ({
       />
     </group>
   );
+};
+
+// Helper function to create planet texture data with deterministic pattern
+const createPlanetTextureData = (seed: number) => {
+  return new Uint8Array(256 * 256 * 4).map((_, i) => {
+    // Create a deterministic pattern based on seed and index
+    const x = i % 256;
+    const y = Math.floor(i / 256) % 256;
+    const channel = Math.floor(i / (256 * 256));
+    return ((x * seed + y * (seed + 1) + channel * (seed + 2)) % 256);
+  });
 };
 
 // 3D Scene Component
