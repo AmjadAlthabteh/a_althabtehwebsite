@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera, Sphere } from '@react-three/drei';
+import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import './WelcomeBanner.css';
 
@@ -40,23 +40,24 @@ const Rocket = ({ targetPlanet }: { targetPlanet: [number, number, number] }) =>
     if (rocketRef.current) {
       const time = state.clock.getElapsedTime();
 
-      // Flight path: start -> waypoints -> land on planet
-      if (time < 1) {
-        // Phase 1: Launch from left
-        rocketRef.current.position.x = -20 + time * 15;
-        rocketRef.current.position.y = -2 + time * 3;
-        rocketRef.current.position.z = 5 - time * 5;
+      // Flight path: start -> waypoints -> land on planet (SLOWED DOWN)
+      if (time < 2.5) {
+        // Phase 1: Launch from left - SLOWER (2.5 seconds)
+        const t = time / 2.5;
+        rocketRef.current.position.x = -20 + t * 15;
+        rocketRef.current.position.y = -2 + t * 3;
+        rocketRef.current.position.z = 5 - t * 5;
         rocketRef.current.rotation.z = 0.3;
-      } else if (time < 2) {
-        // Phase 2: Cruise through waypoints
-        const t = time - 1;
+      } else if (time < 5.5) {
+        // Phase 2: Cruise through waypoints - SLOWER (3 seconds)
+        const t = (time - 2.5) / 3;
         rocketRef.current.position.x = -5 + t * 5;
         rocketRef.current.position.y = 1 + Math.sin(t * Math.PI) * 2;
         rocketRef.current.position.z = 0 - t * 2;
         rocketRef.current.rotation.z = Math.sin(t * Math.PI * 2) * 0.1;
       } else {
-        // Phase 3: Approach and land on target planet
-        const t = Math.min((time - 2) / 1, 1); // 1 second landing
+        // Phase 3: Approach and land on target planet - SLOWER (2 seconds landing)
+        const t = Math.min((time - 5.5) / 2, 1);
         const start = { x: 0, y: 3, z: -2 };
         const end = { x: targetPlanet[0], y: targetPlanet[1] + 3, z: targetPlanet[2] };
 
@@ -64,7 +65,7 @@ const Rocket = ({ targetPlanet }: { targetPlanet: [number, number, number] }) =>
         rocketRef.current.position.y = start.y + (end.y - start.y) * t;
         rocketRef.current.position.z = start.z + (end.z - start.z) * t;
 
-        // Rotate to landing position
+        // Rotate to landing position - smoother
         rocketRef.current.rotation.z = 0.3 * (1 - t);
         rocketRef.current.rotation.x = -Math.PI * t; // Flip to vertical landing
       }
@@ -75,9 +76,9 @@ const Rocket = ({ targetPlanet }: { targetPlanet: [number, number, number] }) =>
       const time = state.clock.getElapsedTime();
       engineFlameRef.current.scale.y = 1 + Math.sin(time * 20) * 0.2;
 
-      // Reduce flame when landing
-      if (time > 2.5) {
-        const fadeOut = Math.max(0, 1 - (time - 2.5) / 0.5);
+      // Reduce flame when landing - adjusted timing
+      if (time > 7) {
+        const fadeOut = Math.max(0, 1 - (time - 7) / 0.5);
         engineFlameRef.current.scale.set(fadeOut, fadeOut, fadeOut);
       }
     }
@@ -392,7 +393,7 @@ const SpaceScene = () => {
         <Waypoint
           key={i}
           position={pos}
-          reached={time > i * 0.5 + 0.5}
+          reached={time > i * 1.2 + 3}
         />
       ))}
 
@@ -483,21 +484,21 @@ const WelcomeBanner = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Progress animation
+    // Progress animation - SLOWER
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        return prev + 3;
+        return prev + 1.5;
       });
-    }, 40);
+    }, 60);
 
-    // Hide banner after animation
+    // Hide banner after animation - LONGER (8 seconds total)
     const timer = setTimeout(() => {
       setHide(true);
-    }, 3000);
+    }, 8000);
 
     return () => {
       clearTimeout(timer);
