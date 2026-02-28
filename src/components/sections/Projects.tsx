@@ -72,6 +72,15 @@ const projects: Project[] = [
     github: 'https://github.com/AmjadAlthabteh/hft-orderbook-engine_2',
     image: '/images/hft_orderbook.svg',
   },
+  {
+    id: 6,
+    title: 'orbital collision prediction',
+    description: 'physics simulation system for predicting and visualizing planetary collisions. implements n-body gravitational dynamics with real-time collision detection, trajectory prediction, and impact analysis for celestial bodies.',
+    tech: ['physics simulation', 'n-body dynamics', 'collision detection', 'visualization'],
+    category: ['systems', 'graphics'],
+    github: 'https://github.com/AmjadAlthabteh/planets-lunar',
+    image: '/images/orbital_collision.png',
+  },
 ];
 
 const filters = ['all', 'graphics', 'systems', 'web', 'ai', 'creative', 'performance'];
