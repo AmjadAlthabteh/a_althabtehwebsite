@@ -74,12 +74,21 @@ const projects: Project[] = [
   },
   {
     id: 6,
-    title: 'orbital collision prediction',
-    description: 'physics simulation system for predicting and visualizing planetary collisions. implements n-body gravitational dynamics with real-time collision detection, trajectory prediction, and impact analysis for celestial bodies.',
-    tech: ['physics simulation', 'n-body dynamics', 'collision detection', 'visualization'],
-    category: ['systems', 'graphics'],
+    title: '3d lunar synthetic project',
+    description: 'advanced 3d rendering and physics simulation for lunar terrain generation. combines procedural terrain synthesis with realistic physics modeling, featuring dynamic lighting, material systems, and real-time gravitational interactions.',
+    tech: ['3d graphics', 'physics', 'procedural generation', 'opengl', 'rendering'],
+    category: ['graphics', 'systems'],
     github: 'https://github.com/AmjadAlthabteh/planets-lunar',
     image: '/images/orbital_collision.png',
+  },
+  {
+    id: 7,
+    title: 'orbital engine simulation',
+    description: 'physics-based orbital mechanics engine for simulating spacecraft trajectories and planetary motion. implements keplerian orbital elements, trajectory prediction, and gravitational n-body dynamics with real-time visualization.',
+    tech: ['physics simulation', 'orbital mechanics', 'n-body dynamics', 'trajectory prediction'],
+    category: ['systems', 'graphics'],
+    github: 'https://github.com/AmjadAlthabteh/orbital_engine_simulation',
+    image: '/images/Mars_1.png',
   },
 ];
 
