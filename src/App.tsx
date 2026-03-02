@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
-import Hero from './components/sections/Hero';
+import GalaxyHero from './components/sections/GalaxyHero';
 import FloatingShapes from './components/FloatingShapes/FloatingShapes';
 import RoboticCursor from './components/RoboticCursor/RoboticCursor';
 import './App.css';
@@ -27,7 +27,7 @@ function App() {
       <ScrollIndicator sections={sections} />
 
       <main className="main-content">
-        <Hero />
+        <GalaxyHero />
         <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
           <About />
           <Stats />
