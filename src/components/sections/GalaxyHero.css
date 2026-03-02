@@ -96,10 +96,69 @@
   font-weight: 300;
 }
 
+.galaxy-hero-social {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  pointer-events: auto;
+}
+
+.galaxy-social-link {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(15, 15, 25, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.galaxy-social-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 40, 40, 0.2) 0%, rgba(80, 120, 255, 0.15) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.galaxy-social-link:hover::before {
+  opacity: 1;
+}
+
+.galaxy-social-link:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 60, 60, 0.6);
+  color: #ffffff;
+  box-shadow: 0 0 30px rgba(255, 40, 40, 0.4),
+              0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.galaxy-social-link svg {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.galaxy-social-link:hover svg {
+  transform: scale(1.15);
+}
+
 .galaxy-hero-buttons {
   display: flex;
   gap: 1.5rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   pointer-events: auto;
   flex-wrap: wrap;
   justify-content: center;
