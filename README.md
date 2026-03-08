@@ -2,27 +2,6 @@
 
 Modern portfolio website with interactive effects.
 
-## Features
-
-- Black loading screen
-- 3D cube mouse follower
-- Interactive gradient background
-- Particle effects
-- Responsive design
-
-## Projects
-
-- **Glint3D**: 3D rendering engine
-- **AI Debugger**: C++ debugging tool
-- **Opsmind**: Incident management system
-
-## Tech Stack
-
-- React + TypeScript
-- Vite
-- Three.js
-- Framer Motion
-
 ## Deploy
 
 **Vercel**: Upload to vercel.com, buy .dev domain in settings
