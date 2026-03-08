@@ -1,6 +1,6 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import './GalaxyHero.css';
 
@@ -172,38 +172,61 @@ function Planet({
           vec3 normal = normalize(vNormal);
           vec3 viewDir = normalize(-vPosition);
 
-          // Calculate lighting
+          // Calculate lighting with softer falloff
           float NdotL = dot(normal, uLightDirection);
           float lightIntensity = max(NdotL, 0.0);
 
-          // Terminator line (day/night boundary)
-          float terminator = smoothstep(-0.1, 0.1, NdotL);
+          // Softer lighting with wrap-around effect
+          float wrap = 0.5;
+          float wrapDiffuse = max(0.0, (NdotL + wrap) / (1.0 + wrap));
 
-          // Procedural surface detail (craters, continents, storms)
+          // Very smooth terminator line (day/night boundary)
+          float terminator = smoothstep(-0.3, 0.4, NdotL);
+
+          // Procedural surface detail with softer variations
           vec3 surfacePos = vPosition * 2.0;
-          float detail1 = snoise(surfacePos * 1.5 + uTime * 0.05) * 0.5 + 0.5;
-          float detail2 = snoise(surfacePos * 3.0) * 0.5 + 0.5;
-          float detail3 = snoise(surfacePos * 8.0) * 0.5 + 0.5;
+          float detail1 = snoise(surfacePos * 1.2 + uTime * 0.05) * 0.5 + 0.5;
+          float detail2 = snoise(surfacePos * 2.5) * 0.5 + 0.5;
+          float detail3 = snoise(surfacePos * 6.0) * 0.5 + 0.5;
 
-          // Combine details for surface variation
-          float surfaceDetail = detail1 * 0.6 + detail2 * 0.3 + detail3 * 0.1;
-          vec3 surfaceColor = mix(uColor * 0.7, uColor * 1.3, surfaceDetail);
+          // Smoother surface detail blending
+          float surfaceDetail = detail1 * 0.5 + detail2 * 0.35 + detail3 * 0.15;
 
-          // Rim lighting (Fresnel effect)
-          float rimPower = 3.0;
+          // Create soft gradient colors - darker and lighter variants
+          vec3 darkColor = uColor * 0.5;
+          vec3 baseColor = uColor * 0.85;
+          vec3 lightColor = uColor * 1.4;
+
+          // Multi-gradient surface coloring
+          vec3 surfaceColor = mix(darkColor, baseColor, surfaceDetail);
+          surfaceColor = mix(surfaceColor, lightColor, surfaceDetail * surfaceDetail);
+
+          // Enhanced Fresnel rim lighting for atmosphere
+          float rimPower = 2.5;
           float rim = 1.0 - max(dot(viewDir, normal), 0.0);
           rim = pow(rim, rimPower);
-          vec3 rimColor = uAtmosphereColor * rim * 1.5;
 
-          // Combine lighting
-          vec3 diffuse = surfaceColor * lightIntensity;
-          vec3 ambient = surfaceColor * 0.15;
-          vec3 emissive = uEmissive * 0.2 * (1.0 - terminator);
+          // Stronger rim on the lit side
+          float litRim = rim * smoothstep(-0.5, 0.5, NdotL);
+          vec3 rimColor = uAtmosphereColor * litRim * 2.0;
 
-          // Dark side glow (emissive on night side)
-          vec3 nightGlow = uEmissive * 0.4 * (1.0 - terminator);
+          // Soft subsurface scattering effect on terminator
+          float subsurface = pow(max(0.0, -NdotL + 0.3), 2.0) * 0.4;
+          vec3 subsurfaceColor = uEmissive * subsurface;
 
-          vec3 finalColor = diffuse + ambient + emissive + nightGlow + rimColor;
+          // Combine lighting with softer transitions
+          vec3 diffuse = surfaceColor * (wrapDiffuse * 0.9 + 0.1);
+          vec3 ambient = surfaceColor * 0.25;
+
+          // Softer emissive on night side
+          vec3 nightGlow = uEmissive * 0.3 * pow(1.0 - terminator, 1.5);
+
+          // Specular highlight (soft)
+          vec3 halfDir = normalize(uLightDirection + viewDir);
+          float specular = pow(max(dot(normal, halfDir), 0.0), 20.0) * (1.0 - uRoughness);
+          vec3 specularColor = vec3(1.0) * specular * 0.5;
+
+          vec3 finalColor = diffuse + ambient + nightGlow + rimColor + subsurfaceColor + specularColor;
 
           gl_FragColor = vec4(finalColor, 1.0);
         }
@@ -318,11 +341,12 @@ function Planet({
   );
 }
 
-// Detailed Spaceship/Rocket Component
-function Spaceship() {
+// Detailed Spaceship/Rocket Component with Launch Sequence
+function Spaceship({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying' }) {
   const shipRef = useRef<THREE.Group>(null);
   const engineGlowRef = useRef<THREE.PointLight>(null);
   const particlesRef = useRef<THREE.Points>(null);
+  const launchStartTime = useRef<number>(0);
 
   const particleCount = 200;
   const particlePositions = useMemo(() => {
@@ -342,21 +366,52 @@ function Spaceship() {
   useFrame((state) => {
     if (shipRef.current) {
       const time = state.clock.elapsedTime;
-      shipRef.current.position.x = Math.sin(time * 0.3) * 6;
-      shipRef.current.position.y = Math.sin(time * 0.2) * 2 + 1;
-      shipRef.current.rotation.z = Math.sin(time * 0.3) * 0.1;
-      shipRef.current.rotation.y = Math.sin(time * 0.15) * 0.2 + Math.PI;
+
+      if (launchPhase === 'countdown') {
+        // Stationary on launchpad
+        shipRef.current.position.set(0, -8, 5);
+        shipRef.current.rotation.set(0, 0, 0);
+      } else if (launchPhase === 'launch') {
+        // Launch sequence - rocket shoots upward
+        if (launchStartTime.current === 0) {
+          launchStartTime.current = time;
+        }
+        const launchTime = time - launchStartTime.current;
+
+        // Accelerating upward motion
+        const acceleration = 2.5;
+        const yPos = -8 + (launchTime * launchTime * acceleration);
+        const zPos = 5 - launchTime * 3; // Move away from camera
+
+        shipRef.current.position.set(0, yPos, zPos);
+        shipRef.current.rotation.set(0, 0, Math.sin(launchTime * 2) * 0.05);
+
+        // When rocket is high enough, switch to flying phase
+        if (yPos > 20) {
+          launchStartTime.current = 0;
+        }
+      } else {
+        // Flying phase - normal gentle movement
+        shipRef.current.position.x = Math.sin(time * 0.3) * 6 + 4;
+        shipRef.current.position.y = Math.sin(time * 0.2) * 2 + 1;
+        shipRef.current.position.z = -5;
+        shipRef.current.rotation.z = Math.sin(time * 0.3) * 0.1;
+        shipRef.current.rotation.y = Math.sin(time * 0.15) * 0.2 + Math.PI;
+      }
     }
 
     if (engineGlowRef.current) {
       const pulse = Math.sin(state.clock.elapsedTime * 8) * 0.3 + 1.2;
-      engineGlowRef.current.intensity = pulse * 3;
+      const intensityMultiplier = launchPhase === 'launch' ? 3 : 1;
+      engineGlowRef.current.intensity = pulse * 3 * intensityMultiplier;
     }
 
     if (particlesRef.current) {
       const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+      const particleSpeed = launchPhase === 'launch' ? 0.5 : 1;
+
       for (let i = 0; i < particleCount; i++) {
-        positions[i * 3 + 2] += particlePositions.velocities[i * 3 + 2];
+        positions[i * 3 + 2] += particlePositions.velocities[i * 3 + 2] * particleSpeed;
         if (positions[i * 3 + 2] > 3) {
           positions[i * 3] = (Math.random() - 0.5) * 0.2;
           positions[i * 3 + 1] = (Math.random() - 0.5) * 0.2;
@@ -368,16 +423,16 @@ function Spaceship() {
   });
 
   return (
-    <group ref={shipRef} position={[4, 1, -5]}>
+    <group ref={shipRef}>
       {/* Main fuselage */}
       <mesh castShadow receiveShadow>
         <cylinderGeometry args={[0.15, 0.25, 1.5, 16]} />
         <meshStandardMaterial
-          color="#d0d0d0"
-          metalness={0.9}
-          roughness={0.2}
+          color="#e8e8e8"
+          metalness={0.92}
+          roughness={0.15}
           emissive="#ffffff"
-          emissiveIntensity={0.1}
+          emissiveIntensity={0.08}
         />
       </mesh>
 
@@ -385,11 +440,11 @@ function Spaceship() {
       <mesh position={[0, 0.95, 0]} castShadow receiveShadow>
         <coneGeometry args={[0.15, 0.4, 16]} />
         <meshStandardMaterial
-          color="#ff4444"
-          metalness={0.8}
-          roughness={0.3}
-          emissive="#ff2222"
-          emissiveIntensity={0.2}
+          color="#ff6666"
+          metalness={0.75}
+          roughness={0.25}
+          emissive="#ff4444"
+          emissiveIntensity={0.15}
         />
       </mesh>
 
@@ -435,25 +490,49 @@ function Spaceship() {
         />
       </mesh>
 
-      {/* Engine glow */}
+      {/* Engine glow - brighter during launch */}
       <mesh position={[0, -1.15, 0]}>
-        <sphereGeometry args={[0.15, 16, 16]} />
+        <sphereGeometry args={launchPhase === 'launch' ? [0.3, 16, 16] : [0.15, 16, 16]} />
         <meshBasicMaterial
           color="#ff6600"
           transparent
-          opacity={0.9}
+          opacity={launchPhase === 'launch' ? 1 : 0.9}
         />
       </mesh>
 
       <mesh position={[0, -1.2, 0]}>
-        <sphereGeometry args={[0.25, 16, 16]} />
+        <sphereGeometry args={launchPhase === 'launch' ? [0.5, 16, 16] : [0.25, 16, 16]} />
         <meshBasicMaterial
           color="#ff4400"
           transparent
-          opacity={0.5}
+          opacity={launchPhase === 'launch' ? 0.8 : 0.5}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
+
+      {/* Extra launch exhaust during takeoff */}
+      {launchPhase === 'launch' && (
+        <>
+          <mesh position={[0, -1.5, 0]}>
+            <sphereGeometry args={[0.7, 16, 16]} />
+            <meshBasicMaterial
+              color="#ff8800"
+              transparent
+              opacity={0.6}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+          <mesh position={[0, -2, 0]}>
+            <sphereGeometry args={[1, 16, 16]} />
+            <meshBasicMaterial
+              color="#ffaa33"
+              transparent
+              opacity={0.3}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        </>
+      )}
 
       {/* Thruster particles */}
       <points ref={particlesRef} position={[0, -1.1, 0]}>
@@ -605,18 +684,22 @@ function StarField() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 8000;
+    const count = 15000; // Significantly more stars
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
 
-    // Star color palette (blue, red, white, yellow/orange)
+    // Expanded star color palette with softer tones
     const starColors = [
-      new THREE.Color('#aaccff'), // Blue giant
-      new THREE.Color('#ffffff'), // White
+      new THREE.Color('#b8d4ff'), // Soft blue
+      new THREE.Color('#ffffff'), // Pure white
+      new THREE.Color('#fff8f0'), // Warm white
       new THREE.Color('#fff4e0'), // Yellow-white
-      new THREE.Color('#ffddaa'), // Yellow
-      new THREE.Color('#ffaa66'), // Orange
+      new THREE.Color('#ffeecc'), // Pale yellow
+      new THREE.Color('#ffd9aa'), // Soft yellow
+      new THREE.Color('#ffbb88'), // Soft orange
+      new THREE.Color('#ff9966'), // Orange
+      new THREE.Color('#ff7755'), // Red-orange
       new THREE.Color('#ff6644'), // Red giant
     ];
 
@@ -625,7 +708,7 @@ function StarField() {
 
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
-      const radius = 30 + Math.random() * 50;
+      const radius = 25 + Math.random() * 60; // Wider distribution
 
       positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
@@ -638,17 +721,20 @@ function StarField() {
       colors[i3 + 1] = starColor.g;
       colors[i3 + 2] = starColor.b;
 
-      // Varied sizes - some stars are much larger
+      // More varied size distribution
       const sizeRoll = Math.random();
-      if (sizeRoll > 0.95) {
+      if (sizeRoll > 0.98) {
+        // Rare super giant stars (2%)
+        sizes[i] = Math.random() * 0.2 + 0.15;
+      } else if (sizeRoll > 0.93) {
         // Giant stars (5%)
-        sizes[i] = Math.random() * 0.15 + 0.1;
-      } else if (sizeRoll > 0.8) {
-        // Medium stars (15%)
-        sizes[i] = Math.random() * 0.08 + 0.05;
+        sizes[i] = Math.random() * 0.15 + 0.08;
+      } else if (sizeRoll > 0.75) {
+        // Medium stars (18%)
+        sizes[i] = Math.random() * 0.09 + 0.04;
       } else {
-        // Small stars (80%)
-        sizes[i] = Math.random() * 0.04 + 0.02;
+        // Small stars (75%)
+        sizes[i] = Math.random() * 0.05 + 0.015;
       }
     }
 
@@ -683,9 +769,13 @@ function StarField() {
             vColor = color;
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
 
-            // Different twinkle rates based on position
-            float twinkle = sin(uTime * (1.0 + position.x * 0.5) + position.y * 10.0) * 0.4 + 0.8;
-            gl_PointSize = size * twinkle * 500.0 / -mvPosition.z;
+            // More varied, slower twinkle rates
+            float twinkleSpeed = 0.5 + position.x * 0.3;
+            float twinkle1 = sin(uTime * twinkleSpeed + position.y * 100.0) * 0.3;
+            float twinkle2 = sin(uTime * twinkleSpeed * 1.7 + position.z * 50.0) * 0.2;
+            float finalTwinkle = 0.7 + twinkle1 + twinkle2;
+
+            gl_PointSize = size * finalTwinkle * 550.0 / -mvPosition.z;
             gl_Position = projectionMatrix * mvPosition;
           }
         `}
@@ -697,12 +787,15 @@ function StarField() {
             float strength = 1.0 - distanceToCenter * 2.0;
             strength = max(strength, 0.0);
 
-            // Add star bloom effect
-            float bloom = pow(1.0 - distanceToCenter, 4.0) * 0.5;
+            // Enhanced soft bloom effect
+            float bloom = pow(1.0 - distanceToCenter, 3.0) * 0.7;
             strength = strength + bloom;
 
-            vec3 finalColor = vColor * (strength + 0.3);
-            gl_FragColor = vec4(finalColor, strength);
+            // Softer, more glowing appearance
+            vec3 finalColor = vColor * (strength * 1.2 + 0.2);
+            float alpha = strength * 0.9;
+
+            gl_FragColor = vec4(finalColor, alpha);
           }
         `}
         transparent
@@ -718,7 +811,7 @@ function BackgroundStars() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 3000;
+    const count = 6000; // Double the amount
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -728,19 +821,34 @@ function BackgroundStars() {
 
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
-      const radius = 60 + Math.random() * 30;
+      const radius = 55 + Math.random() * 40;
 
       positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i3 + 2] = radius * Math.cos(phi);
 
-      // Dimmer, bluish-white distant stars
-      const brightness = 0.4 + Math.random() * 0.3;
-      colors[i3] = brightness * 0.9;
-      colors[i3 + 1] = brightness * 0.95;
-      colors[i3 + 2] = brightness;
+      // Softer, more varied distant stars
+      const brightness = 0.5 + Math.random() * 0.4;
+      const colorVariation = Math.random();
 
-      sizes[i] = Math.random() * 0.03 + 0.01;
+      if (colorVariation > 0.7) {
+        // Bluish stars
+        colors[i3] = brightness * 0.85;
+        colors[i3 + 1] = brightness * 0.92;
+        colors[i3 + 2] = brightness;
+      } else if (colorVariation > 0.4) {
+        // White stars
+        colors[i3] = brightness * 0.95;
+        colors[i3 + 1] = brightness * 0.96;
+        colors[i3 + 2] = brightness * 0.98;
+      } else {
+        // Warm stars
+        colors[i3] = brightness;
+        colors[i3 + 1] = brightness * 0.92;
+        colors[i3 + 2] = brightness * 0.85;
+      }
+
+      sizes[i] = Math.random() * 0.04 + 0.015;
     }
 
     return [positions, colors, sizes];
@@ -785,13 +893,13 @@ function NebulaClouds() {
 
   return (
     <group ref={nebulaGroup}>
-      {/* Large purple-pink nebula */}
+      {/* Large purple-pink nebula - softer colors */}
       <mesh position={[-18, 8, -35]}>
         <sphereGeometry args={[10, 32, 32]} />
         <meshBasicMaterial
-          color="#8b3a9c"
+          color="#b888cc"
           transparent
-          opacity={0.12}
+          opacity={0.1}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -799,20 +907,20 @@ function NebulaClouds() {
       <mesh position={[-18, 8, -35]} scale={0.7}>
         <sphereGeometry args={[10, 32, 32]} />
         <meshBasicMaterial
-          color="#d946ef"
+          color="#e8aaf8"
           transparent
-          opacity={0.08}
+          opacity={0.07}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* Blue-cyan nebula */}
+      {/* Blue-cyan nebula - softer */}
       <mesh position={[20, -6, -40]}>
         <sphereGeometry args={[12, 32, 32]} />
         <meshBasicMaterial
-          color="#1e40af"
+          color="#5577cc"
           transparent
-          opacity={0.1}
+          opacity={0.09}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -820,20 +928,20 @@ function NebulaClouds() {
       <mesh position={[20, -6, -40]} scale={0.6}>
         <sphereGeometry args={[12, 32, 32]} />
         <meshBasicMaterial
-          color="#3b82f6"
+          color="#7799ff"
           transparent
-          opacity={0.07}
+          opacity={0.06}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* Red-orange nebula */}
+      {/* Red-orange nebula - softer */}
       <mesh position={[0, 12, -30]}>
         <sphereGeometry args={[8, 32, 32]} />
         <meshBasicMaterial
-          color="#dc2626"
+          color="#ee6655"
           transparent
-          opacity={0.09}
+          opacity={0.08}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -841,20 +949,20 @@ function NebulaClouds() {
       <mesh position={[0, 12, -30]} scale={0.8}>
         <sphereGeometry args={[8, 32, 32]} />
         <meshBasicMaterial
-          color="#f97316"
+          color="#ffaa66"
           transparent
-          opacity={0.06}
+          opacity={0.055}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* Green-teal nebula */}
+      {/* Green-teal nebula - softer */}
       <mesh position={[-8, -10, -38]}>
         <sphereGeometry args={[9, 32, 32]} />
         <meshBasicMaterial
-          color="#047857"
+          color="#55aa88"
           transparent
-          opacity={0.08}
+          opacity={0.07}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -862,31 +970,31 @@ function NebulaClouds() {
       <mesh position={[-8, -10, -38]} scale={0.7}>
         <sphereGeometry args={[9, 32, 32]} />
         <meshBasicMaterial
-          color="#14b8a6"
+          color="#66ccb8"
           transparent
-          opacity={0.05}
+          opacity={0.045}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* Magenta nebula */}
+      {/* Magenta nebula - softer */}
       <mesh position={[12, 5, -28]}>
         <sphereGeometry args={[7, 32, 32]} />
         <meshBasicMaterial
-          color="#be185d"
+          color="#dd77aa"
           transparent
-          opacity={0.1}
+          opacity={0.09}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* Scattered smaller clouds */}
+      {/* Scattered smaller clouds - softer */}
       <mesh position={[-25, -3, -45]}>
         <sphereGeometry args={[6, 32, 32]} />
         <meshBasicMaterial
-          color="#4c1d95"
+          color="#8866bb"
           transparent
-          opacity={0.06}
+          opacity={0.055}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -894,9 +1002,9 @@ function NebulaClouds() {
       <mesh position={[15, -12, -42]}>
         <sphereGeometry args={[5, 32, 32]} />
         <meshBasicMaterial
-          color="#ea580c"
+          color="#ff9955"
           transparent
-          opacity={0.07}
+          opacity={0.065}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
@@ -964,19 +1072,205 @@ function DistantGalaxies() {
   );
 }
 
-// Camera Movement
-function CameraController() {
+// Foreground Sparkle Particles for Depth
+function ForegroundSparkles() {
+  const sparklesRef = useRef<THREE.Points>(null);
+
+  const [positions, colors, sizes] = useMemo(() => {
+    const count = 300;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+
+      // Scattered around the camera
+      positions[i3] = (Math.random() - 0.5) * 30;
+      positions[i3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i3 + 2] = (Math.random() - 0.5) * 25 - 5;
+
+      // Soft white sparkles
+      const brightness = 0.7 + Math.random() * 0.3;
+      colors[i3] = brightness;
+      colors[i3 + 1] = brightness * 0.98;
+      colors[i3 + 2] = brightness * 0.95;
+
+      sizes[i] = Math.random() * 0.02 + 0.01;
+    }
+
+    return [positions, colors, sizes];
+  }, []);
+
+  useFrame((state) => {
+    if (sparklesRef.current) {
+      const material = sparklesRef.current.material as THREE.ShaderMaterial;
+      material.uniforms.uTime.value = state.clock.elapsedTime;
+    }
+  });
+
+  return (
+    <points ref={sparklesRef}>
+      <bufferGeometry>
+        <bufferAttribute args={[positions, 3]} attach="attributes-position" count={positions.length / 3} />
+        <bufferAttribute args={[colors, 3]} attach="attributes-color" count={colors.length / 3} />
+        <bufferAttribute args={[sizes, 1]} attach="attributes-size" count={sizes.length} />
+      </bufferGeometry>
+      <shaderMaterial
+        uniforms={{
+          uTime: { value: 0 }
+        }}
+        vertexShader={`
+          attribute float size;
+          attribute vec3 color;
+          varying vec3 vColor;
+          uniform float uTime;
+
+          void main() {
+            vColor = color;
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+
+            // Gentle sparkle effect
+            float sparkle = sin(uTime * 2.0 + position.x * 100.0) * 0.3 + 0.7;
+            gl_PointSize = size * sparkle * 600.0 / -mvPosition.z;
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `}
+        fragmentShader={`
+          varying vec3 vColor;
+
+          void main() {
+            float distanceToCenter = length(gl_PointCoord - vec2(0.5));
+            float strength = 1.0 - distanceToCenter * 2.0;
+            strength = max(strength, 0.0);
+
+            // Soft sparkle appearance
+            float bloom = pow(1.0 - distanceToCenter, 2.5) * 0.6;
+            strength = strength + bloom;
+
+            vec3 finalColor = vColor * (strength + 0.5);
+            float alpha = strength * 0.7;
+
+            gl_FragColor = vec4(finalColor, alpha);
+          }
+        `}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+// Volumetric Light Rays from Sun
+function LightRays() {
+  const raysRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (raysRef.current) {
+      raysRef.current.rotation.z = state.clock.elapsedTime * 0.02;
+    }
+  });
+
+  return (
+    <group ref={raysRef} position={[-25, 8, -20]}>
+      {/* Create multiple light ray beams */}
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
+        <mesh
+          key={i}
+          rotation={[0, 0, (angle * Math.PI) / 180]}
+          position={[0, 0, 0]}
+        >
+          <planeGeometry args={[1, 80]} />
+          <meshBasicMaterial
+            color="#ffdd88"
+            transparent
+            opacity={0.04}
+            blending={THREE.AdditiveBlending}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
+      {/* Additional subtle rays */}
+      {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((angle, i) => (
+        <mesh
+          key={`sub-${i}`}
+          rotation={[0, 0, (angle * Math.PI) / 180]}
+          position={[0, 0, 0]}
+        >
+          <planeGeometry args={[0.6, 70]} />
+          <meshBasicMaterial
+            color="#ffe4aa"
+            transparent
+            opacity={0.025}
+            blending={THREE.AdditiveBlending}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// Cinematic Camera Movement with Launch Sequence
+function CameraController({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying' }) {
+  const launchStartTime = useRef<number>(0);
+
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    state.camera.position.y = Math.sin(time * 0.08) * 0.4;
-    state.camera.position.x = Math.sin(time * 0.05) * 0.3;
-    state.camera.lookAt(0, 0, -10);
+
+    if (launchPhase === 'countdown') {
+      // Close-up on rocket on launchpad with slight camera movement
+      const breathe = Math.sin(time * 0.5) * 0.1;
+      state.camera.position.set(0, -6 + breathe, 12);
+      state.camera.lookAt(0, -5, 5);
+    } else if (launchPhase === 'launch') {
+      // Follow rocket as it launches
+      if (launchStartTime.current === 0) {
+        launchStartTime.current = time;
+      }
+      const launchTime = time - launchStartTime.current;
+      const acceleration = 2.5;
+      const rocketY = -8 + (launchTime * launchTime * acceleration);
+
+      // Camera shake during launch
+      const shakeIntensity = Math.max(0, 1 - launchTime * 0.3);
+      const shakeX = (Math.random() - 0.5) * 0.3 * shakeIntensity;
+      const shakeY = (Math.random() - 0.5) * 0.3 * shakeIntensity;
+
+      // Camera follows but lags behind slightly
+      const cameraY = rocketY - 5;
+      const cameraZ = 12 - launchTime * 2;
+
+      state.camera.position.set(shakeX, cameraY + shakeY, cameraZ);
+      state.camera.lookAt(0, rocketY, 5 - launchTime * 3);
+
+      if (rocketY > 20) {
+        launchStartTime.current = 0;
+      }
+    } else {
+      // Normal cinematic drift
+      const driftX = Math.sin(time * 0.018) * 1.0 + Math.cos(time * 0.012) * 0.5 + Math.sin(time * 0.025) * 0.3;
+      const driftY = Math.cos(time * 0.015) * 0.7 + Math.sin(time * 0.008) * 0.4 + Math.cos(time * 0.022) * 0.25;
+      const driftZ = Math.sin(time * 0.01) * 0.6 + Math.cos(time * 0.016) * 0.35;
+
+      state.camera.position.x = driftX;
+      state.camera.position.y = driftY;
+      state.camera.position.z = 12 + driftZ;
+
+      const lookAtX = Math.sin(time * 0.008) * 1.5 + Math.cos(time * 0.013) * 0.8;
+      const lookAtY = Math.cos(time * 0.011) * 1.2 + Math.sin(time * 0.007) * 0.6;
+      const lookAtZ = -10 + Math.sin(time * 0.009) * 0.5;
+
+      state.camera.lookAt(lookAtX, lookAtY, lookAtZ);
+      state.camera.rotation.z = Math.sin(time * 0.006) * 0.015;
+    }
   });
   return null;
 }
 
 // Main 3D Scene with Cinematic Lighting
-function Scene() {
+function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying' }) {
   const sunRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -988,42 +1282,142 @@ function Scene() {
 
   return (
     <>
-      <CameraController />
+      <CameraController launchPhase={launchPhase} />
 
-      {/* === MAIN STAR/SUN - Primary Light Source === */}
+      {/* === MAIN STAR/SUN - Bright Primary Light Source === */}
       <group position={[-25, 8, -20]}>
-        {/* Sun sphere */}
+        {/* Sun core - ultra bright white */}
         <mesh ref={sunRef}>
-          <sphereGeometry args={[3, 32, 32]} />
-          <meshBasicMaterial color="#ffdd88" />
+          <sphereGeometry args={[5, 64, 64]} />
+          <meshBasicMaterial color="#ffffff" />
         </mesh>
 
-        {/* Sun glow layers */}
-        <mesh scale={1.3}>
-          <sphereGeometry args={[3, 32, 32]} />
+        {/* Intense inner corona */}
+        <mesh scale={1.25}>
+          <sphereGeometry args={[5, 64, 64]} />
           <meshBasicMaterial
-            color="#ffaa44"
+            color="#fffef8"
+            transparent
+            opacity={0.95}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Bright yellow glow layer */}
+        <mesh scale={1.55}>
+          <sphereGeometry args={[5, 32, 32]} />
+          <meshBasicMaterial
+            color="#ffee99"
+            transparent
+            opacity={0.85}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Warm orange glow */}
+        <mesh scale={2.0}>
+          <sphereGeometry args={[5, 32, 32]} />
+          <meshBasicMaterial
+            color="#ffcc77"
+            transparent
+            opacity={0.7}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Mid orange halo */}
+        <mesh scale={2.7}>
+          <sphereGeometry args={[5, 32, 32]} />
+          <meshBasicMaterial
+            color="#ffaa55"
             transparent
             opacity={0.5}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        <mesh scale={1.6}>
-          <sphereGeometry args={[3, 32, 32]} />
+        {/* Far orange glow */}
+        <mesh scale={3.5}>
+          <sphereGeometry args={[5, 32, 32]} />
           <meshBasicMaterial
             color="#ff8833"
             transparent
-            opacity={0.3}
+            opacity={0.35}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        {/* Main directional light from sun */}
+        {/* Extended soft halo */}
+        <mesh scale={4.5}>
+          <sphereGeometry args={[5, 16, 16]} />
+          <meshBasicMaterial
+            color="#ff7722"
+            transparent
+            opacity={0.2}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Very far atmospheric glow */}
+        <mesh scale={6.0}>
+          <sphereGeometry args={[5, 16, 16]} />
+          <meshBasicMaterial
+            color="#ff6611"
+            transparent
+            opacity={0.1}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Lens flare effect - horizontal */}
+        <mesh rotation={[0, 0, 0]} scale={[12, 0.4, 0.4]}>
+          <sphereGeometry args={[1, 16, 16]} />
+          <meshBasicMaterial
+            color="#ffeeaa"
+            transparent
+            opacity={0.4}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Lens flare effect - vertical */}
+        <mesh rotation={[0, 0, Math.PI / 2]} scale={[12, 0.4, 0.4]}>
+          <sphereGeometry args={[1, 16, 16]} />
+          <meshBasicMaterial
+            color="#ffeeaa"
+            transparent
+            opacity={0.4}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Diagonal lens flare 1 */}
+        <mesh rotation={[0, 0, Math.PI / 4]} scale={[10, 0.25, 0.25]}>
+          <sphereGeometry args={[1, 16, 16]} />
+          <meshBasicMaterial
+            color="#ffdd99"
+            transparent
+            opacity={0.25}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Diagonal lens flare 2 */}
+        <mesh rotation={[0, 0, -Math.PI / 4]} scale={[10, 0.25, 0.25]}>
+          <sphereGeometry args={[1, 16, 16]} />
+          <meshBasicMaterial
+            color="#ffdd99"
+            transparent
+            opacity={0.25}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+
+        {/* Strong directional light from sun */}
         <directionalLight
           position={[0, 0, 0]}
-          intensity={2.5}
-          color="#fff4e0"
+          intensity={6}
+          color="#fffbf5"
           castShadow
           shadow-mapSize-width={2048}
           shadow-mapSize-height={2048}
@@ -1034,40 +1428,56 @@ function Scene() {
           shadow-camera-bottom={-50}
         />
 
-        {/* Sun point light */}
+        {/* Very powerful sun point light */}
         <pointLight
           position={[0, 0, 0]}
-          intensity={4}
-          color="#ffcc66"
+          intensity={12}
+          color="#fff8ed"
+          distance={120}
+          decay={1.6}
+          castShadow
+        />
+
+        {/* Secondary fill light from sun */}
+        <pointLight
+          position={[2, 2, 2]}
+          intensity={6}
+          color="#ffe4c4"
           distance={80}
           decay={2}
-          castShadow
         />
       </group>
 
-      {/* Ambient base lighting */}
-      <ambientLight intensity={0.05} color="#0a0a1a" />
+      {/* Volumetric light rays from sun */}
+      <LightRays />
 
-      {/* Galaxy core light */}
-      <pointLight position={[0, -2, -15]} intensity={1.8} color="#ff5533" distance={40} decay={2} />
+      {/* Softer ambient base lighting */}
+      <ambientLight intensity={0.08} color="#0f0f1f" />
 
-      {/* Accent lights for atmosphere */}
-      <pointLight position={[-15, 10, -10]} intensity={0.8} color="#3377ff" distance={45} decay={2} />
-      <pointLight position={[15, -8, -12]} intensity={0.6} color="#7744ff" distance={40} decay={2} />
+      {/* Galaxy core light - softer */}
+      <pointLight position={[0, -2, -15]} intensity={1.5} color="#ff6644" distance={45} decay={2} />
 
-      {/* Rim lights for depth */}
-      <pointLight position={[0, 20, 8]} intensity={0.5} color="#6688ff" distance={60} decay={2} />
-      <pointLight position={[0, -20, 8]} intensity={0.4} color="#ff4466" distance={60} decay={2} />
+      {/* Accent lights for atmosphere - softer colors */}
+      <pointLight position={[-15, 10, -10]} intensity={0.6} color="#5588ff" distance={50} decay={2} />
+      <pointLight position={[15, -8, -12]} intensity={0.5} color="#8866ff" distance={45} decay={2} />
 
-      {/* Fill light */}
-      <directionalLight position={[10, 5, 10]} intensity={0.2} color="#ffffff" />
+      {/* Rim lights for depth - softer */}
+      <pointLight position={[0, 20, 8]} intensity={0.4} color="#7799ff" distance={65} decay={2} />
+      <pointLight position={[0, -20, 8]} intensity={0.35} color="#ff6688" distance={65} decay={2} />
 
-      {/* Atmospheric fog */}
-      <fog attach="fog" args={['#000000', 20, 80]} />
+      {/* Soft fill lights from multiple directions */}
+      <directionalLight position={[10, 5, 10]} intensity={0.15} color="#ffffff" />
+      <directionalLight position={[-8, -5, 8]} intensity={0.1} color="#aaccff" />
+
+      {/* Softer atmospheric fog with blue tint */}
+      <fog attach="fog" args={['#000205', 25, 85]} />
 
       {/* === BACKGROUND LAYERS (Parallax) === */}
       <DistantGalaxies />
       <BackgroundStars />
+
+      {/* Foreground sparkle particles for depth */}
+      <ForegroundSparkles />
 
       {/* Main Star Field */}
       <StarField />
@@ -1078,24 +1488,73 @@ function Scene() {
       {/* Central Spiral Galaxy */}
       <SpiralGalaxy />
 
+      {/* === LAUNCHPAD === */}
+      {launchPhase === 'countdown' && (
+        <group position={[0, -9, 5]}>
+          {/* Main platform */}
+          <mesh>
+            <cylinderGeometry args={[3, 3, 0.5, 32]} />
+            <meshStandardMaterial
+              color="#404040"
+              metalness={0.8}
+              roughness={0.3}
+            />
+          </mesh>
+
+          {/* Support pillars */}
+          {[0, 90, 180, 270].map((angle, i) => (
+            <mesh
+              key={i}
+              position={[
+                Math.cos((angle * Math.PI) / 180) * 2.5,
+                -2,
+                Math.sin((angle * Math.PI) / 180) * 2.5,
+              ]}
+            >
+              <cylinderGeometry args={[0.2, 0.3, 4, 16]} />
+              <meshStandardMaterial
+                color="#606060"
+                metalness={0.85}
+                roughness={0.25}
+              />
+            </mesh>
+          ))}
+
+          {/* Warning lights */}
+          {[0, 90, 180, 270].map((angle, i) => (
+            <pointLight
+              key={i}
+              position={[
+                Math.cos((angle * Math.PI) / 180) * 2.8,
+                0.3,
+                Math.sin((angle * Math.PI) / 180) * 2.8,
+              ]}
+              color="#ff3300"
+              intensity={2}
+              distance={5}
+            />
+          ))}
+        </group>
+      )}
+
       {/* === SPACESHIP === */}
-      <Spaceship />
+      <Spaceship launchPhase={launchPhase} />
 
       {/* === PLANETS === */}
       {/* Saturn - Majestic ringed gas giant */}
       <Planet
         position={[-10, -2, -12]}
         size={2.0}
-        color="#e8d4a8"
-        emissive="#f5e6c8"
+        color="#f5e8d0"
+        emissive="#faf0e0"
         orbitRadius={14}
         orbitSpeed={0.04}
         rotationSpeed={0.003}
         hasRings={true}
-        ringColor="#d4b896"
-        atmosphereColor="#f5e6c8"
-        roughness={0.6}
-        metalness={0.1}
+        ringColor="#e8d4b8"
+        atmosphereColor="#fdf5e8"
+        roughness={0.55}
+        metalness={0.08}
         hasAtmosphere={true}
       />
 
@@ -1103,15 +1562,15 @@ function Scene() {
       <Planet
         position={[8, 3, -8]}
         size={1.4}
-        color="#2c5aa0"
-        emissive="#4a7ac7"
+        color="#5a8bc8"
+        emissive="#7aa8dd"
         orbitRadius={10}
         orbitSpeed={0.07}
         rotationSpeed={0.005}
         hasRings={false}
-        atmosphereColor="#5d8dd3"
-        roughness={0.5}
-        metalness={0.3}
+        atmosphereColor="#a0c8f0"
+        roughness={0.45}
+        metalness={0.25}
         hasAtmosphere={true}
       />
 
@@ -1119,15 +1578,15 @@ function Scene() {
       <Planet
         position={[12, -1, -15]}
         size={2.2}
-        color="#c88b3a"
-        emissive="#d4a05a"
+        color="#d4a66a"
+        emissive="#e8c090"
         orbitRadius={16}
         orbitSpeed={0.035}
         rotationSpeed={0.006}
         hasRings={false}
-        atmosphereColor="#e8c090"
-        roughness={0.6}
-        metalness={0.15}
+        atmosphereColor="#f5d8b0"
+        roughness={0.55}
+        metalness={0.12}
         hasAtmosphere={true}
       />
 
@@ -1135,15 +1594,15 @@ function Scene() {
       <Planet
         position={[-6, 2, -10]}
         size={0.9}
-        color="#c1440e"
-        emissive="#e85d1c"
+        color="#d86838"
+        emissive="#f08855"
         orbitRadius={8}
         orbitSpeed={0.09}
         rotationSpeed={0.007}
         hasRings={false}
-        atmosphereColor="#ff8855"
-        roughness={0.9}
-        metalness={0.1}
+        atmosphereColor="#ffa87a"
+        roughness={0.85}
+        metalness={0.08}
         hasAtmosphere={true}
       />
 
@@ -1151,15 +1610,15 @@ function Scene() {
       <Planet
         position={[5, -4, -18]}
         size={1.5}
-        color="#4fd0e7"
-        emissive="#68dcf0"
+        color="#78d8e8"
+        emissive="#95e5f3"
         orbitRadius={12}
         orbitSpeed={0.055}
         rotationSpeed={0.004}
         hasRings={false}
-        atmosphereColor="#7ee8f7"
-        roughness={0.5}
-        metalness={0.25}
+        atmosphereColor="#b0f0fa"
+        roughness={0.48}
+        metalness={0.22}
         hasAtmosphere={true}
       />
 
@@ -1167,15 +1626,15 @@ function Scene() {
       <Planet
         position={[-3, -3, -7]}
         size={1.0}
-        color="#1a5fb4"
-        emissive="#3584e4"
+        color="#4a85cc"
+        emissive="#6aa0e8"
         orbitRadius={6}
         orbitSpeed={0.08}
         rotationSpeed={0.008}
         hasRings={false}
-        atmosphereColor="#62a0ea"
-        roughness={0.7}
-        metalness={0.2}
+        atmosphereColor="#88baf5"
+        roughness={0.65}
+        metalness={0.18}
         hasAtmosphere={true}
       />
     </>
@@ -1184,34 +1643,152 @@ function Scene() {
 
 // Main Hero Component
 const GalaxyHero = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [countdown, setCountdown] = useState<number | string>('LOADING');
+  const [launchPhase, setLaunchPhase] = useState<'countdown' | 'launch' | 'flying'>('countdown');
+  const [showCountdown, setShowCountdown] = useState(true);
+
+  useEffect(() => {
+    // Check if we've already shown the intro this session
+    const hasSeenIntro = sessionStorage.getItem('hasSeenRocketLaunch');
+
+    if (hasSeenIntro) {
+      // Skip the intro, go straight to content
+      setIsLoading(false);
+      setLaunchPhase('flying');
+      setShowCountdown(false);
+      return;
+    }
+
+    // Initial "LOADING" message
+    if (countdown === 'LOADING') {
+      const timer = setTimeout(() => {
+        setCountdown(5);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+
+    // Countdown timer
+    if (typeof countdown === 'number' && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0) {
+      // Launch!
+      setLaunchPhase('launch');
+      setTimeout(() => {
+        setShowCountdown(false);
+      }, 1000);
+      setTimeout(() => {
+        setLaunchPhase('flying');
+        // Hide loading screen and show main content
+        setIsLoading(false);
+        // Mark that we've seen the intro
+        sessionStorage.setItem('hasSeenRocketLaunch', 'true');
+      }, 4000); // Show launch for 4 seconds
+    }
+  }, [countdown]);
+
   return (
     <section id="home" className="galaxy-hero">
-      {/* 3D Canvas Background */}
-      <div className="galaxy-canvas-container">
-        <Canvas
-          camera={{ position: [0, 0, 12], fov: 60 }}
-          shadows
-          gl={{
-            antialias: true,
-            alpha: true,
-            toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.5,
-            outputColorSpace: THREE.SRGBColorSpace,
-          }}
-          dpr={[1, 2]}
-        >
-          <Scene />
-        </Canvas>
-      </div>
+      {/* Full-Screen Loading Screen */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            className="loading-screen"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#000000',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {/* 3D Canvas for Loading Animation */}
+            <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
+              <Canvas
+                camera={{ position: [0, 0, 12], fov: 60 }}
+                shadows
+                gl={{
+                  antialias: true,
+                  alpha: true,
+                  toneMapping: THREE.ACESFilmicToneMapping,
+                  toneMappingExposure: 1.3,
+                  outputColorSpace: THREE.SRGBColorSpace,
+                }}
+                dpr={[1, 2]}
+              >
+                <Scene launchPhase={launchPhase} />
+              </Canvas>
+            </div>
 
-      {/* Hero Content */}
-      <div className="galaxy-hero-content">
-        <motion.div
-          className="hero-text-container"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
-        >
+            {/* Countdown Text Overlay */}
+            {showCountdown && (
+              <motion.div
+                key={countdown}
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.5, opacity: 0 }}
+                transition={{ duration: countdown === 'LOADING' ? 1 : 0.5, ease: 'easeOut' }}
+                style={{
+                  position: 'absolute',
+                  fontSize: countdown === 0 ? '4rem' : countdown === 'LOADING' ? '3rem' : '8rem',
+                  fontWeight: 'bold',
+                  color: countdown === 0 ? '#ff6600' : countdown === 'LOADING' ? '#ffffff' : '#ffffff',
+                  textShadow: countdown === 0
+                    ? '0 0 30px rgba(255, 102, 0, 0.8), 0 0 60px rgba(255, 102, 0, 0.4)'
+                    : '0 0 30px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.3)',
+                  fontFamily: 'system-ui, -apple-system, sans-serif',
+                  letterSpacing: countdown === 'LOADING' ? '0.5rem' : '0',
+                  zIndex: 10000,
+                  pointerEvents: 'none',
+                }}
+              >
+                {countdown === 0 ? 'LIFTOFF!' : countdown}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 3D Canvas Background - Main scene after loading */}
+      {!isLoading && (
+        <div className="galaxy-canvas-container">
+          <Canvas
+            camera={{ position: [0, 0, 12], fov: 60 }}
+            shadows
+            gl={{
+              antialias: true,
+              alpha: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              toneMappingExposure: 1.3,
+              outputColorSpace: THREE.SRGBColorSpace,
+            }}
+            dpr={[1, 2]}
+          >
+            <Scene launchPhase={launchPhase} />
+          </Canvas>
+        </div>
+      )}
+
+      {/* Hero Content - Only show after loading completes */}
+      {!isLoading && (
+        <div className="galaxy-hero-content">
+          <motion.div
+            className="hero-text-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+          >
           <motion.h1
             className="galaxy-hero-title"
             initial={{ opacity: 0, y: 60 }}
@@ -1295,19 +1872,22 @@ const GalaxyHero = () => {
               <span className="btn-text">Resume</span>
             </a>
           </motion.div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      )}
 
-      {/* Scroll Indicator */}
-      <motion.div
-        className="scroll-indicator"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ duration: 2, delay: 2 }}
-      >
-        <div className="scroll-line"></div>
-        <span className="scroll-text">Scroll to explore</span>
-      </motion.div>
+      {/* Scroll Indicator - Only show after loading completes */}
+      {!isLoading && (
+        <motion.div
+          className="scroll-indicator"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ duration: 2, delay: 3 }}
+        >
+          <div className="scroll-line"></div>
+          <span className="scroll-text">Scroll to explore</span>
+        </motion.div>
+      )}
     </section>
   );
 };
