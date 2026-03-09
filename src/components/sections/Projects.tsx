@@ -87,7 +87,7 @@ const projects: Project[] = [
     description: 'physics-based orbital mechanics engine for simulating spacecraft trajectories and planetary motion. implements keplerian orbital elements, trajectory prediction, and gravitational n-body dynamics with real-time visualization.',
     tech: ['physics simulation', 'orbital mechanics', 'n-body dynamics', 'trajectory prediction'],
     category: ['systems', 'graphics'],
-    github: 'https://github.com/AmjadAlthabteh/orbital_engine_simulation',
+    youtube: 'https://youtu.be/2cyNay55F6o',
     image: '/images/Mars_1.png',
   },
 ];
