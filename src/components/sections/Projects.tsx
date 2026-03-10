@@ -13,7 +13,6 @@ interface Project {
   github?: string;
   demo?: string;
   youtube?: string;
-  video?: string;
   image?: string;
 }
 
@@ -25,7 +24,7 @@ const projects: Project[] = [
     tech: ['c++', 'opengl', 'webgl', 'typescript', 'react', 'emscripten'],
     category: ['graphics', 'engine', 'web'],
     featured: true,
-    video: '/videos/glint.mp4',
+    github: 'https://github.com/AmjadAlthabteh/glint_3d_frk',
     image: '/images/glint3d.png',
   },
   {
@@ -79,7 +78,7 @@ const projects: Project[] = [
     description: 'advanced 3d rendering and physics simulation for lunar terrain generation. combines procedural terrain synthesis with realistic physics modeling, featuring dynamic lighting, material systems, and real-time gravitational interactions.',
     tech: ['3d graphics', 'physics', 'procedural generation', 'opengl', 'rendering'],
     category: ['graphics', 'systems'],
-    video: '/videos/planets.mp4',
+    github: 'https://github.com/AmjadAlthabteh/planets-lunar',
     image: '/images/orbital_collision.png',
   },
   {
@@ -165,16 +164,7 @@ const Projects = () => {
                 </div>
               )}
               <div className="project-preview">
-                {project.video ? (
-                  <video
-                    src={project.video}
-                    className="project-image"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                  />
-                ) : project.image ? (
+                {project.image ? (
                   <img src={project.image} alt={project.title} className="project-image" />
                 ) : (
                   <div className="project-preview-icon">{'</>'}</div>
