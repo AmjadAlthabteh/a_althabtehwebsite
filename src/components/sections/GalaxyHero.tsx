@@ -145,9 +145,9 @@ function Planet({
           vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
           vUv = uv;
 
-          // Add subtle surface displacement
+          // Add very subtle surface displacement for smooth appearance
           vec3 pos = position;
-          float displacement = snoise(position * 3.0) * 0.02;
+          float displacement = snoise(position * 2.5) * 0.015;
           pos += normal * displacement;
 
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -183,14 +183,15 @@ function Planet({
           // Very smooth terminator line (day/night boundary)
           float terminator = smoothstep(-0.3, 0.4, NdotL);
 
-          // Procedural surface detail with softer variations
-          vec3 surfacePos = vPosition * 2.0;
-          float detail1 = snoise(surfacePos * 1.2 + uTime * 0.05) * 0.5 + 0.5;
-          float detail2 = snoise(surfacePos * 2.5) * 0.5 + 0.5;
-          float detail3 = snoise(surfacePos * 6.0) * 0.5 + 0.5;
+          // Procedural surface detail with smooth variations
+          vec3 surfacePos = vPosition * 1.8;
+          float detail1 = snoise(surfacePos * 1.0 + uTime * 0.05) * 0.5 + 0.5;
+          float detail2 = snoise(surfacePos * 2.0) * 0.5 + 0.5;
+          float detail3 = snoise(surfacePos * 4.0) * 0.5 + 0.5;
 
-          // Smoother surface detail blending
+          // Ultra-smooth surface detail blending
           float surfaceDetail = detail1 * 0.5 + detail2 * 0.35 + detail3 * 0.15;
+          surfaceDetail = smoothstep(0.2, 0.8, surfaceDetail);
 
           // Create soft gradient colors - darker and lighter variants
           vec3 darkColor = uColor * 0.5;
@@ -238,7 +239,7 @@ function Planet({
     <group ref={planetRef} position={position}>
       {/* Main Planet Body with Realistic Shader */}
       <mesh ref={meshRef} castShadow receiveShadow>
-        <sphereGeometry args={[size, 128, 128]} />
+        <sphereGeometry args={[size, 256, 256]} />
         <shaderMaterial
           ref={materialRef}
           uniforms={planetShader.uniforms}
@@ -251,80 +252,86 @@ function Planet({
       {hasAtmosphere && (
         <>
           <mesh scale={1.05}>
-            <sphereGeometry args={[size, 64, 64]} />
+            <sphereGeometry args={[size, 128, 128]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
-              opacity={0.3}
+              opacity={0.25}
               blending={THREE.AdditiveBlending}
               side={THREE.BackSide}
+              depthWrite={false}
             />
           </mesh>
 
           <mesh scale={1.12}>
-            <sphereGeometry args={[size, 32, 32]} />
+            <sphereGeometry args={[size, 64, 64]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
-              opacity={0.15}
+              opacity={0.12}
               blending={THREE.AdditiveBlending}
               side={THREE.BackSide}
+              depthWrite={false}
             />
           </mesh>
 
-          <mesh scale={1.2}>
+          <mesh scale={1.18}>
             <sphereGeometry args={[size, 32, 32]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
-              opacity={0.05}
+              opacity={0.06}
               blending={THREE.AdditiveBlending}
               side={THREE.BackSide}
+              depthWrite={false}
             />
           </mesh>
         </>
       )}
 
-      {/* Realistic Ring System with Shadows */}
+      {/* Enhanced Ring System - Clear and Solid */}
       {hasRings && (
         <group rotation={[Math.PI / 2.8, 0.1, 0]}>
-          {/* Main ring with texture */}
-          <mesh castShadow receiveShadow>
-            <ringGeometry args={[size * 1.5, size * 2.5, 128]} />
+          {/* Main solid ring */}
+          <mesh castShadow receiveShadow position={[0, 0, 0.001]}>
+            <ringGeometry args={[size * 1.5, size * 2.5, 256]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
-              opacity={0.9}
+              opacity={0.98}
               side={THREE.DoubleSide}
-              roughness={0.9}
-              metalness={0.05}
+              roughness={0.7}
+              metalness={0.1}
               emissive={ringColor || color}
-              emissiveIntensity={0.15}
+              emissiveIntensity={0.3}
+              depthWrite={true}
             />
           </mesh>
 
-          {/* Secondary ring (Cassini Division) */}
-          <mesh castShadow receiveShadow>
-            <ringGeometry args={[size * 2.6, size * 2.9, 128]} />
+          {/* Secondary ring band (Cassini Division) with offset to prevent z-fighting */}
+          <mesh castShadow receiveShadow position={[0, 0, 0.002]}>
+            <ringGeometry args={[size * 2.6, size * 2.9, 256]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
-              opacity={0.6}
+              opacity={0.85}
               side={THREE.DoubleSide}
-              roughness={0.95}
-              metalness={0.02}
+              roughness={0.75}
+              metalness={0.08}
+              depthWrite={true}
             />
           </mesh>
 
-          {/* Ring glow */}
-          <mesh>
-            <ringGeometry args={[size * 1.5, size * 2.9, 64]} />
+          {/* Subtle inner glow for depth */}
+          <mesh position={[0, 0, -0.001]}>
+            <ringGeometry args={[size * 1.5, size * 2.9, 128]} />
             <meshBasicMaterial
               color={ringColor || color}
               transparent
-              opacity={0.2}
+              opacity={0.25}
               side={THREE.DoubleSide}
               blending={THREE.AdditiveBlending}
+              depthWrite={false}
             />
           </mesh>
         </group>
@@ -1551,7 +1558,7 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
         orbitSpeed={0.04}
         rotationSpeed={0.003}
         hasRings={true}
-        ringColor="#e8d4b8"
+        ringColor="#ffe4a0"
         atmosphereColor="#fdf5e8"
         roughness={0.55}
         metalness={0.08}
