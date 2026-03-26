@@ -1,5 +1,6 @@
 import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import './GalaxyHero.css';
@@ -239,7 +240,7 @@ function Planet({
     <group ref={planetRef} position={position}>
       {/* Main Planet Body with Realistic Shader */}
       <mesh ref={meshRef} castShadow receiveShadow>
-        <sphereGeometry args={[size, 256, 256]} />
+        <sphereGeometry args={[size, 128, 128]} />
         <shaderMaterial
           ref={materialRef}
           uniforms={planetShader.uniforms}
@@ -252,7 +253,7 @@ function Planet({
       {hasAtmosphere && (
         <>
           <mesh scale={1.05}>
-            <sphereGeometry args={[size, 128, 128]} />
+            <sphereGeometry args={[size, 64, 64]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
@@ -264,7 +265,7 @@ function Planet({
           </mesh>
 
           <mesh scale={1.12}>
-            <sphereGeometry args={[size, 64, 64]} />
+            <sphereGeometry args={[size, 32, 32]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
@@ -294,7 +295,7 @@ function Planet({
         <group rotation={[Math.PI / 2.8, 0.1, 0]}>
           {/* Main solid ring */}
           <mesh castShadow receiveShadow position={[0, 0, 0.001]}>
-            <ringGeometry args={[size * 1.5, size * 2.5, 256]} />
+            <ringGeometry args={[size * 1.5, size * 2.5, 128]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
@@ -310,7 +311,7 @@ function Planet({
 
           {/* Secondary ring band (Cassini Division) with offset to prevent z-fighting */}
           <mesh castShadow receiveShadow position={[0, 0, 0.002]}>
-            <ringGeometry args={[size * 2.6, size * 2.9, 256]} />
+            <ringGeometry args={[size * 2.6, size * 2.9, 128]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
@@ -324,7 +325,7 @@ function Planet({
 
           {/* Subtle inner glow for depth */}
           <mesh position={[0, 0, -0.001]}>
-            <ringGeometry args={[size * 1.5, size * 2.9, 128]} />
+            <ringGeometry args={[size * 1.5, size * 2.9, 64]} />
             <meshBasicMaterial
               color={ringColor || color}
               transparent
@@ -355,7 +356,7 @@ function Spaceship({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'fly
   const particlesRef = useRef<THREE.Points>(null);
   const launchStartTime = useRef<number>(0);
 
-  const particleCount = 200;
+  const particleCount = 100; // Optimized from 200 for performance
   const particlePositions = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -591,7 +592,7 @@ function SpiralGalaxy() {
   const galaxyRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 25000;
+    const count = 10000; // Optimized from 25,000 for better performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -691,7 +692,7 @@ function StarField() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 15000; // Significantly more stars
+    const count = 7000; // Optimized star count for better performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -818,7 +819,7 @@ function BackgroundStars() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 6000; // Double the amount
+    const count = 3000; // Optimized for performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -1084,7 +1085,7 @@ function ForegroundSparkles() {
   const sparklesRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 300;
+    const count = 150; // Optimized from 300 for performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -1295,13 +1296,13 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
       <group position={[-25, 8, -20]}>
         {/* Sun core - ultra bright white */}
         <mesh ref={sunRef}>
-          <sphereGeometry args={[5, 64, 64]} />
+          <sphereGeometry args={[5, 32, 32]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
 
         {/* Intense inner corona */}
         <mesh scale={1.25}>
-          <sphereGeometry args={[5, 64, 64]} />
+          <sphereGeometry args={[5, 32, 32]} />
           <meshBasicMaterial
             color="#fffef8"
             transparent
@@ -1644,6 +1645,16 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
         metalness={0.18}
         hasAtmosphere={true}
       />
+
+      {/* Bloom Post-Processing for Beautiful Glow */}
+      <EffectComposer>
+        <Bloom
+          intensity={1.2}
+          luminanceThreshold={0.2}
+          luminanceSmoothing={0.9}
+          mipmapBlur={true}
+        />
+      </EffectComposer>
     </>
   );
 }
