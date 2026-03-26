@@ -1080,6 +1080,186 @@ function DistantGalaxies() {
   );
 }
 
+// Realistic Shooting Stars with Glowing Trails
+function ShootingStars() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  // Define shooting star data structure
+  interface ShootingStar {
+    id: number;
+    position: THREE.Vector3;
+    velocity: THREE.Vector3;
+    startTime: number;
+    lifetime: number;
+    color: THREE.Color;
+    size: number;
+    trailLength: number;
+  }
+
+  const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]);
+  const lastSpawnTime = useRef(0);
+
+  // Color palette for realistic shooting stars
+  const meteorColors = [
+    new THREE.Color('#ffffff'), // White hot
+    new THREE.Color('#fff8e7'), // Warm white
+    new THREE.Color('#ffeaa7'), // Yellow
+    new THREE.Color('#ffcc88'), // Orange-yellow
+    new THREE.Color('#ff9966'), // Orange
+    new THREE.Color('#88ccff'), // Blue (rare)
+  ];
+
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+
+    // Spawn new shooting stars randomly (every 2-5 seconds)
+    if (time - lastSpawnTime.current > 2 + Math.random() * 3) {
+      lastSpawnTime.current = time;
+
+      // Spawn 1-2 shooting stars at a time
+      const spawnCount = Math.random() > 0.7 ? 2 : 1;
+
+      for (let i = 0; i < spawnCount; i++) {
+        const newStar: ShootingStar = {
+          id: Date.now() + i,
+          position: new THREE.Vector3(
+            (Math.random() - 0.5) * 60 - 20, // Start from sides
+            Math.random() * 30 + 10, // High in sky
+            Math.random() * -30 - 20 // Background
+          ),
+          velocity: new THREE.Vector3(
+            (Math.random() * 2 + 1) * (Math.random() > 0.5 ? 1 : -1), // Horizontal speed
+            -(Math.random() * 1.5 + 0.5), // Downward speed
+            Math.random() * 0.5 - 0.25 // Slight depth movement
+          ),
+          startTime: time,
+          lifetime: 1.5 + Math.random() * 1.5, // 1.5-3 seconds lifetime
+          color: meteorColors[Math.floor(Math.random() * meteorColors.length)],
+          size: 0.08 + Math.random() * 0.12,
+          trailLength: 3 + Math.random() * 4,
+        };
+
+        setShootingStars((prev) => [...prev, newStar]);
+      }
+    }
+
+    // Update and remove expired shooting stars
+    setShootingStars((prev) =>
+      prev.filter((star) => time - star.startTime < star.lifetime)
+    );
+  });
+
+  return (
+    <group ref={groupRef}>
+      {shootingStars.map((star) => {
+        // Calculate fade based on lifetime
+        const age = performance.now() / 1000 - star.startTime;
+        const lifeProgress = age / star.lifetime;
+        const opacity = lifeProgress < 0.2
+          ? lifeProgress / 0.2 // Fade in
+          : lifeProgress > 0.8
+          ? (1 - lifeProgress) / 0.2 // Fade out
+          : 1; // Full brightness
+
+        // Current position with physics
+        const currentPos = new THREE.Vector3(
+          star.position.x + star.velocity.x * age,
+          star.position.y + star.velocity.y * age - (age * age * 0.3), // Gravity effect
+          star.position.z + star.velocity.z * age
+        );
+
+        return (
+          <group key={star.id} position={currentPos}>
+            {/* Main meteor head - bright and glowing */}
+            <mesh>
+              <sphereGeometry args={[star.size, 16, 16]} />
+              <meshBasicMaterial
+                color={star.color}
+                transparent
+                opacity={opacity}
+              />
+            </mesh>
+
+            {/* Glowing halo around meteor */}
+            <mesh scale={2}>
+              <sphereGeometry args={[star.size, 16, 16]} />
+              <meshBasicMaterial
+                color={star.color}
+                transparent
+                opacity={opacity * 0.5}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+
+            {/* Extended outer glow */}
+            <mesh scale={3.5}>
+              <sphereGeometry args={[star.size, 8, 8]} />
+              <meshBasicMaterial
+                color={star.color}
+                transparent
+                opacity={opacity * 0.2}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+
+            {/* Trail streak - elongated in direction of motion */}
+            <mesh
+              position={[
+                -star.velocity.x * 0.5,
+                -star.velocity.y * 0.5,
+                -star.velocity.z * 0.5
+              ]}
+              rotation={[
+                0,
+                0,
+                Math.atan2(star.velocity.y, star.velocity.x)
+              ]}
+            >
+              <cylinderGeometry args={[star.size * 0.3, star.size * 0.05, star.trailLength, 8]} />
+              <meshBasicMaterial
+                color={star.color}
+                transparent
+                opacity={opacity * 0.6}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+
+            {/* Extended trail glow */}
+            <mesh
+              position={[
+                -star.velocity.x * 0.8,
+                -star.velocity.y * 0.8,
+                -star.velocity.z * 0.8
+              ]}
+              rotation={[
+                0,
+                0,
+                Math.atan2(star.velocity.y, star.velocity.x)
+              ]}
+            >
+              <cylinderGeometry args={[star.size * 0.5, star.size * 0.02, star.trailLength * 1.5, 8]} />
+              <meshBasicMaterial
+                color={star.color}
+                transparent
+                opacity={opacity * 0.3}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+
+            {/* Point light from meteor */}
+            <pointLight
+              color={star.color}
+              intensity={opacity * 2}
+              distance={8}
+              decay={2}
+            />
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
 // Foreground Sparkle Particles for Depth
 function ForegroundSparkles() {
   const sparklesRef = useRef<THREE.Points>(null);
@@ -1489,6 +1669,9 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
 
       {/* Main Star Field */}
       <StarField />
+
+      {/* Realistic Shooting Stars */}
+      <ShootingStars />
 
       {/* Nebula Clouds */}
       <NebulaClouds />
