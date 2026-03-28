@@ -55,9 +55,9 @@ const ParticleField = () => {
       }
 
       update(mouseX: number, mouseY: number) {
-        // Store history for trails (reduced to 8 for better performance)
+        // Store minimal history for trails (reduced to 4 for maximum performance)
         this.history.push({ x: this.x, y: this.y });
-        if (this.history.length > 8) {
+        if (this.history.length > 4) {
           this.history.shift();
         }
 
@@ -188,7 +188,7 @@ const ParticleField = () => {
     }
 
     let particles: Particle[] = [];
-    const maxParticles = 30;
+    const maxParticles = 15; // Reduced for better performance
 
     // Initialize particles
     for (let i = 0; i < maxParticles; i++) {
@@ -196,7 +196,7 @@ const ParticleField = () => {
     }
 
     const connectParticles = (mouseX: number, mouseY: number, mouseHue: number) => {
-      const connectionDistance = 100;
+      const connectionDistance = 80; // Reduced for better performance
       const connectionDistanceSq = connectionDistance * connectionDistance;
 
       for (let i = 0; i < particles.length; i++) {

@@ -5,74 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 import './GalaxyHero.css';
 
-// Procedural noise function for planet surface detail
-const noise3D = `
-  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-  float snoise(vec3 v) {
-    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-
-    vec3 i  = floor(v + dot(v, C.yyy));
-    vec3 x0 = v - i + dot(i, C.xxx);
-
-    vec3 g = step(x0.yzx, x0.xyz);
-    vec3 l = 1.0 - g;
-    vec3 i1 = min(g.xyz, l.zxy);
-    vec3 i2 = max(g.xyz, l.zxy);
-
-    vec3 x1 = x0 - i1 + C.xxx;
-    vec3 x2 = x0 - i2 + C.yyy;
-    vec3 x3 = x0 - D.yyy;
-
-    i = mod289(i);
-    vec4 p = permute(permute(permute(
-              i.z + vec4(0.0, i1.z, i2.z, 1.0))
-            + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-            + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-
-    float n_ = 0.142857142857;
-    vec3 ns = n_ * D.wyz - D.xzx;
-
-    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-
-    vec4 x_ = floor(j * ns.z);
-    vec4 y_ = floor(j - 7.0 * x_);
-
-    vec4 x = x_ *ns.x + ns.yyyy;
-    vec4 y = y_ *ns.x + ns.yyyy;
-    vec4 h = 1.0 - abs(x) - abs(y);
-
-    vec4 b0 = vec4(x.xy, y.xy);
-    vec4 b1 = vec4(x.zw, y.zw);
-
-    vec4 s0 = floor(b0)*2.0 + 1.0;
-    vec4 s1 = floor(b1)*2.0 + 1.0;
-    vec4 sh = -step(h, vec4(0.0));
-
-    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-
-    vec3 p0 = vec3(a0.xy, h.x);
-    vec3 p1 = vec3(a0.zw, h.y);
-    vec3 p2 = vec3(a1.xy, h.z);
-    vec3 p3 = vec3(a1.zw, h.w);
-
-    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-    p0 *= norm.x;
-    p1 *= norm.y;
-    p2 *= norm.z;
-    p3 *= norm.w;
-
-    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-    m = m * m;
-    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-  }
-`;
-
 // Enhanced Realistic Planet Component with Surface Textures
 function Planet({
   position,
@@ -139,19 +71,13 @@ function Planet({
         varying vec3 vPosition;
         varying vec2 vUv;
 
-        ${noise3D}
-
         void main() {
           vNormal = normalize(normalMatrix * normal);
           vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
           vUv = uv;
 
-          // Add very subtle surface displacement for smooth appearance
-          vec3 pos = position;
-          float displacement = snoise(position * 2.5) * 0.015;
-          pos += normal * displacement;
-
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          // No displacement for maximum performance
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
@@ -167,68 +93,35 @@ function Planet({
         varying vec3 vPosition;
         varying vec2 vUv;
 
-        ${noise3D}
-
         void main() {
           vec3 normal = normalize(vNormal);
           vec3 viewDir = normalize(-vPosition);
 
-          // Calculate lighting with softer falloff
+          // Simplified lighting
           float NdotL = dot(normal, uLightDirection);
           float lightIntensity = max(NdotL, 0.0);
 
-          // Softer lighting with wrap-around effect
+          // Wrap-around lighting
           float wrap = 0.5;
           float wrapDiffuse = max(0.0, (NdotL + wrap) / (1.0 + wrap));
 
-          // Very smooth terminator line (day/night boundary)
+          // Simple terminator
           float terminator = smoothstep(-0.3, 0.4, NdotL);
 
-          // Procedural surface detail with smooth variations
-          vec3 surfacePos = vPosition * 1.8;
-          float detail1 = snoise(surfacePos * 1.0 + uTime * 0.05) * 0.5 + 0.5;
-          float detail2 = snoise(surfacePos * 2.0) * 0.5 + 0.5;
-          float detail3 = snoise(surfacePos * 4.0) * 0.5 + 0.5;
+          // Simplified surface color - no noise calculations
+          vec3 surfaceColor = mix(uColor * 0.5, uColor * 1.2, vUv.y);
 
-          // Ultra-smooth surface detail blending
-          float surfaceDetail = detail1 * 0.5 + detail2 * 0.35 + detail3 * 0.15;
-          surfaceDetail = smoothstep(0.2, 0.8, surfaceDetail);
-
-          // Create soft gradient colors - darker and lighter variants
-          vec3 darkColor = uColor * 0.5;
-          vec3 baseColor = uColor * 0.85;
-          vec3 lightColor = uColor * 1.4;
-
-          // Multi-gradient surface coloring
-          vec3 surfaceColor = mix(darkColor, baseColor, surfaceDetail);
-          surfaceColor = mix(surfaceColor, lightColor, surfaceDetail * surfaceDetail);
-
-          // Enhanced Fresnel rim lighting for atmosphere
-          float rimPower = 2.5;
+          // Simplified rim lighting
           float rim = 1.0 - max(dot(viewDir, normal), 0.0);
-          rim = pow(rim, rimPower);
+          rim = pow(rim, 2.5);
+          vec3 rimColor = uAtmosphereColor * rim * smoothstep(-0.5, 0.5, NdotL) * 2.0;
 
-          // Stronger rim on the lit side
-          float litRim = rim * smoothstep(-0.5, 0.5, NdotL);
-          vec3 rimColor = uAtmosphereColor * litRim * 2.0;
-
-          // Soft subsurface scattering effect on terminator
-          float subsurface = pow(max(0.0, -NdotL + 0.3), 2.0) * 0.4;
-          vec3 subsurfaceColor = uEmissive * subsurface;
-
-          // Combine lighting with softer transitions
+          // Basic lighting
           vec3 diffuse = surfaceColor * (wrapDiffuse * 0.9 + 0.1);
           vec3 ambient = surfaceColor * 0.25;
-
-          // Softer emissive on night side
           vec3 nightGlow = uEmissive * 0.3 * pow(1.0 - terminator, 1.5);
 
-          // Specular highlight (soft)
-          vec3 halfDir = normalize(uLightDirection + viewDir);
-          float specular = pow(max(dot(normal, halfDir), 0.0), 20.0) * (1.0 - uRoughness);
-          vec3 specularColor = vec3(1.0) * specular * 0.5;
-
-          vec3 finalColor = diffuse + ambient + nightGlow + rimColor + subsurfaceColor + specularColor;
+          vec3 finalColor = diffuse + ambient + nightGlow + rimColor;
 
           gl_FragColor = vec4(finalColor, 1.0);
         }
@@ -240,7 +133,7 @@ function Planet({
     <group ref={planetRef} position={position}>
       {/* Main Planet Body with Realistic Shader */}
       <mesh ref={meshRef} castShadow receiveShadow>
-        <sphereGeometry args={[size, 128, 128]} />
+        <sphereGeometry args={[size, 64, 64]} />
         <shaderMaterial
           ref={materialRef}
           uniforms={planetShader.uniforms}
@@ -253,7 +146,7 @@ function Planet({
       {hasAtmosphere && (
         <>
           <mesh scale={1.05}>
-            <sphereGeometry args={[size, 64, 64]} />
+            <sphereGeometry args={[size, 32, 32]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
@@ -265,7 +158,7 @@ function Planet({
           </mesh>
 
           <mesh scale={1.12}>
-            <sphereGeometry args={[size, 32, 32]} />
+            <sphereGeometry args={[size, 16, 16]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
@@ -277,7 +170,7 @@ function Planet({
           </mesh>
 
           <mesh scale={1.18}>
-            <sphereGeometry args={[size, 32, 32]} />
+            <sphereGeometry args={[size, 16, 16]} />
             <meshBasicMaterial
               color={atmosphereColor || emissive}
               transparent
@@ -356,7 +249,7 @@ function Spaceship({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'fly
   const particlesRef = useRef<THREE.Points>(null);
   const launchStartTime = useRef<number>(0);
 
-  const particleCount = 100; // Optimized from 200 for performance
+  const particleCount = 50; // Aggressively optimized for maximum performance
   const particlePositions = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -592,7 +485,7 @@ function SpiralGalaxy() {
   const galaxyRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 10000; // Optimized from 25,000 for better performance
+    const count = 2500; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -692,7 +585,7 @@ function StarField() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 7000; // Optimized star count for better performance
+    const count = 1750; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -819,7 +712,7 @@ function BackgroundStars() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 3000; // Optimized for performance
+    const count = 750; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -901,181 +794,36 @@ function NebulaClouds() {
 
   return (
     <group ref={nebulaGroup}>
-      {/* Large purple-pink nebula - softer colors */}
+      {/* Simplified nebula clouds - reduced count and detail for performance */}
       <mesh position={[-18, 8, -35]}>
-        <sphereGeometry args={[10, 32, 32]} />
+        <sphereGeometry args={[10, 16, 16]} />
         <meshBasicMaterial
           color="#b888cc"
-          transparent
-          opacity={0.1}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      <mesh position={[-18, 8, -35]} scale={0.7}>
-        <sphereGeometry args={[10, 32, 32]} />
-        <meshBasicMaterial
-          color="#e8aaf8"
-          transparent
-          opacity={0.07}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* Blue-cyan nebula - softer */}
-      <mesh position={[20, -6, -40]}>
-        <sphereGeometry args={[12, 32, 32]} />
-        <meshBasicMaterial
-          color="#5577cc"
-          transparent
-          opacity={0.09}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      <mesh position={[20, -6, -40]} scale={0.6}>
-        <sphereGeometry args={[12, 32, 32]} />
-        <meshBasicMaterial
-          color="#7799ff"
-          transparent
-          opacity={0.06}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* Red-orange nebula - softer */}
-      <mesh position={[0, 12, -30]}>
-        <sphereGeometry args={[8, 32, 32]} />
-        <meshBasicMaterial
-          color="#ee6655"
           transparent
           opacity={0.08}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      <mesh position={[0, 12, -30]} scale={0.8}>
-        <sphereGeometry args={[8, 32, 32]} />
+      <mesh position={[20, -6, -40]}>
+        <sphereGeometry args={[12, 16, 16]} />
         <meshBasicMaterial
-          color="#ffaa66"
-          transparent
-          opacity={0.055}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* Green-teal nebula - softer */}
-      <mesh position={[-8, -10, -38]}>
-        <sphereGeometry args={[9, 32, 32]} />
-        <meshBasicMaterial
-          color="#55aa88"
+          color="#5577cc"
           transparent
           opacity={0.07}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      <mesh position={[-8, -10, -38]} scale={0.7}>
-        <sphereGeometry args={[9, 32, 32]} />
+      <mesh position={[0, 12, -30]}>
+        <sphereGeometry args={[8, 16, 16]} />
         <meshBasicMaterial
-          color="#66ccb8"
+          color="#ee6655"
           transparent
-          opacity={0.045}
+          opacity={0.06}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
-
-      {/* Magenta nebula - softer */}
-      <mesh position={[12, 5, -28]}>
-        <sphereGeometry args={[7, 32, 32]} />
-        <meshBasicMaterial
-          color="#dd77aa"
-          transparent
-          opacity={0.09}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* Scattered smaller clouds - softer */}
-      <mesh position={[-25, -3, -45]}>
-        <sphereGeometry args={[6, 32, 32]} />
-        <meshBasicMaterial
-          color="#8866bb"
-          transparent
-          opacity={0.055}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      <mesh position={[15, -12, -42]}>
-        <sphereGeometry args={[5, 32, 32]} />
-        <meshBasicMaterial
-          color="#ff9955"
-          transparent
-          opacity={0.065}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// Distant Galaxies
-function DistantGalaxies() {
-  const galaxiesRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (galaxiesRef.current) {
-      galaxiesRef.current.rotation.y = state.clock.elapsedTime * 0.003;
-    }
-  });
-
-  const galaxyPositions = useMemo(() => [
-    { pos: [-35, 15, -60], size: 4, color: '#8b5cf6', rotation: Math.PI / 4 },
-    { pos: [40, -10, -65], size: 5, color: '#3b82f6', rotation: Math.PI / 3 },
-    { pos: [25, 20, -70], size: 3, color: '#ec4899', rotation: Math.PI / 6 },
-    { pos: [-30, -18, -68], size: 4.5, color: '#f59e0b', rotation: Math.PI / 5 },
-    { pos: [0, -25, -75], size: 3.5, color: '#6366f1', rotation: Math.PI / 2.5 },
-  ], []);
-
-  return (
-    <group ref={galaxiesRef}>
-      {galaxyPositions.map((galaxy, i) => (
-        <group key={i} position={galaxy.pos as [number, number, number]} rotation={[0, 0, galaxy.rotation]}>
-          {/* Galaxy core */}
-          <mesh>
-            <sphereGeometry args={[galaxy.size * 0.3, 16, 16]} />
-            <meshBasicMaterial
-              color={galaxy.color}
-              transparent
-              opacity={0.4}
-              blending={THREE.AdditiveBlending}
-            />
-          </mesh>
-
-          {/* Galaxy disk */}
-          <mesh>
-            <circleGeometry args={[galaxy.size, 32]} />
-            <meshBasicMaterial
-              color={galaxy.color}
-              transparent
-              opacity={0.15}
-              blending={THREE.AdditiveBlending}
-            />
-          </mesh>
-
-          {/* Galaxy glow */}
-          <mesh scale={1.5}>
-            <circleGeometry args={[galaxy.size, 32]} />
-            <meshBasicMaterial
-              color={galaxy.color}
-              transparent
-              opacity={0.05}
-              blending={THREE.AdditiveBlending}
-            />
-          </mesh>
-        </group>
-      ))}
     </group>
   );
 }
@@ -1112,12 +860,12 @@ function ShootingStars() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    // Spawn new shooting stars randomly (every 2-5 seconds)
-    if (time - lastSpawnTime.current > 2 + Math.random() * 3) {
+    // Spawn new shooting stars less frequently for performance (every 3-6 seconds)
+    if (time - lastSpawnTime.current > 3 + Math.random() * 3) {
       lastSpawnTime.current = time;
 
-      // Spawn 1-2 shooting stars at a time
-      const spawnCount = Math.random() > 0.7 ? 2 : 1;
+      // Only spawn 1 shooting star at a time
+      const spawnCount = 1;
 
       for (let i = 0; i < spawnCount; i++) {
         const newStar: ShootingStar = {
@@ -1170,9 +918,9 @@ function ShootingStars() {
 
         return (
           <group key={star.id} position={currentPos}>
-            {/* Main meteor head - bright and glowing */}
+            {/* Simplified meteor - only 2 layers for performance */}
             <mesh>
-              <sphereGeometry args={[star.size, 16, 16]} />
+              <sphereGeometry args={[star.size, 8, 8]} />
               <meshBasicMaterial
                 color={star.color}
                 transparent
@@ -1180,29 +928,18 @@ function ShootingStars() {
               />
             </mesh>
 
-            {/* Glowing halo around meteor */}
-            <mesh scale={2}>
-              <sphereGeometry args={[star.size, 16, 16]} />
-              <meshBasicMaterial
-                color={star.color}
-                transparent
-                opacity={opacity * 0.5}
-                blending={THREE.AdditiveBlending}
-              />
-            </mesh>
-
-            {/* Extended outer glow */}
-            <mesh scale={3.5}>
+            {/* Single glow layer */}
+            <mesh scale={2.5}>
               <sphereGeometry args={[star.size, 8, 8]} />
               <meshBasicMaterial
                 color={star.color}
                 transparent
-                opacity={opacity * 0.2}
+                opacity={opacity * 0.4}
                 blending={THREE.AdditiveBlending}
               />
             </mesh>
 
-            {/* Trail streak - elongated in direction of motion */}
+            {/* Single trail */}
             <mesh
               position={[
                 -star.velocity.x * 0.5,
@@ -1215,42 +952,20 @@ function ShootingStars() {
                 Math.atan2(star.velocity.y, star.velocity.x)
               ]}
             >
-              <cylinderGeometry args={[star.size * 0.3, star.size * 0.05, star.trailLength, 8]} />
+              <cylinderGeometry args={[star.size * 0.3, star.size * 0.05, star.trailLength, 6]} />
               <meshBasicMaterial
                 color={star.color}
                 transparent
-                opacity={opacity * 0.6}
+                opacity={opacity * 0.5}
                 blending={THREE.AdditiveBlending}
               />
             </mesh>
 
-            {/* Extended trail glow */}
-            <mesh
-              position={[
-                -star.velocity.x * 0.8,
-                -star.velocity.y * 0.8,
-                -star.velocity.z * 0.8
-              ]}
-              rotation={[
-                0,
-                0,
-                Math.atan2(star.velocity.y, star.velocity.x)
-              ]}
-            >
-              <cylinderGeometry args={[star.size * 0.5, star.size * 0.02, star.trailLength * 1.5, 8]} />
-              <meshBasicMaterial
-                color={star.color}
-                transparent
-                opacity={opacity * 0.3}
-                blending={THREE.AdditiveBlending}
-              />
-            </mesh>
-
-            {/* Point light from meteor */}
+            {/* Point light - reduced intensity */}
             <pointLight
               color={star.color}
-              intensity={opacity * 2}
-              distance={8}
+              intensity={opacity * 1}
+              distance={6}
               decay={2}
             />
           </group>
@@ -1265,7 +980,7 @@ function ForegroundSparkles() {
   const sparklesRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 150; // Optimized from 300 for performance
+    const count = 40; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -1362,8 +1077,8 @@ function LightRays() {
 
   return (
     <group ref={raysRef} position={[-25, 8, -20]}>
-      {/* Create multiple light ray beams */}
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
+      {/* Simplified light rays - only 4 main rays for performance */}
+      {[0, 90, 180, 270].map((angle, i) => (
         <mesh
           key={i}
           rotation={[0, 0, (angle * Math.PI) / 180]}
@@ -1374,23 +1089,6 @@ function LightRays() {
             color="#ffdd88"
             transparent
             opacity={0.04}
-            blending={THREE.AdditiveBlending}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-      {/* Additional subtle rays */}
-      {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((angle, i) => (
-        <mesh
-          key={`sub-${i}`}
-          rotation={[0, 0, (angle * Math.PI) / 180]}
-          position={[0, 0, 0]}
-        >
-          <planeGeometry args={[0.6, 70]} />
-          <meshBasicMaterial
-            color="#ffe4aa"
-            transparent
-            opacity={0.025}
             blending={THREE.AdditiveBlending}
             side={THREE.DoubleSide}
           />
@@ -1472,167 +1170,72 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
     <>
       <CameraController launchPhase={launchPhase} />
 
-      {/* === MAIN STAR/SUN - Bright Primary Light Source === */}
+      {/* === MAIN STAR/SUN - Simplified for Performance === */}
       <group position={[-25, 8, -20]}>
-        {/* Sun core - ultra bright white */}
+        {/* Sun core */}
         <mesh ref={sunRef}>
-          <sphereGeometry args={[5, 32, 32]} />
+          <sphereGeometry args={[5, 16, 16]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
 
-        {/* Intense inner corona */}
-        <mesh scale={1.25}>
-          <sphereGeometry args={[5, 32, 32]} />
-          <meshBasicMaterial
-            color="#fffef8"
-            transparent
-            opacity={0.95}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Bright yellow glow layer */}
-        <mesh scale={1.55}>
-          <sphereGeometry args={[5, 32, 32]} />
+        {/* Inner glow */}
+        <mesh scale={1.5}>
+          <sphereGeometry args={[5, 16, 16]} />
           <meshBasicMaterial
             color="#ffee99"
             transparent
-            opacity={0.85}
+            opacity={0.8}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        {/* Warm orange glow */}
-        <mesh scale={2.0}>
-          <sphereGeometry args={[5, 32, 32]} />
-          <meshBasicMaterial
-            color="#ffcc77"
-            transparent
-            opacity={0.7}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Mid orange halo */}
-        <mesh scale={2.7}>
-          <sphereGeometry args={[5, 32, 32]} />
+        {/* Outer glow */}
+        <mesh scale={3.0}>
+          <sphereGeometry args={[5, 16, 16]} />
           <meshBasicMaterial
             color="#ffaa55"
             transparent
-            opacity={0.5}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Far orange glow */}
-        <mesh scale={3.5}>
-          <sphereGeometry args={[5, 32, 32]} />
-          <meshBasicMaterial
-            color="#ff8833"
-            transparent
-            opacity={0.35}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Extended soft halo */}
-        <mesh scale={4.5}>
-          <sphereGeometry args={[5, 16, 16]} />
-          <meshBasicMaterial
-            color="#ff7722"
-            transparent
-            opacity={0.2}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Very far atmospheric glow */}
-        <mesh scale={6.0}>
-          <sphereGeometry args={[5, 16, 16]} />
-          <meshBasicMaterial
-            color="#ff6611"
-            transparent
-            opacity={0.1}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Lens flare effect - horizontal */}
-        <mesh rotation={[0, 0, 0]} scale={[12, 0.4, 0.4]}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshBasicMaterial
-            color="#ffeeaa"
-            transparent
             opacity={0.4}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        {/* Lens flare effect - vertical */}
-        <mesh rotation={[0, 0, Math.PI / 2]} scale={[12, 0.4, 0.4]}>
-          <sphereGeometry args={[1, 16, 16]} />
+        {/* Lens flare - horizontal only */}
+        <mesh rotation={[0, 0, 0]} scale={[10, 0.4, 0.4]}>
+          <sphereGeometry args={[1, 8, 8]} />
           <meshBasicMaterial
             color="#ffeeaa"
             transparent
-            opacity={0.4}
+            opacity={0.3}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        {/* Diagonal lens flare 1 */}
-        <mesh rotation={[0, 0, Math.PI / 4]} scale={[10, 0.25, 0.25]}>
-          <sphereGeometry args={[1, 16, 16]} />
+        {/* Lens flare - vertical only */}
+        <mesh rotation={[0, 0, Math.PI / 2]} scale={[10, 0.4, 0.4]}>
+          <sphereGeometry args={[1, 8, 8]} />
           <meshBasicMaterial
-            color="#ffdd99"
+            color="#ffeeaa"
             transparent
-            opacity={0.25}
+            opacity={0.3}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
 
-        {/* Diagonal lens flare 2 */}
-        <mesh rotation={[0, 0, -Math.PI / 4]} scale={[10, 0.25, 0.25]}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshBasicMaterial
-            color="#ffdd99"
-            transparent
-            opacity={0.25}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-
-        {/* Strong directional light from sun */}
+        {/* Directional light */}
         <directionalLight
           position={[0, 0, 0]}
           intensity={6}
           color="#fffbf5"
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-far={100}
-          shadow-camera-left={-50}
-          shadow-camera-right={50}
-          shadow-camera-top={50}
-          shadow-camera-bottom={-50}
         />
 
-        {/* Very powerful sun point light */}
+        {/* Main sun point light */}
         <pointLight
           position={[0, 0, 0]}
-          intensity={12}
+          intensity={10}
           color="#fff8ed"
-          distance={120}
+          distance={100}
           decay={1.6}
-          castShadow
-        />
-
-        {/* Secondary fill light from sun */}
-        <pointLight
-          position={[2, 2, 2]}
-          intensity={6}
-          color="#ffe4c4"
-          distance={80}
-          decay={2}
         />
       </group>
 
@@ -1645,23 +1248,14 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
       {/* Galaxy core light - softer */}
       <pointLight position={[0, -2, -15]} intensity={1.5} color="#ff6644" distance={45} decay={2} />
 
-      {/* Accent lights for atmosphere - softer colors */}
-      <pointLight position={[-15, 10, -10]} intensity={0.6} color="#5588ff" distance={50} decay={2} />
-      <pointLight position={[15, -8, -12]} intensity={0.5} color="#8866ff" distance={45} decay={2} />
-
-      {/* Rim lights for depth - softer */}
-      <pointLight position={[0, 20, 8]} intensity={0.4} color="#7799ff" distance={65} decay={2} />
-      <pointLight position={[0, -20, 8]} intensity={0.35} color="#ff6688" distance={65} decay={2} />
-
-      {/* Soft fill lights from multiple directions */}
-      <directionalLight position={[10, 5, 10]} intensity={0.15} color="#ffffff" />
-      <directionalLight position={[-8, -5, 8]} intensity={0.1} color="#aaccff" />
+      {/* Accent lights for atmosphere - reduced for performance */}
+      <pointLight position={[-15, 10, -10]} intensity={0.5} color="#5588ff" distance={40} decay={2} />
+      <pointLight position={[0, 20, 8]} intensity={0.3} color="#7799ff" distance={50} decay={2} />
 
       {/* Softer atmospheric fog with blue tint */}
       <fog attach="fog" args={['#000205', 25, 85]} />
 
       {/* === BACKGROUND LAYERS (Parallax) === */}
-      <DistantGalaxies />
       <BackgroundStars />
 
       {/* Foreground sparkle particles for depth */}
@@ -1835,7 +1429,7 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
           intensity={1.2}
           luminanceThreshold={0.2}
           luminanceSmoothing={0.9}
-          mipmapBlur={true}
+          mipmapBlur={false}
         />
       </EffectComposer>
     </>
@@ -1918,15 +1512,15 @@ const GalaxyHero = () => {
             <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
               <Canvas
                 camera={{ position: [0, 0, 12], fov: 60 }}
-                shadows
                 gl={{
-                  antialias: true,
+                  antialias: false,
                   alpha: true,
                   toneMapping: THREE.ACESFilmicToneMapping,
                   toneMappingExposure: 1.3,
                   outputColorSpace: THREE.SRGBColorSpace,
+                  powerPreference: 'high-performance',
                 }}
-                dpr={[1, 2]}
+                dpr={1}
               >
                 <Scene launchPhase={launchPhase} />
               </Canvas>
@@ -1966,15 +1560,15 @@ const GalaxyHero = () => {
         <div className="galaxy-canvas-container">
           <Canvas
             camera={{ position: [0, 0, 12], fov: 60 }}
-            shadows
             gl={{
-              antialias: true,
+              antialias: false,
               alpha: true,
               toneMapping: THREE.ACESFilmicToneMapping,
               toneMappingExposure: 1.3,
               outputColorSpace: THREE.SRGBColorSpace,
+              powerPreference: 'high-performance',
             }}
-            dpr={[1, 2]}
+            dpr={1}
           >
             <Scene launchPhase={launchPhase} />
           </Canvas>
