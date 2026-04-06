@@ -6,6 +6,7 @@ import GalaxyHero from './components/sections/GalaxyHero';
 import FloatingShapes from './components/FloatingShapes/FloatingShapes';
 import RoboticCursor from './components/RoboticCursor/RoboticCursor';
 import ClickExplosion from './components/ClickExplosion/ClickExplosion';
+import KonamiCode from './components/KonamiCode/KonamiCode';
 import './App.css';
 
 // Lazy load heavy components
@@ -24,6 +25,7 @@ function App() {
       <FloatingShapes />
       <RoboticCursor />
       <ClickExplosion />
+      <KonamiCode />
       <WelcomeBanner />
       <Sidebar />
       <ScrollIndicator sections={sections} />
