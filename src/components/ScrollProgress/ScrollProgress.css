@@ -1,0 +1,41 @@
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 10002;
+  overflow: hidden;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffff 0%, #ff00ff 50%, #ffff00 100%);
+  transition: width 0.1s ease;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.6);
+}
+
+.scroll-progress-glow {
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 50px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  filter: blur(3px);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.5);
+  }
+}

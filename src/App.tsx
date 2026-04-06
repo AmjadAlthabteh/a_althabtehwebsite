@@ -9,6 +9,7 @@ import ClickExplosion from './components/ClickExplosion/ClickExplosion';
 import KonamiCode from './components/KonamiCode/KonamiCode';
 import FPSMonitor from './components/FPSMonitor/FPSMonitor';
 import KeyboardNav from './components/KeyboardNav/KeyboardNav';
+import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import './App.css';
 
 // Lazy load heavy components
@@ -30,6 +31,7 @@ function App() {
       <KonamiCode />
       <FPSMonitor />
       <KeyboardNav />
+      <ScrollProgress />
       <WelcomeBanner />
       <Sidebar />
       <ScrollIndicator sections={sections} />
