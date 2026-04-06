@@ -1,0 +1,59 @@
+.fps-monitor {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px;
+  font-family: 'JetBrains Mono', monospace;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fps-display {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+  border-left: 3px solid;
+  padding-left: 10px;
+}
+
+.fps-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 0 10px currentColor;
+}
+
+.fps-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.fps-graph {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 50px;
+  margin-bottom: 8px;
+}
+
+.fps-bar {
+  flex: 1;
+  min-width: 2px;
+  transition: height 0.1s ease;
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 5px currentColor;
+}
+
+.fps-hint {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 5px;
+}
