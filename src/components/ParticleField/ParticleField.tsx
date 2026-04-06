@@ -55,9 +55,9 @@ const ParticleField = () => {
       }
 
       update(mouseX: number, mouseY: number) {
-        // Store minimal history for trails (reduced to 4 for maximum performance)
+        // Store minimal history for trails (reduced to 2 for maximum performance)
         this.history.push({ x: this.x, y: this.y });
-        if (this.history.length > 4) {
+        if (this.history.length > 2) {
           this.history.shift();
         }
 
@@ -136,34 +136,12 @@ const ParticleField = () => {
           }
         }
 
-        // Core particle with vibrant rainbow glow
-        const gradient = ctx.createRadialGradient(
-          this.x,
-          this.y,
-          0,
-          this.x,
-          this.y,
-          this.size * 4,
-        );
-
+        // Core particle with simple glow (optimized - fewer gradient stops)
         const hue1 = (baseHue + colorShift) % 360;
-        const hue2 = (baseHue + colorShift + 60) % 360;
-        const hue3 = (baseHue + colorShift + 120) % 360;
 
-        gradient.addColorStop(0, `hsla(${hue1}, 100%, 80%, ${this.opacity})`);
-        gradient.addColorStop(
-          0.3,
-          `hsla(${hue2}, 100%, 70%, ${this.opacity * 0.8})`,
-        );
-        gradient.addColorStop(
-          0.6,
-          `hsla(${hue3}, 90%, 60%, ${this.opacity * 0.5})`,
-        );
-        gradient.addColorStop(1, `hsla(${hue3}, 90%, 60%, 0)`);
-
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = `hsla(${hue1}, 100%, 70%, ${this.opacity * 0.3})`;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * 4, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
         ctx.fill();
 
         // Ultra-bright white core
@@ -188,7 +166,7 @@ const ParticleField = () => {
     }
 
     let particles: Particle[] = [];
-    const maxParticles = 15; // Reduced for better performance
+    const maxParticles = 10; // Reduced for better performance
 
     // Initialize particles
     for (let i = 0; i < maxParticles; i++) {
@@ -196,7 +174,7 @@ const ParticleField = () => {
     }
 
     const connectParticles = (mouseX: number, mouseY: number, mouseHue: number) => {
-      const connectionDistance = 80; // Reduced for better performance
+      const connectionDistance = 60; // Reduced for better performance
       const connectionDistanceSq = connectionDistance * connectionDistance;
 
       for (let i = 0; i < particles.length; i++) {
@@ -217,31 +195,9 @@ const ParticleField = () => {
 
             const finalOpacity = opacity + mouseEnhancement * 0.6;
 
-            // Rainbow connections based on mouse hue
-            const hue1 = (mouseHue + distance * 0.5) % 360;
-            const hue2 = (mouseHue + distance * 0.5 + 60) % 360;
-            const hue3 = (mouseHue + distance * 0.5 + 120) % 360;
-
-            const gradient = ctx.createLinearGradient(
-              particles[i].x,
-              particles[i].y,
-              particles[j].x,
-              particles[j].y,
-            );
-            gradient.addColorStop(
-              0,
-              `hsla(${hue1}, 100%, 70%, ${finalOpacity})`,
-            );
-            gradient.addColorStop(
-              0.5,
-              `hsla(${hue2}, 100%, 65%, ${finalOpacity * 0.8})`,
-            );
-            gradient.addColorStop(
-              1,
-              `hsla(${hue3}, 100%, 60%, ${finalOpacity * 0.6})`,
-            );
-
-            ctx.strokeStyle = gradient;
+            // Simple connection color (optimized - no gradient)
+            const hue = (mouseHue + distance * 0.5) % 360;
+            ctx.strokeStyle = `hsla(${hue}, 100%, 70%, ${finalOpacity})`;
             ctx.lineWidth = 1 + mouseEnhancement * 3;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);

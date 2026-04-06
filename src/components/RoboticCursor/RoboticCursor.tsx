@@ -7,22 +7,33 @@ const RoboticCursor = () => {
 
   useEffect(() => {
     let timeoutId: number;
+    let rafId: number;
+    let targetPosition = { x: 0, y: 0 };
 
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      targetPosition = { x: e.clientX, y: e.clientY };
       setIsMoving(true);
 
       clearTimeout(timeoutId);
       timeoutId = window.setTimeout(() => {
         setIsMoving(false);
       }, 150);
+
+      // Throttle updates using requestAnimationFrame
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          setPosition(targetPosition);
+          rafId = 0;
+        });
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(timeoutId);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

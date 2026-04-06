@@ -133,7 +133,7 @@ function Planet({
     <group ref={planetRef} position={position}>
       {/* Main Planet Body with Realistic Shader */}
       <mesh ref={meshRef} castShadow receiveShadow>
-        <sphereGeometry args={[size, 64, 64]} />
+        <sphereGeometry args={[size, 32, 32]} />
         <shaderMaterial
           ref={materialRef}
           uniforms={planetShader.uniforms}
@@ -144,43 +144,17 @@ function Planet({
 
       {/* Enhanced Atmosphere with Scattering */}
       {hasAtmosphere && (
-        <>
-          <mesh scale={1.05}>
-            <sphereGeometry args={[size, 32, 32]} />
-            <meshBasicMaterial
-              color={atmosphereColor || emissive}
-              transparent
-              opacity={0.25}
-              blending={THREE.AdditiveBlending}
-              side={THREE.BackSide}
-              depthWrite={false}
-            />
-          </mesh>
-
-          <mesh scale={1.12}>
-            <sphereGeometry args={[size, 16, 16]} />
-            <meshBasicMaterial
-              color={atmosphereColor || emissive}
-              transparent
-              opacity={0.12}
-              blending={THREE.AdditiveBlending}
-              side={THREE.BackSide}
-              depthWrite={false}
-            />
-          </mesh>
-
-          <mesh scale={1.18}>
-            <sphereGeometry args={[size, 16, 16]} />
-            <meshBasicMaterial
-              color={atmosphereColor || emissive}
-              transparent
-              opacity={0.06}
-              blending={THREE.AdditiveBlending}
-              side={THREE.BackSide}
-              depthWrite={false}
-            />
-          </mesh>
-        </>
+        <mesh scale={1.1}>
+          <sphereGeometry args={[size, 16, 16]} />
+          <meshBasicMaterial
+            color={atmosphereColor || emissive}
+            transparent
+            opacity={0.25}
+            blending={THREE.AdditiveBlending}
+            side={THREE.BackSide}
+            depthWrite={false}
+          />
+        </mesh>
       )}
 
       {/* Enhanced Ring System - Clear and Solid */}
@@ -188,7 +162,7 @@ function Planet({
         <group rotation={[Math.PI / 2.8, 0.1, 0]}>
           {/* Main solid ring */}
           <mesh castShadow receiveShadow position={[0, 0, 0.001]}>
-            <ringGeometry args={[size * 1.5, size * 2.5, 128]} />
+            <ringGeometry args={[size * 1.5, size * 2.5, 32]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
@@ -204,7 +178,7 @@ function Planet({
 
           {/* Secondary ring band (Cassini Division) with offset to prevent z-fighting */}
           <mesh castShadow receiveShadow position={[0, 0, 0.002]}>
-            <ringGeometry args={[size * 2.6, size * 2.9, 128]} />
+            <ringGeometry args={[size * 2.6, size * 2.9, 32]} />
             <meshStandardMaterial
               color={ringColor || color}
               transparent
@@ -249,7 +223,7 @@ function Spaceship({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'fly
   const particlesRef = useRef<THREE.Points>(null);
   const launchStartTime = useRef<number>(0);
 
-  const particleCount = 50; // Aggressively optimized for maximum performance
+  const particleCount = 25; // Aggressively optimized for maximum performance
   const particlePositions = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -485,7 +459,7 @@ function SpiralGalaxy() {
   const galaxyRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 2500; // Aggressively optimized for maximum performance
+    const count = 800; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -585,7 +559,7 @@ function StarField() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 1750; // Aggressively optimized for maximum performance
+    const count = 600; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -712,7 +686,7 @@ function BackgroundStars() {
   const starsRef = useRef<THREE.Points>(null);
 
   const [positions, colors, sizes] = useMemo(() => {
-    const count = 750; // Aggressively optimized for maximum performance
+    const count = 250; // Aggressively optimized for maximum performance
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -1248,9 +1222,6 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
       {/* Galaxy core light - softer */}
       <pointLight position={[0, -2, -15]} intensity={1.5} color="#ff6644" distance={45} decay={2} />
 
-      {/* Accent lights for atmosphere - reduced for performance */}
-      <pointLight position={[-15, 10, -10]} intensity={0.5} color="#5588ff" distance={40} decay={2} />
-      <pointLight position={[0, 20, 8]} intensity={0.3} color="#7799ff" distance={50} decay={2} />
 
       {/* Softer atmospheric fog with blue tint */}
       <fog attach="fog" args={['#000205', 25, 85]} />
@@ -1426,9 +1397,9 @@ function Scene({ launchPhase }: { launchPhase: 'countdown' | 'launch' | 'flying'
       {/* Bloom Post-Processing for Beautiful Glow */}
       <EffectComposer>
         <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
+          intensity={0.8}
+          luminanceThreshold={0.4}
+          luminanceSmoothing={0.5}
           mipmapBlur={false}
         />
       </EffectComposer>

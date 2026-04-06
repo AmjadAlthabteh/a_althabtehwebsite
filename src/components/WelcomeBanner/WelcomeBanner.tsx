@@ -272,7 +272,7 @@ const Planet = ({
     <group position={position}>
       {/* Planet surface with detail */}
       <mesh ref={planetRef}>
-        <sphereGeometry args={[size, 64, 64]} />
+        <sphereGeometry args={[size, 32, 32]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
@@ -287,7 +287,7 @@ const Planet = ({
       {/* Cloud layer for some planets */}
       {size > 1.5 && (
         <mesh>
-          <sphereGeometry args={[size + 0.05, 32, 32]} />
+          <sphereGeometry args={[size + 0.05, 16, 16]} />
           <meshStandardMaterial
             color="#ffffff"
             transparent
@@ -299,7 +299,7 @@ const Planet = ({
 
       {/* Atmosphere glow - larger and more visible */}
       <mesh scale={1.15}>
-        <sphereGeometry args={[size, 32, 32]} />
+        <sphereGeometry args={[size, 16, 16]} />
         <meshBasicMaterial
           color={emissive}
           transparent
@@ -311,7 +311,7 @@ const Planet = ({
       {/* Rings for gas giants */}
       {hasRings && (
         <mesh ref={ringRef} rotation={[Math.PI / 2.3, 0, 0]}>
-          <ringGeometry args={[size * 1.3, size * 2, 64]} />
+          <ringGeometry args={[size * 1.3, size * 2, 32]} />
           <meshStandardMaterial
             color={color}
             transparent
@@ -398,7 +398,7 @@ const SpaceScene = () => {
       <Stars
         radius={150}
         depth={80}
-        count={8000}
+        count={3000}
         factor={6}
         saturation={0}
         fade
@@ -477,7 +477,7 @@ const SpaceScene = () => {
 
       {/* Nebula effect in background */}
       <mesh position={[20, 10, -40]}>
-        <sphereGeometry args={[15, 32, 32]} />
+        <sphereGeometry args={[15, 16, 16]} />
         <meshBasicMaterial
           color="#ff00ff"
           transparent
@@ -485,7 +485,7 @@ const SpaceScene = () => {
         />
       </mesh>
       <mesh position={[-25, -8, -50]}>
-        <sphereGeometry args={[20, 32, 32]} />
+        <sphereGeometry args={[20, 16, 16]} />
         <meshBasicMaterial
           color="#00ffff"
           transparent
