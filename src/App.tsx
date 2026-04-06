@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import GalaxyHero from './components/sections/GalaxyHero';
 import FloatingShapes from './components/FloatingShapes/FloatingShapes';
 import RoboticCursor from './components/RoboticCursor/RoboticCursor';
+import ClickExplosion from './components/ClickExplosion/ClickExplosion';
 import './App.css';
 
 // Lazy load heavy components
@@ -22,6 +23,7 @@ function App() {
     <div className="app">
       <FloatingShapes />
       <RoboticCursor />
+      <ClickExplosion />
       <WelcomeBanner />
       <Sidebar />
       <ScrollIndicator sections={sections} />
