@@ -8,6 +8,7 @@ import RoboticCursor from './components/RoboticCursor/RoboticCursor';
 import ClickExplosion from './components/ClickExplosion/ClickExplosion';
 import KonamiCode from './components/KonamiCode/KonamiCode';
 import FPSMonitor from './components/FPSMonitor/FPSMonitor';
+import KeyboardNav from './components/KeyboardNav/KeyboardNav';
 import './App.css';
 
 // Lazy load heavy components
@@ -28,6 +29,7 @@ function App() {
       <ClickExplosion />
       <KonamiCode />
       <FPSMonitor />
+      <KeyboardNav />
       <WelcomeBanner />
       <Sidebar />
       <ScrollIndicator sections={sections} />
