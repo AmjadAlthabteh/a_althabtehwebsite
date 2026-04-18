@@ -5,6 +5,30 @@ import './GalaxyHero.css';
 const GalaxyHero = () => {
   return (
     <section id="home" className="galaxy-hero">
+      {/* Stars */}
+      <div className="stars">
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="star" />
+        ))}
+      </div>
+
+      {/* Planets */}
+      <div className="planets">
+        <div className="planet planet-saturn" />
+        <div className="planet planet-blue" />
+        <div className="planet planet-red" />
+        <div className="planet planet-purple" />
+        <div className="planet planet-teal" />
+        <div className="planet planet-orange" />
+      </div>
+
+      {/* Shooting Stars */}
+      <div className="shooting-stars">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="shooting-star" />
+        ))}
+      </div>
+
       <div className="galaxy-hero-content">
         <motion.div
           className="hero-text-container"
