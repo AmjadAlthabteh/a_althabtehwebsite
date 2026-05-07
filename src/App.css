@@ -2,7 +2,8 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: #000000;
+  background: var(--color-bg);
+  transition: background 0.3s ease;
 }
 
 .main-content {

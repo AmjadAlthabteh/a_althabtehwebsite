@@ -1,0 +1,82 @@
+.theme-toggle {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10000;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-track {
+  width: 60px;
+  height: 30px;
+  background: #cbd5e0;
+  border-radius: 15px;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid #e2e8f0;
+}
+
+.toggle-track.dark {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: #64748b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-track.dark .toggle-thumb {
+  left: calc(100% - 25px);
+  background: #1e293b;
+  color: #fbbf24;
+}
+
+.theme-toggle:hover .toggle-track {
+  background: #94a3b8;
+}
+
+.theme-toggle:hover .toggle-track.dark {
+  background: #334155;
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .toggle-track {
+    width: 50px;
+    height: 26px;
+  }
+
+  .toggle-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  .toggle-thumb svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .toggle-track.dark .toggle-thumb {
+    left: calc(100% - 22px);
+  }
+}

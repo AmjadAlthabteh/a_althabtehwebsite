@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import GalaxyHero from './components/sections/GalaxyHero';
 import KeyboardNav from './components/KeyboardNav/KeyboardNav';
 import ScrollProgress from './components/ScrollProgress/ScrollProgress';
+import ThemeToggle from './components/ThemeToggle/ThemeToggle';
 import './App.css';
 
 // Lazy load heavy components
@@ -20,6 +21,7 @@ const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'
 function App() {
   return (
     <div className="app">
+      <ThemeToggle />
       <KeyboardNav />
       <ScrollProgress />
       <WelcomeBanner />

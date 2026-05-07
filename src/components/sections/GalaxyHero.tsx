@@ -5,28 +5,16 @@ import './GalaxyHero.css';
 const GalaxyHero = () => {
   return (
     <section id="home" className="galaxy-hero">
-      {/* Stars */}
+      {/* Clouds */}
       <div className="stars">
-        {[...Array(10)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <div key={i} className="star" />
         ))}
       </div>
 
-      {/* Planets */}
+      {/* Airplane */}
       <div className="planets">
         <div className="planet planet-saturn" />
-        <div className="planet planet-blue" />
-        <div className="planet planet-red" />
-        <div className="planet planet-purple" />
-        <div className="planet planet-teal" />
-        <div className="planet planet-orange" />
-      </div>
-
-      {/* Shooting Stars */}
-      <div className="shooting-stars">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="shooting-star" />
-        ))}
       </div>
 
       <div className="galaxy-hero-content">
@@ -38,36 +26,36 @@ const GalaxyHero = () => {
         >
           <motion.h1
             className="galaxy-hero-title"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           >
-            Welcome to my <span className="universe-text">universe</span>
+            Hi, I'm <span className="universe-text">Amjad</span>
           </motion.h1>
 
           <motion.p
             className="galaxy-hero-subtitle"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
           >
-            I build high-performance systems and real-time interactive worlds.
+            I build web applications and interactive experiences.
           </motion.p>
 
           <motion.p
             className="galaxy-hero-role"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           >
-            Software Engineer <span className="role-separator">•</span> Game Developer <span className="role-separator">•</span> Systems Programmer
+            Software Engineer <span className="role-separator">•</span> Full Stack Developer
           </motion.p>
 
           <motion.div
             className="galaxy-hero-social"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
           >
             <a
               href="https://github.com/AmjadAlthabteh"
@@ -95,9 +83,9 @@ const GalaxyHero = () => {
 
           <motion.div
             className="galaxy-hero-buttons"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
           >
             <a
               href="#projects"
@@ -107,7 +95,6 @@ const GalaxyHero = () => {
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span className="btn-glow"></span>
               <span className="btn-text">View Projects</span>
             </a>
             <a
@@ -126,7 +113,7 @@ const GalaxyHero = () => {
         className="scroll-indicator"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.6 }}
-        transition={{ duration: 1, delay: 1.5 }}
+        transition={{ duration: 0.8, delay: 1 }}
       >
         <div className="scroll-line"></div>
         <span className="scroll-text">Scroll to explore</span>
