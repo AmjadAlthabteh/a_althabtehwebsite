@@ -15,12 +15,9 @@ const GalaxyHero = () => {
         <div className="nebula-layer nebula-2"></div>
         <div className="nebula-layer nebula-3"></div>
 
-        {/* Aurora effect */}
-        <div className="aurora-layer"></div>
-
-        {/* Starfield - multiple layers for depth */}
+        {/* Starfield - simple stars */}
         <div className="starfield starfield-1">
-          {[...Array(150)].map((_, i) => (
+          {[...Array(80)].map((_, i) => (
             <div
               key={`star-1-${i}`}
               className="star"
@@ -28,14 +25,14 @@ const GalaxyHero = () => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 3}s`,
-                opacity: Math.random() * 0.8 + 0.2
+                opacity: Math.random() * 0.6 + 0.4
               }}
             />
           ))}
         </div>
 
         <div className="starfield starfield-2">
-          {[...Array(80)].map((_, i) => (
+          {[...Array(30)].map((_, i) => (
             <div
               key={`star-2-${i}`}
               className="star star-medium"
@@ -49,7 +46,7 @@ const GalaxyHero = () => {
         </div>
 
         <div className="starfield starfield-3">
-          {[...Array(40)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <div
               key={`star-3-${i}`}
               className="star star-large"
@@ -64,7 +61,7 @@ const GalaxyHero = () => {
 
         {/* Floating particles - cosmic dust */}
         <div className="particle-field">
-          {[...Array(60)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <div
               key={`particle-${i}`}
               className="particle"
@@ -72,7 +69,7 @@ const GalaxyHero = () => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 20}s`,
-                animationDuration: `${15 + Math.random() * 20}s`
+                animationDuration: `${20 + Math.random() * 15}s`
               }}
             />
           ))}
@@ -80,45 +77,6 @@ const GalaxyHero = () => {
 
         {/* Grid overlay - subtle holographic effect */}
         <div className="grid-overlay"></div>
-
-        {/* Shooting stars */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`shooting-star-${i}`}
-            className="shooting-star"
-            style={{
-              top: `${Math.random() * 50}%`,
-              left: `${50 + Math.random() * 50}%`,
-              animationDelay: `${i * 4 + Math.random() * 2}s`,
-              animationDuration: `${2 + Math.random()}s`
-            }}
-          />
-        ))}
-
-        {/* Distant galaxies */}
-        {[...Array(12)].map((_, i) => {
-          const colors = [
-            'radial-gradient(circle, rgba(255, 110, 199, 0.6) 0%, rgba(180, 124, 255, 0.3) 50%, transparent 70%)',
-            'radial-gradient(circle, rgba(124, 159, 255, 0.6) 0%, rgba(59, 130, 246, 0.3) 50%, transparent 70%)',
-            'radial-gradient(circle, rgba(200, 100, 255, 0.6) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%)',
-            'radial-gradient(circle, rgba(180, 255, 200, 0.5) 0%, rgba(100, 200, 150, 0.3) 50%, transparent 70%)'
-          ];
-          const size = 15 + Math.random() * 30;
-          return (
-            <div
-              key={`galaxy-${i}`}
-              className="distant-galaxy"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${size}px`,
-                height: `${size}px`,
-                background: colors[Math.floor(Math.random() * colors.length)],
-                animationDelay: `${Math.random() * 8}s`
-              }}
-            />
-          );
-        })}
 
         {/* Airplane flying through space */}
         <div className="space-airplane">
