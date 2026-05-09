@@ -17,7 +17,7 @@ const GalaxyHero = () => {
 
         {/* Starfield - multiple layers for depth */}
         <div className="starfield starfield-1">
-          {[...Array(60)].map((_, i) => (
+          {[...Array(150)].map((_, i) => (
             <div
               key={`star-1-${i}`}
               className="star"
@@ -25,14 +25,14 @@ const GalaxyHero = () => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 3}s`,
-                opacity: Math.random() * 0.7 + 0.3
+                opacity: Math.random() * 0.8 + 0.2
               }}
             />
           ))}
         </div>
 
         <div className="starfield starfield-2">
-          {[...Array(40)].map((_, i) => (
+          {[...Array(80)].map((_, i) => (
             <div
               key={`star-2-${i}`}
               className="star star-medium"
@@ -46,7 +46,7 @@ const GalaxyHero = () => {
         </div>
 
         <div className="starfield starfield-3">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(40)].map((_, i) => (
             <div
               key={`star-3-${i}`}
               className="star star-large"
@@ -59,9 +59,9 @@ const GalaxyHero = () => {
           ))}
         </div>
 
-        {/* Floating particles */}
+        {/* Floating particles - cosmic dust */}
         <div className="particle-field">
-          {[...Array(30)].map((_, i) => (
+          {[...Array(60)].map((_, i) => (
             <div
               key={`particle-${i}`}
               className="particle"
