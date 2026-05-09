@@ -77,6 +77,18 @@ const GalaxyHero = () => {
 
         {/* Grid overlay - subtle holographic effect */}
         <div className="grid-overlay"></div>
+
+        {/* Airplane flying through space */}
+        <div className="space-airplane">
+          <div className="airplane-body">
+            <div className="airplane-nose"></div>
+            <div className="airplane-fuselage"></div>
+            <div className="airplane-wing"></div>
+            <div className="airplane-tail"></div>
+            <div className="airplane-engine"></div>
+            <div className="airplane-trail"></div>
+          </div>
+        </div>
       </div>
 
       {/* Hero Content */}
