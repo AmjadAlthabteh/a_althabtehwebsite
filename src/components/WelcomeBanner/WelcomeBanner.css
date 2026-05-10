@@ -11,9 +11,7 @@
   align-items: center;
   justify-content: center;
   opacity: 1;
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 1s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 1.2s ease-out;
   pointer-events: none;
   overflow: hidden;
 }
@@ -21,7 +19,6 @@
 .welcome-banner.hide {
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.2);
 }
 
 .canvas-container {
@@ -30,57 +27,102 @@
   left: 0;
   width: 100%;
   height: 100%;
+  animation: fadeIn 0.8s ease-out;
 }
 
-
-/* Progress bar */
-.progress-container {
-  width: 350px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  overflow: visible;
-  position: relative;
-}
-
-.progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 255, 255, 1)
-  );
-  background-size: 200% 100%;
-  border-radius: 10px;
-  transition: width 0.1s linear;
-  animation: gradient-slide 2s linear infinite;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-
-@keyframes gradient-slide {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-.progress-glow {
+.welcome-message {
   position: absolute;
-  top: 50%;
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent);
-  filter: blur(20px);
-  transform: translate(-50%, -50%);
-  transition: left 0.1s linear;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: fadeIn 1s ease-out;
+}
+
+.welcome-text {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(255, 255, 255, 0.2),
+    0 0 60px rgba(100, 150, 255, 0.15);
+  animation: textFloatIn 1.2s ease-out;
+}
+
+.final-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.final-text {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 300;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin: 0;
+  opacity: 0.9;
+  animation: textSlideUp 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes textFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes textSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .progress-container {
-    width: 280px;
+  .welcome-text {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+    padding: 0 1rem;
+  }
+
+  .final-text {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+    padding: 0 1.5rem;
   }
 }

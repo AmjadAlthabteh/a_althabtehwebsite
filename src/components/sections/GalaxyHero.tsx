@@ -10,14 +10,13 @@ const GalaxyHero = () => {
         {/* Deep space gradient base */}
         <div className="deep-space-layer"></div>
 
-        {/* Nebula fog layers */}
-        <div className="nebula-layer nebula-1"></div>
-        <div className="nebula-layer nebula-2"></div>
-        <div className="nebula-layer nebula-3"></div>
+        {/* Depth layers for 3D feel */}
+        <div className="space-depth-layer depth-far"></div>
+        <div className="space-depth-layer depth-mid"></div>
 
         {/* Starfield */}
         <div className="starfield starfield-1">
-          {[...Array(50)].map((_, i) => (
+          {[...Array(80)].map((_, i) => (
             <div
               key={`star-${i}`}
               className="star"
@@ -30,18 +29,15 @@ const GalaxyHero = () => {
           ))}
         </div>
 
+        {/* Planets in background */}
+        <div className="planet planet-1"></div>
+        <div className="planet planet-2"></div>
+        <div className="planet planet-3"></div>
 
-        {/* Airplane flying through space */}
-        <div className="space-airplane">
-          <div className="airplane-body">
-            <div className="airplane-nose"></div>
-            <div className="airplane-fuselage"></div>
-            <div className="airplane-wing"></div>
-            <div className="airplane-tail"></div>
-            <div className="airplane-engine"></div>
-            <div className="airplane-trail"></div>
-          </div>
-        </div>
+        {/* Shooting stars */}
+        <div className="shooting-star" style={{ top: '20%', left: '80%', animationDelay: '0s' }}></div>
+        <div className="shooting-star" style={{ top: '60%', left: '30%', animationDelay: '5s' }}></div>
+        <div className="shooting-star" style={{ top: '40%', left: '70%', animationDelay: '8s' }}></div>
       </div>
 
       {/* Hero Content */}

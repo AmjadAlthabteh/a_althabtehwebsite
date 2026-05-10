@@ -1,495 +1,227 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
+import { Stars, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import './WelcomeBanner.css';
 
-// Waypoint marker component
-const Waypoint = ({ position, reached }: { position: [number, number, number]; reached: boolean }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.getElapsedTime() * 2;
-    }
-  });
-
-  return (
-    <group position={position}>
-      <mesh ref={meshRef}>
-        <torusGeometry args={[0.5, 0.1, 16, 32]} />
-        <meshBasicMaterial
-          color={reached ? "#00ff00" : "#00ffff"}
-          transparent
-          opacity={reached ? 0.3 : 0.8}
-        />
-      </mesh>
-      {!reached && (
-        <pointLight color="#00ffff" intensity={2} distance={5} />
-      )}
-    </group>
-  );
-};
-
-// 3D Rocket Component with landing capability
-const Rocket = ({ targetPlanet }: { targetPlanet: [number, number, number] }) => {
-  const rocketRef = useRef<THREE.Group>(null);
+// Simple spacecraft that launches upward
+const Spacecraft = () => {
+  const spacecraftRef = useRef<THREE.Group>(null);
   const engineFlameRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (rocketRef.current) {
+    if (spacecraftRef.current) {
       const time = state.clock.getElapsedTime();
 
-      // Flight path: start -> waypoints -> land on planet (SLOWED DOWN)
-      if (time < 2.5) {
-        // Phase 1: Launch from left - SLOWER (2.5 seconds)
-        const t = time / 2.5;
-        rocketRef.current.position.x = -20 + t * 15;
-        rocketRef.current.position.y = -2 + t * 3;
-        rocketRef.current.position.z = 5 - t * 5;
-        rocketRef.current.rotation.z = 0.3;
-      } else if (time < 5.5) {
-        // Phase 2: Cruise through waypoints - SLOWER (3 seconds)
-        const t = (time - 2.5) / 3;
-        rocketRef.current.position.x = -5 + t * 5;
-        rocketRef.current.position.y = 1 + Math.sin(t * Math.PI) * 2;
-        rocketRef.current.position.z = 0 - t * 2;
-        rocketRef.current.rotation.z = Math.sin(t * Math.PI * 2) * 0.1;
-      } else {
-        // Phase 3: Approach and land on target planet - SLOWER (2 seconds landing)
-        const t = Math.min((time - 5.5) / 2, 1);
-        const start = { x: 0, y: 3, z: -2 };
-        const end = { x: targetPlanet[0], y: targetPlanet[1] + 3, z: targetPlanet[2] };
+      // Launch straight up with acceleration
+      const acceleration = Math.pow(time * 0.8, 2);
+      spacecraftRef.current.position.y = -3 + acceleration;
+      spacecraftRef.current.position.z = -5 - time * 2;
 
-        rocketRef.current.position.x = start.x + (end.x - start.x) * t;
-        rocketRef.current.position.y = start.y + (end.y - start.y) * t;
-        rocketRef.current.position.z = start.z + (end.z - start.z) * t;
-
-        // Rotate to landing position - smoother
-        rocketRef.current.rotation.z = 0.3 * (1 - t);
-        rocketRef.current.rotation.x = -Math.PI * t; // Flip to vertical landing
-      }
+      // Slight rotation for dynamic effect
+      spacecraftRef.current.rotation.x = time * 0.5;
+      spacecraftRef.current.rotation.y = Math.sin(time) * 0.1;
     }
 
-    // Engine flame flicker
+    // Flickering engine flame
     if (engineFlameRef.current) {
       const time = state.clock.getElapsedTime();
-      engineFlameRef.current.scale.y = 1 + Math.sin(time * 20) * 0.2;
-
-      // Reduce flame when landing - adjusted timing
-      if (time > 7) {
-        const fadeOut = Math.max(0, 1 - (time - 7) / 0.5);
-        engineFlameRef.current.scale.set(fadeOut, fadeOut, fadeOut);
-      }
+      engineFlameRef.current.scale.y = 1 + Math.sin(time * 25) * 0.3;
     }
   });
 
   return (
-    <group ref={rocketRef} position={[-20, -2, 5]}>
-      {/* Main body - cylinder for realistic rocket */}
+    <group ref={spacecraftRef} position={[0, -3, -5]}>
+      {/* Main body */}
       <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.4, 0.5, 3, 32]} />
+        <cylinderGeometry args={[0.3, 0.4, 2, 32]} />
         <meshStandardMaterial
-          color="#f0f0f0"
-          metalness={0.95}
-          roughness={0.15}
-          emissive="#333333"
-          emissiveIntensity={0.1}
+          color="#e0e0e0"
+          metalness={0.9}
+          roughness={0.2}
         />
       </mesh>
 
       {/* Nose cone */}
-      <mesh position={[0, 2, 0]}>
-        <coneGeometry args={[0.4, 1.2, 32]} />
+      <mesh position={[0, 1.5, 0]}>
+        <coneGeometry args={[0.3, 1, 32]} />
         <meshStandardMaterial
-          color="#ff3333"
-          metalness={0.9}
-          roughness={0.2}
-          emissive="#ff0000"
-          emissiveIntensity={0.4}
-        />
-      </mesh>
-
-      {/* Windows */}
-      <mesh position={[0, 0.8, 0.41]}>
-        <circleGeometry args={[0.2, 32]} />
-        <meshStandardMaterial
-          color="#00ffff"
-          emissive="#00ffff"
-          emissiveIntensity={1.5}
-          transparent
-          opacity={0.95}
-        />
-      </mesh>
-
-      {/* Side stripes */}
-      <mesh position={[0, 0, 0.41]}>
-        <cylinderGeometry args={[0.35, 0.45, 2.8, 32]} />
-        <meshStandardMaterial
-          color="#2244aa"
+          color="#ff4444"
           metalness={0.8}
           roughness={0.3}
         />
       </mesh>
 
-      {/* Fins - 4 large stabilizer fins */}
-      {[0, 90, 180, 270].map((angle, i) => (
+      {/* Window */}
+      <mesh position={[0, 0.5, 0.31]}>
+        <circleGeometry args={[0.15, 32]} />
+        <meshStandardMaterial
+          color="#00ccff"
+          emissive="#00ccff"
+          emissiveIntensity={2}
+        />
+      </mesh>
+
+      {/* Fins */}
+      {[0, 120, 240].map((angle, i) => (
         <mesh
           key={i}
           position={[
-            Math.sin((angle * Math.PI) / 180) * 0.5,
-            -1.3,
-            Math.cos((angle * Math.PI) / 180) * 0.5
+            Math.sin((angle * Math.PI) / 180) * 0.4,
+            -1,
+            Math.cos((angle * Math.PI) / 180) * 0.4
           ]}
           rotation={[0, (angle * Math.PI) / 180, 0]}
         >
-          <boxGeometry args={[0.05, 1, 1]} />
+          <boxGeometry args={[0.05, 0.8, 0.8]} />
           <meshStandardMaterial
-            color="#888888"
-            metalness={0.95}
-            roughness={0.15}
-          />
-        </mesh>
-      ))}
-
-      {/* Engine nozzles - 3 main engines */}
-      {[0, 120, 240].map((angle, i) => (
-        <mesh
-          key={`engine-${i}`}
-          position={[
-            Math.sin((angle * Math.PI) / 180) * 0.25,
-            -1.7,
-            Math.cos((angle * Math.PI) / 180) * 0.25
-          ]}
-        >
-          <cylinderGeometry args={[0.15, 0.12, 0.4, 16]} />
-          <meshStandardMaterial
-            color="#1a1a1a"
+            color="#666666"
             metalness={0.9}
-            roughness={0.4}
+            roughness={0.2}
           />
         </mesh>
       ))}
 
-      {/* Engine flames - improved */}
-      <group ref={engineFlameRef} position={[0, -2, 0]}>
-        {/* Main flame */}
+      {/* Engine flames */}
+      <group ref={engineFlameRef} position={[0, -1.5, 0]}>
         <mesh>
-          <coneGeometry args={[0.6, 2, 16]} />
+          <coneGeometry args={[0.5, 2, 16]} />
           <meshBasicMaterial
-            color="#ff4400"
+            color="#ff5500"
             transparent
             opacity={0.9}
           />
         </mesh>
-        {/* Mid flame */}
-        <mesh position={[0, -0.4, 0]}>
-          <coneGeometry args={[0.45, 1.8, 16]} />
+        <mesh position={[0, -0.3, 0]}>
+          <coneGeometry args={[0.35, 1.6, 16]} />
           <meshBasicMaterial
-            color="#ff8800"
+            color="#ffaa00"
             transparent
-            opacity={0.85}
+            opacity={0.9}
           />
         </mesh>
-        {/* Core flame */}
-        <mesh position={[0, -0.6, 0]}>
-          <coneGeometry args={[0.3, 1.5, 16]} />
+        <mesh position={[0, -0.5, 0]}>
+          <coneGeometry args={[0.2, 1.2, 16]} />
           <meshBasicMaterial
             color="#ffff00"
             transparent
             opacity={0.95}
           />
         </mesh>
-        {/* Engine glow */}
         <pointLight
           color="#ff6600"
-          intensity={8}
-          distance={15}
+          intensity={10}
+          distance={20}
           position={[0, -1, 0]}
         />
       </group>
-
-      {/* Headlight */}
-      <spotLight
-        color="#ffffff"
-        intensity={3}
-        distance={20}
-        angle={0.5}
-        penumbra={0.5}
-        position={[0, 2, 0]}
-        target-position={[0, -10, 0]}
-      />
     </group>
   );
 };
 
-// 3D Planet Component with realistic details
-const Planet = ({
-  position,
-  size,
-  color,
-  emissive,
-  rotationSpeed = 0.002,
-  hasRings = false,
-  isTarget = false
-}: {
-  position: [number, number, number];
-  size: number;
-  color: string;
-  emissive: string;
-  rotationSpeed?: number;
-  hasRings?: boolean;
-  isTarget?: boolean;
-}) => {
-  const planetRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
-
-  // Create a more detailed planet surface with deterministic pattern
-  const planetTexture = useMemo(() => {
-    // Use position to create a unique seed for each planet
-    const seed = Math.floor(position[0] * 100 + position[1] * 10 + position[2]);
-    const textureData = createPlanetTextureData(seed);
-    const texture = new THREE.DataTexture(
-      textureData,
-      256,
-      256,
-      THREE.RGBAFormat
-    );
-    texture.needsUpdate = true;
-    return texture;
-  }, [position]);
-
-  useFrame(() => {
-    if (planetRef.current) {
-      planetRef.current.rotation.y += rotationSpeed;
-    }
-    if (ringRef.current && hasRings) {
-      ringRef.current.rotation.z += rotationSpeed * 0.5;
-    }
-  });
-
-  return (
-    <group position={position}>
-      {/* Planet surface with detail */}
-      <mesh ref={planetRef}>
-        <sphereGeometry args={[size, 32, 32]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={0.15}
-          roughness={0.8}
-          metalness={0.05}
-          bumpMap={planetTexture}
-          bumpScale={0.1}
-        />
-      </mesh>
-
-      {/* Cloud layer for some planets */}
-      {size > 1.5 && (
-        <mesh>
-          <sphereGeometry args={[size + 0.05, 16, 16]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            transparent
-            opacity={0.15}
-            roughness={1}
-          />
-        </mesh>
-      )}
-
-      {/* Atmosphere glow - larger and more visible */}
-      <mesh scale={1.15}>
-        <sphereGeometry args={[size, 16, 16]} />
-        <meshBasicMaterial
-          color={emissive}
-          transparent
-          opacity={0.2}
-          side={THREE.BackSide}
-        />
-      </mesh>
-
-      {/* Rings for gas giants */}
-      {hasRings && (
-        <mesh ref={ringRef} rotation={[Math.PI / 2.3, 0, 0]}>
-          <ringGeometry args={[size * 1.3, size * 2, 32]} />
-          <meshStandardMaterial
-            color={color}
-            transparent
-            opacity={0.6}
-            side={THREE.DoubleSide}
-            emissive={emissive}
-            emissiveIntensity={0.1}
-          />
-        </mesh>
-      )}
-
-      {/* Target marker if this is the landing planet */}
-      {isTarget && (
-        <>
-          <mesh position={[0, size + 0.5, 0]}>
-            <coneGeometry args={[0.3, 0.6, 4]} />
-            <meshBasicMaterial color="#00ff00" />
-          </mesh>
-          <pointLight
-            color="#00ff00"
-            intensity={3}
-            distance={10}
-            position={[0, size + 1, 0]}
-          />
-        </>
-      )}
-
-      {/* Planet ambient light */}
-      <pointLight
-        color={emissive}
-        intensity={2}
-        distance={size * 8}
-      />
-    </group>
-  );
-};
-
-// Helper function to create planet texture data with deterministic pattern
-const createPlanetTextureData = (seed: number) => {
-  return new Uint8Array(256 * 256 * 4).map((_, i) => {
-    // Create a deterministic pattern based on seed and index
-    const x = i % 256;
-    const y = Math.floor(i / 256) % 256;
-    const channel = Math.floor(i / (256 * 256));
-    return ((x * seed + y * (seed + 1) + channel * (seed + 2)) % 256);
-  });
-};
-
-// 3D Scene Component
-const SpaceScene = () => {
-  const [time, setTime] = useState(0);
+// Floating particles for welcome scene
+const FloatingParticles = () => {
+  const particlesRef = useRef<THREE.Points>(null);
 
   useFrame((state) => {
-    setTime(state.clock.getElapsedTime());
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+      particlesRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.1) * 0.1;
+    }
   });
 
-  const targetPlanet: [number, number, number] = [8, -1, -15];
+  const particleCount = 500;
+  const positions = new Float32Array(particleCount * 3);
 
-  // Waypoint positions along flight path
-  const waypoints: [number, number, number][] = [
-    [-10, 0, 2],
-    [-3, 2, -2],
-    [2, 2, -6],
-  ];
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 30;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+  }
 
   return (
-    <>
-      <PerspectiveCamera makeDefault position={[0, 3, 18]} />
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        enableRotate={false}
-        autoRotate
-        autoRotateSpeed={0.3}
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        color="#ffffff"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
       />
+    </points>
+  );
+};
 
-      {/* Lighting - enhanced */}
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[15, 15, 10]} intensity={1.5} castShadow />
-      <directionalLight position={[-10, 5, -5]} intensity={0.8} color="#6688ff" />
+// 3D Launch Scene
+const LaunchScene = () => {
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 0, 8]} />
+
+      <ambientLight intensity={0.3} />
+      <directionalLight position={[5, 5, 5]} intensity={1} />
       <pointLight position={[0, 0, 0]} intensity={0.5} color="#ffffff" />
 
-      {/* Stars - more realistic */}
+      <Stars
+        radius={100}
+        depth={50}
+        count={2000}
+        factor={4}
+        saturation={0}
+        fade
+        speed={1}
+      />
+
+      <Spacecraft />
+    </>
+  );
+};
+
+// 3D Welcome Scene
+const WelcomeScene = () => {
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 0, 15]} />
+
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 10, 5]} intensity={1.5} />
+      <pointLight position={[-10, -10, -5]} intensity={0.8} color="#4444ff" />
+
       <Stars
         radius={150}
         depth={80}
         count={3000}
-        factor={6}
+        factor={5}
         saturation={0}
         fade
-        speed={0.5}
+        speed={0.3}
       />
 
-      {/* Waypoint markers along flight path */}
-      {waypoints.map((pos, i) => (
-        <Waypoint
-          key={i}
-          position={pos}
-          reached={time > i * 1.2 + 3}
-        />
-      ))}
+      <FloatingParticles />
 
-      {/* Planets - properly spaced in 3D space */}
-
-      {/* Planet 1: Blue Earth-like (close, left) */}
-      <Planet
-        position={[-12, 1, -8]}
-        size={2.2}
-        color="#2a5a8a"
-        emissive="#4a90e2"
-        rotationSpeed={0.001}
-      />
-
-      {/* Planet 2: Red Mars-like (middle distance) */}
-      <Planet
-        position={[5, 3, -10]}
-        size={1.8}
-        color="#c1440e"
-        emissive="#ff5722"
-        rotationSpeed={0.0012}
-      />
-
-      {/* Planet 3: Gas Giant with rings (far right) */}
-      <Planet
-        position={[15, -2, -20]}
-        size={3.5}
-        color="#d4a574"
-        emissive="#e8b887"
-        rotationSpeed={0.0005}
-        hasRings={true}
-      />
-
-      {/* Planet 4: Purple/violet planet (background) */}
-      <Planet
-        position={[-8, -4, -25]}
-        size={2.5}
-        color="#6a4c93"
-        emissive="#8b6bb7"
-        rotationSpeed={0.0008}
-      />
-
-      {/* Planet 5: Target landing planet - Green (center-ish) */}
-      <Planet
-        position={targetPlanet}
-        size={2.8}
-        color="#2d5a3d"
-        emissive="#4ae290"
-        rotationSpeed={0.001}
-        isTarget={true}
-      />
-
-      {/* Planet 6: Small orange moon (near target) */}
-      <Planet
-        position={[12, 1, -12]}
-        size={1.2}
-        color="#ff8c42"
-        emissive="#ffa562"
-        rotationSpeed={0.002}
-      />
-
-      {/* Rocket with target */}
-      <Rocket targetPlanet={targetPlanet} />
-
-      {/* Nebula effect in background */}
-      <mesh position={[20, 10, -40]}>
-        <sphereGeometry args={[15, 16, 16]} />
+      {/* Nebula effects */}
+      <mesh position={[8, 5, -20]}>
+        <sphereGeometry args={[12, 16, 16]} />
         <meshBasicMaterial
-          color="#ff00ff"
+          color="#6600ff"
           transparent
-          opacity={0.05}
+          opacity={0.08}
         />
       </mesh>
-      <mesh position={[-25, -8, -50]}>
-        <sphereGeometry args={[20, 16, 16]} />
+      <mesh position={[-10, -5, -25]}>
+        <sphereGeometry args={[15, 16, 16]} />
         <meshBasicMaterial
-          color="#00ffff"
+          color="#0088ff"
           transparent
-          opacity={0.04}
+          opacity={0.06}
         />
       </mesh>
     </>
@@ -497,45 +229,62 @@ const SpaceScene = () => {
 };
 
 const WelcomeBanner = () => {
-  const [hide, setHide] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState<'launch' | 'welcome' | 'final' | 'hide'>('launch');
 
   useEffect(() => {
-    // Progress animation - SLOWER
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 1.5;
-      });
-    }, 60);
+    // Phase 1: Launch - 3 seconds
+    const launchTimer = setTimeout(() => {
+      setPhase('welcome');
+    }, 3000);
 
-    // Hide banner after animation - LONGER (8 seconds total)
-    const timer = setTimeout(() => {
-      setHide(true);
-    }, 8000);
+    // Phase 2: Welcome in - 4 seconds
+    const welcomeTimer = setTimeout(() => {
+      setPhase('final');
+    }, 7000);
+
+    // Phase 3: Final message - 3 seconds
+    const finalTimer = setTimeout(() => {
+      setPhase('hide');
+    }, 10000);
 
     return () => {
-      clearTimeout(timer);
-      clearInterval(progressInterval);
+      clearTimeout(launchTimer);
+      clearTimeout(welcomeTimer);
+      clearTimeout(finalTimer);
     };
   }, []);
 
   return (
-    <div className={`welcome-banner ${hide ? 'hide' : ''}`}>
-      <div className="canvas-container">
-        <Canvas>
-          <SpaceScene />
-        </Canvas>
-      </div>
+    <div className={`welcome-banner ${phase === 'hide' ? 'hide' : ''}`}>
+      {/* Launch phase with 3D spacecraft */}
+      {phase === 'launch' && (
+        <div className="canvas-container">
+          <Canvas>
+            <LaunchScene />
+          </Canvas>
+        </div>
+      )}
 
-      {/* Progress bar */}
-      <div className="progress-container">
-        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-        <div className="progress-glow" style={{ left: `${progress}%` }}></div>
-      </div>
+      {/* Welcome phase with 3D space background */}
+      {phase === 'welcome' && (
+        <>
+          <div className="canvas-container">
+            <Canvas>
+              <WelcomeScene />
+            </Canvas>
+          </div>
+          <div className="welcome-message">
+            <h1 className="welcome-text">Welcome in</h1>
+          </div>
+        </>
+      )}
+
+      {/* Final message phase */}
+      {phase === 'final' && (
+        <div className="final-message">
+          <h2 className="final-text">Hope you enjoy exploring</h2>
+        </div>
+      )}
     </div>
   );
 };
