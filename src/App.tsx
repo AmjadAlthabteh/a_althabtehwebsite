@@ -1,4 +1,5 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
+import RocketIntro from './components/RocketIntro/RocketIntro';
 import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -19,27 +20,38 @@ const Contact = lazy(() => import('./components/sections/Contact'));
 const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'];
 
 function App() {
-  return (
-    <div className="app">
-      <ThemeToggle />
-      <KeyboardNav />
-      <ScrollProgress />
-      <WelcomeBanner />
-      <Sidebar />
-      <ScrollIndicator sections={sections} />
+  const [showIntro, setShowIntro] = useState(true);
+  const [fadeIn, setFadeIn] = useState(false);
 
-      <main className="main-content">
-        <GalaxyHero />
-        <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
-          <About />
-          <Stats />
-          <Projects />
-          <Experience />
-          <Skills />
-          <Contact />
-        </Suspense>
-      </main>
-    </div>
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+    setTimeout(() => setFadeIn(true), 50);
+  };
+
+  return (
+    <>
+      {showIntro && <RocketIntro onComplete={handleIntroComplete} />}
+      <div className={`app ${fadeIn ? 'fade-in' : ''}`}>
+        <ThemeToggle />
+        <KeyboardNav />
+        <ScrollProgress />
+        <WelcomeBanner />
+        <Sidebar />
+        <ScrollIndicator sections={sections} />
+
+        <main className="main-content">
+          <GalaxyHero />
+          <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+            <About />
+            <Stats />
+            <Projects />
+            <Experience />
+            <Skills />
+            <Contact />
+          </Suspense>
+        </main>
+      </div>
+    </>
   );
 }
 

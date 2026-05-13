@@ -44,39 +44,39 @@
 }
 
 [data-theme="dark"] {
-  /* Color Palette - Dark Mode */
-  --color-bg: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-surface: #334155;
+  /* Color Palette - Dark Mode - Darker & More Realistic */
+  --color-bg: #000000;
+  --color-bg-secondary: #0a0a0f;
+  --color-surface: #121218;
 
-  --color-primary: #3b82f6;
-  --color-secondary: #2563eb;
-  --color-accent: #60a5fa;
-  --color-blue: #3b82f6;
-  --color-blue-light: #60a5fa;
-  --color-purple: #8b5cf6;
-  --color-purple-light: #a78bfa;
-  --color-cyan: #06b6d4;
-  --color-highlight: #3b82f6;
-  --color-warning: #ef4444;
-  --color-info: #3b82f6;
+  --color-primary: #4a7ba7;
+  --color-secondary: #3d6a94;
+  --color-accent: #5b8bb8;
+  --color-blue: #4a7ba7;
+  --color-blue-light: #5b8bb8;
+  --color-purple: #6b5b8c;
+  --color-purple-light: #7d6d9e;
+  --color-cyan: #4a8a9e;
+  --color-highlight: #4a7ba7;
+  --color-warning: #c44444;
+  --color-info: #4a7ba7;
 
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #cbd5e0;
-  --color-text-muted: #64748b;
+  --color-text-primary: #e8e8ea;
+  --color-text-secondary: #b8bac0;
+  --color-text-muted: #6a6c75;
 
-  /* Glassmorphism */
-  --glass-bg: rgba(30, 41, 59, 0.8);
-  --glass-bg-light: rgba(51, 65, 85, 0.5);
-  --glass-border: rgba(71, 85, 105, 0.5);
-  --glass-blur: 12px;
+  /* Glassmorphism - Darker */
+  --glass-bg: rgba(10, 10, 15, 0.75);
+  --glass-bg-light: rgba(18, 18, 24, 0.6);
+  --glass-border: rgba(40, 40, 50, 0.4);
+  --glass-blur: 16px;
 
-  /* Hero specific - Night sky */
-  --hero-bg-start: #0f172a;
-  --hero-bg-mid: #1e293b;
-  --hero-bg-end: #334155;
-  --cloud-color: rgba(71, 85, 105, 0.4);
-  --airplane-color: #94a3b8;
+  /* Hero specific - Deep space */
+  --hero-bg-start: #000000;
+  --hero-bg-mid: #0a0a0f;
+  --hero-bg-end: #121218;
+  --cloud-color: rgba(40, 40, 50, 0.3);
+  --airplane-color: #6a6c75;
 
 
   /* Gradients */
@@ -93,15 +93,15 @@
   --spacing-xl: 3rem;
   --spacing-2xl: 4rem;
 
-  /* Typography */
-  --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Space Grotesk', 'DM Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  /* Typography - More humanized fonts */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Archivo', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
 
-  /* Animation */
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animation - Smoother, more natural */
+  --transition-fast: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-normal: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 body {
@@ -109,11 +109,12 @@ body {
   background: var(--color-bg);
   color: var(--color-text-primary);
   overflow-x: hidden;
-  line-height: 1.7;
-  font-weight: 300;
-  letter-spacing: -0.01em;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
@@ -127,22 +128,23 @@ html {
   position: relative;
 }
 
-/* Scrollbar Styling */
+/* Scrollbar Styling - Darker */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
-  border-radius: 4px;
+  background: rgba(70, 70, 80, 0.5);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary);
+  background: rgba(90, 90, 100, 0.7);
 }
 
 /* Selection */
@@ -159,25 +161,25 @@ html {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 h1 {
   font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 400;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
 h2 {
   font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 h3 {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 p {
@@ -188,11 +190,13 @@ p {
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: var(--transition-fast);
+  transition: color var(--transition-normal), transform var(--transition-fast);
+  display: inline-block;
 }
 
 a:hover {
-  color: var(--color-secondary);
+  color: var(--color-accent);
+  transform: translateY(-1px);
 }
 
 /* Buttons */
@@ -201,26 +205,34 @@ button {
   cursor: pointer;
   border: none;
   outline: none;
-  transition: var(--transition-normal);
+  transition: all var(--transition-normal);
 }
 
-/* Glass Card Effect */
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Glass Card Effect - Darker & More Subtle */
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  border-radius: 14px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
 }
 
 .glass-card:hover {
-  border-color: var(--color-blue);
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1);
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(74, 123, 167, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-6px);
+  background: rgba(18, 18, 24, 0.8);
 }
 
 /* Glow Effect */
@@ -252,7 +264,7 @@ section {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -263,7 +275,7 @@ section {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(60px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -274,7 +286,7 @@ section {
 @keyframes fadeInLeft {
   from {
     opacity: 0;
-    transform: translateX(-60px);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
@@ -285,7 +297,7 @@ section {
 @keyframes fadeInRight {
   from {
     opacity: 0;
-    transform: translateX(60px);
+    transform: translateX(40px);
   }
   to {
     opacity: 1;
@@ -296,7 +308,7 @@ section {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
@@ -309,7 +321,7 @@ section {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
   }
 }
 
@@ -352,11 +364,12 @@ section {
   }
 }
 
-/* Reveal Animation Classes */
+/* Reveal Animation Classes - Smoother & More Natural */
 .reveal {
   opacity: 0;
-  transform: translateY(60px);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(50px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal.active {
@@ -366,8 +379,9 @@ section {
 
 .reveal-left {
   opacity: 0;
-  transform: translateX(-60px);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal-left.active {
@@ -377,8 +391,9 @@ section {
 
 .reveal-right {
   opacity: 0;
-  transform: translateX(60px);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(50px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal-right.active {
@@ -388,8 +403,9 @@ section {
 
 .reveal-scale {
   opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(0.92);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal-scale.active {
