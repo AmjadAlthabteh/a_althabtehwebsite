@@ -1,8 +1,48 @@
 import { motion } from "framer-motion";
+import { useMemo } from "react";
+import type { CSSProperties } from "react";
 import "./GalaxyHero.css";
 
 // Cinematic Space Hero - C++ Graphics Engineer Portfolio
 const GalaxyHero = () => {
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 120 }).map((_, i) => {
+        const sizeRoll = Math.random();
+        const sizeClass = sizeRoll > 0.92 ? "star-large" : sizeRoll > 0.75 ? "star-medium" : "";
+        return {
+          key: `star-${i}`,
+          left: Math.random() * 100,
+          top: Math.random() * 100,
+          delay: Math.random() * 3,
+          duration: 3.2 + Math.random() * 3.8,
+          opacity: 0.35 + Math.random() * 0.65,
+          sizeClass
+        };
+      }),
+    []
+  );
+
+  const shootingStars = useMemo(
+    () => [
+      { top: "18%", left: "88%", delay: "0.2s", duration: "4.2s" },
+      { top: "36%", left: "72%", delay: "3.8s", duration: "3.8s" },
+      { top: "64%", left: "42%", delay: "6.4s", duration: "4.6s" },
+      { top: "24%", left: "56%", delay: "9.1s", duration: "4.0s" },
+      { top: "52%", left: "94%", delay: "11.8s", duration: "3.7s" }
+    ],
+    []
+  );
+
+  const spacecraft = useMemo(
+    () => [
+      { top: "26%", delay: "1.6s", duration: "26s", scale: 0.9, variant: "craft-a" },
+      { top: "58%", delay: "7.2s", duration: "32s", scale: 0.75, variant: "craft-b" },
+      { top: "40%", delay: "14.5s", duration: "28s", scale: 0.82, variant: "craft-c" }
+    ],
+    []
+  );
+
   return (
     <section id="home" className="galaxy-hero">
       {/* Multi-layer background */}
@@ -16,28 +56,66 @@ const GalaxyHero = () => {
 
         {/* Starfield */}
         <div className="starfield starfield-1">
-          {[...Array(80)].map((_, i) => (
+          {stars.map((s) => (
             <div
-              key={`star-${i}`}
-              className="star"
+              key={s.key}
+              className={`star ${s.sizeClass}`}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`
+                left: `${s.left}%`,
+                top: `${s.top}%`,
+                opacity: s.opacity,
+                animationDelay: `${s.delay}s`,
+                animationDuration: `${s.duration}s`
               }}
             />
           ))}
         </div>
 
-        {/* Planets in background */}
-        <div className="planet planet-1"></div>
-        <div className="planet planet-2"></div>
-        <div className="planet planet-3"></div>
+        {/* Orbit system (planets anchored to layout) */}
+        <div className="orbit-system" aria-hidden="true">
+          <div className="orbit orbit-1">
+            <div className="planet planet-1"></div>
+          </div>
+          <div className="orbit orbit-2">
+            <div className="planet planet-2"></div>
+          </div>
+          <div className="orbit orbit-3">
+            <div className="planet planet-3"></div>
+          </div>
+        </div>
 
         {/* Shooting stars */}
-        <div className="shooting-star" style={{ top: '20%', left: '80%', animationDelay: '0s' }}></div>
-        <div className="shooting-star" style={{ top: '60%', left: '30%', animationDelay: '5s' }}></div>
-        <div className="shooting-star" style={{ top: '40%', left: '70%', animationDelay: '8s' }}></div>
+        {shootingStars.map((s, idx) => (
+          <div
+            key={`shooting-star-${idx}`}
+            className="shooting-star"
+            style={{ top: s.top, left: s.left, animationDelay: s.delay, animationDuration: s.duration }}
+          ></div>
+        ))}
+
+        {/* Subtle background traffic */}
+        {spacecraft.map((c, idx) => (
+          <div
+            key={`spacecraft-${idx}`}
+            className={`spacecraft ${c.variant}`}
+            style={
+              {
+                top: c.top,
+                animationDelay: c.delay,
+                animationDuration: c.duration,
+                ["--craft-scale" as any]: c.scale
+              } satisfies CSSProperties
+            }
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 120 40" role="presentation" focusable="false">
+              <path className="spacecraft-trail" d="M6 22 C24 20, 42 20, 58 20" />
+              <path className="spacecraft-hull" d="M64 20 L80 14 L104 20 L80 26 Z" />
+              <path className="spacecraft-hull" d="M80 14 L86 9 L92 14" />
+              <circle className="spacecraft-core" cx="76" cy="20" r="2.4" />
+            </svg>
+          </div>
+        ))}
       </div>
 
       {/* Hero Content */}
@@ -50,6 +128,7 @@ const GalaxyHero = () => {
         >
           {/* Text glow backdrop */}
           <div className="text-glow-backdrop"></div>
+          <div className="hero-hud-frame" aria-hidden="true"></div>
 
           <motion.h1
             className="galaxy-hero-title"
@@ -75,7 +154,7 @@ const GalaxyHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
           >
-            Rendering Systems <span className="role-separator">•</span> GPU Architecture <span className="role-separator">•</span> Graphics Programming
+            Rendering Systems <span className="role-separator">//</span> GPU Architecture <span className="role-separator">//</span> Real-Time Systems
           </motion.p>
 
           <motion.div
