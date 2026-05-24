@@ -285,12 +285,12 @@
 
 .galaxy-hero-title {
   font-size: clamp(3rem, 6vw, 5.5rem);
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.1;
   color: #ffffff;
   margin: 0;
-  font-family: 'Archivo', 'Space Grotesk', -apple-system, sans-serif;
+  font-family: 'Space Grotesk', 'DM Sans', -apple-system, sans-serif;
   pointer-events: none;
   user-select: none;
   position: relative;

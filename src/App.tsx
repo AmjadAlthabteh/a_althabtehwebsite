@@ -1,6 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
 import RocketIntro from './components/RocketIntro/RocketIntro';
-import WelcomeBanner from './components/WelcomeBanner/WelcomeBanner';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import GalaxyHero from './components/sections/GalaxyHero';
@@ -35,7 +34,6 @@ function App() {
         <ThemeToggle />
         <KeyboardNav />
         <ScrollProgress />
-        <WelcomeBanner />
         <Sidebar />
         <ScrollIndicator sections={sections} />
 

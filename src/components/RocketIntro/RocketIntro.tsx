@@ -5,31 +5,38 @@ interface RocketIntroProps {
   onComplete: () => void;
 }
 
+type Phase = 'launch' | 'space' | 'landing' | 'landed' | 'complete';
+
 const RocketIntro: React.FC<RocketIntroProps> = ({ onComplete }) => {
-  const [phase, setPhase] = useState<'launch' | 'space' | 'landing' | 'landed' | 'complete'>('launch');
+  const [phase, setPhase] = useState<Phase>('launch');
 
   useEffect(() => {
-    const timeline = [
+    const timeline: Array<{ phase: Exclude<Phase, 'complete'>; duration: number }> = [
       { phase: 'launch', duration: 2000 },
       { phase: 'space', duration: 2500 },
       { phase: 'landing', duration: 2000 },
-      { phase: 'landed', duration: 1500 },
-      { phase: 'complete', duration: 500 }
+      { phase: 'landed', duration: 1500 }
     ];
 
     let currentIndex = 0;
+    let timeoutId: number | undefined;
 
     const advancePhase = () => {
       if (currentIndex < timeline.length - 1) {
         currentIndex++;
-        setPhase(timeline[currentIndex].phase as any);
-        setTimeout(advancePhase, timeline[currentIndex].duration);
+        setPhase(timeline[currentIndex].phase);
+        timeoutId = window.setTimeout(advancePhase, timeline[currentIndex].duration);
       } else {
-        onComplete();
+        setPhase('complete');
+        timeoutId = window.setTimeout(onComplete, 900);
       }
     };
 
-    setTimeout(advancePhase, timeline[0].duration);
+    timeoutId = window.setTimeout(advancePhase, timeline[0].duration);
+
+    return () => {
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, [onComplete]);
 
   return (
@@ -91,7 +98,7 @@ const RocketIntro: React.FC<RocketIntroProps> = ({ onComplete }) => {
 
       {/* Welcome text - appears after landing */}
       {(phase === 'landed' || phase === 'complete') && (
-        <div className="welcome-text">
+        <div className="rocket-welcome">
           <h1>Welcome In</h1>
           <div className="loading-dots">
             <span>.</span>

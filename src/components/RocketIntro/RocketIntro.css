@@ -85,7 +85,7 @@
   0% {
     opacity: 1;
   }
-  70% {
+  90% {
     opacity: 1;
   }
   100% {
@@ -118,14 +118,14 @@
 .rocket.landing {
   animation: rocketLanding 2s ease-out forwards;
   top: -20%;
-  right: -10%;
-  transform: rotate(225deg);
+  left: 110%;
+  transform: translateX(-50%) rotate(225deg) scale(0.5);
 }
 
 .rocket.landed {
   top: 45%;
-  right: 30%;
-  transform: rotate(225deg) scale(0.8);
+  left: 70%;
+  transform: translateX(-50%) rotate(225deg) scale(0.8);
   animation: rocketSettle 1s ease-out forwards;
 }
 
@@ -148,20 +148,20 @@
     transform: translate(30%, -80%) rotate(-20deg) scale(0.6);
   }
   100% {
-    transform: translate(80%, -100%) rotate(0deg) scale(0.5);
+    transform: translate(120%, -160%) rotate(0deg) scale(0.5);
   }
 }
 
 @keyframes rocketLanding {
   0% {
     top: -20%;
-    right: -10%;
-    transform: rotate(225deg) scale(0.5);
+    left: 110%;
+    transform: translateX(-50%) rotate(225deg) scale(0.5);
   }
   100% {
     top: 45%;
-    right: 30%;
-    transform: rotate(225deg) scale(0.8);
+    left: 70%;
+    transform: translateX(-50%) rotate(225deg) scale(0.8);
   }
 }
 
@@ -446,16 +446,16 @@
 }
 
 /* Welcome Text */
-.welcome-text {
+.rocket-welcome {
   position: absolute;
   top: 50%;
-  left: 35%;
+  left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
   animation: welcomeSlideIn 1s ease-out forwards;
 }
 
-.welcome-text h1 {
+.rocket-welcome h1 {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 72px;
   font-weight: 600;
@@ -551,7 +551,7 @@
     font-size: 16px;
   }
 
-  .welcome-text h1 {
+  .rocket-welcome h1 {
     font-size: 48px;
   }
 
