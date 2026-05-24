@@ -6,6 +6,7 @@ import GalaxyHero from './components/sections/GalaxyHero';
 import KeyboardNav from './components/KeyboardNav/KeyboardNav';
 import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import ThemeToggle from './components/ThemeToggle/ThemeToggle';
+import PlanetariumBackground from './components/PlanetariumBackground/PlanetariumBackground';
 import './App.css';
 
 // Lazy load heavy components
@@ -30,6 +31,7 @@ function App() {
   return (
     <>
       {showIntro && <RocketIntro onComplete={handleIntroComplete} />}
+      <PlanetariumBackground />
       <div className={`app ${fadeIn ? 'fade-in' : ''}`}>
         <ThemeToggle />
         <KeyboardNav />

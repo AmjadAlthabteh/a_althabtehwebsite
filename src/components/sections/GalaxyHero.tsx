@@ -71,19 +71,6 @@ const GalaxyHero = () => {
           ))}
         </div>
 
-        {/* Orbit system (planets anchored to layout) */}
-        <div className="orbit-system" aria-hidden="true">
-          <div className="orbit orbit-1">
-            <div className="planet planet-1"></div>
-          </div>
-          <div className="orbit orbit-2">
-            <div className="planet planet-2"></div>
-          </div>
-          <div className="orbit orbit-3">
-            <div className="planet planet-3"></div>
-          </div>
-        </div>
-
         {/* Shooting stars */}
         {shootingStars.map((s, idx) => (
           <div
