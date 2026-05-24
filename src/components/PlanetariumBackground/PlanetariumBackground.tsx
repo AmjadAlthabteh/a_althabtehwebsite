@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
+import { PerformanceMonitor, Stars } from "@react-three/drei";
 import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -105,8 +105,9 @@ const generatePlanetTextures = (seed: number, kind: "rocky" | "gas" | "ice", the
   const o2 = rand() * 10;
   const o3 = rand() * 10;
 
-  const colorSize = 512;
-  const bumpSize = 256;
+  // Keep textures modest for smooth FPS on mid-tier GPUs/laptops.
+  const colorSize = 256;
+  const bumpSize = 128;
 
   const colorMap = makeCanvasTexture(colorSize, (ctx, size) => {
     const img = ctx.createImageData(size, size);
@@ -229,7 +230,7 @@ const generatePlanetTextures = (seed: number, kind: "rocky" | "gas" | "ice", the
 
   const cloudMap =
     kind === "rocky"
-      ? makeDataTexture(256, (data, size) => {
+      ? makeDataTexture(128, (data, size) => {
           for (let y = 0; y < size; y++) {
             const v = y / (size - 1);
             for (let x = 0; x < size; x++) {
@@ -270,7 +271,8 @@ const Planet = ({
   tilt,
   theme,
   reducedMotion,
-  hasRing
+  hasRing,
+  detail
 }: {
   seed: number;
   kind: "rocky" | "gas" | "ice";
@@ -283,6 +285,7 @@ const Planet = ({
   theme: "light" | "dark";
   reducedMotion: boolean;
   hasRing?: boolean;
+  detail: "high" | "low";
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -290,7 +293,7 @@ const Planet = ({
 
   const ringMap = useMemo(() => {
     if (!hasRing) return null;
-    return makeCanvasTexture(512, (ctx, size) => {
+    return makeCanvasTexture(256, (ctx, size) => {
       const img = ctx.createImageData(size, size);
       const d = img.data;
       for (let y = 0; y < size; y++) {
@@ -334,11 +337,14 @@ const Planet = ({
 
   const surfaceRoughness = kind === "gas" ? 0.35 : kind === "ice" ? 0.55 : 0.7;
   const bumpScale = kind === "gas" ? 0.08 : kind === "ice" ? 0.12 : 0.18;
+  const surfaceSegments = detail === "high" ? 56 : 36;
+  const atmosphereSegments = detail === "high" ? 40 : 24;
+  const ringSegments = detail === "high" ? 96 : 64;
 
   return (
     <group ref={groupRef}>
       <mesh>
-        <sphereGeometry args={[radius, 72, 72]} />
+        <sphereGeometry args={[radius, surfaceSegments, surfaceSegments]} />
         <meshPhysicalMaterial
           map={colorMap ?? undefined}
           bumpMap={bumpMap}
@@ -356,7 +362,7 @@ const Planet = ({
 
       {kind === "rocky" && cloudMap && (
         <mesh>
-          <sphereGeometry args={[radius * 1.02, 72, 72]} />
+          <sphereGeometry args={[radius * 1.02, surfaceSegments, surfaceSegments]} />
           <meshStandardMaterial
             map={cloudMap}
             transparent
@@ -368,7 +374,7 @@ const Planet = ({
       )}
 
       <mesh>
-        <sphereGeometry args={[radius * 1.055, 48, 48]} />
+        <sphereGeometry args={[radius * 1.055, atmosphereSegments, atmosphereSegments]} />
         <meshBasicMaterial
           color={theme === "dark" ? "#a9c8ff" : "#ffffff"}
           transparent
@@ -380,7 +386,7 @@ const Planet = ({
 
       {hasRing && ringMap && (
         <mesh rotation={[Math.PI * 0.5, 0, 0]}>
-          <ringGeometry args={[radius * 1.35, radius * 2.15, 128]} />
+          <ringGeometry args={[radius * 1.35, radius * 2.15, ringSegments]} />
           <meshBasicMaterial
             map={ringMap}
             transparent
@@ -414,11 +420,13 @@ const SpaceFog = ({ theme }: { theme: "light" | "dark" }) => {
 const PlanetariumScene = ({
   theme,
   inputRef,
-  reducedMotion
+  reducedMotion,
+  detail
 }: {
   theme: "light" | "dark";
   inputRef: MutableRefObject<InputState>;
   reducedMotion: boolean;
+  detail: "high" | "low";
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
@@ -455,7 +463,7 @@ const PlanetariumScene = ({
       <Stars
         radius={220}
         depth={90}
-        count={theme === "dark" ? 4200 : 2500}
+        count={detail === "low" ? (theme === "dark" ? 1600 : 1100) : theme === "dark" ? 3200 : 2000}
         factor={4.8}
         saturation={0}
         fade
@@ -477,6 +485,7 @@ const PlanetariumScene = ({
           theme={theme}
           reducedMotion={reducedMotion}
           hasRing
+          detail={detail}
         />
         <Planet
           seed={554433}
@@ -489,6 +498,7 @@ const PlanetariumScene = ({
           tilt={-0.25}
           theme={theme}
           reducedMotion={reducedMotion}
+          detail={detail}
         />
         <Planet
           seed={998877}
@@ -501,19 +511,22 @@ const PlanetariumScene = ({
           tilt={0.12}
           theme={theme}
           reducedMotion={reducedMotion}
+          detail={detail}
         />
       </group>
 
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={theme === "dark" ? 0.55 : 0.35}
-          luminanceThreshold={theme === "dark" ? 0.28 : 0.35}
-          luminanceSmoothing={0.85}
-          blendFunction={BlendFunction.SCREEN}
-        />
-        <Vignette eskil={false} offset={0.22} darkness={theme === "dark" ? 0.75 : 0.55} />
-        <Noise opacity={theme === "dark" ? 0.03 : 0.02} premultiply blendFunction={BlendFunction.OVERLAY} />
-      </EffectComposer>
+      {detail === "high" && !reducedMotion && (
+        <EffectComposer multisampling={0}>
+          <Bloom
+            intensity={theme === "dark" ? 0.45 : 0.3}
+            luminanceThreshold={theme === "dark" ? 0.3 : 0.38}
+            luminanceSmoothing={0.85}
+            blendFunction={BlendFunction.SCREEN}
+          />
+          <Vignette eskil={false} offset={0.22} darkness={theme === "dark" ? 0.7 : 0.52} />
+          <Noise opacity={theme === "dark" ? 0.025 : 0.018} premultiply blendFunction={BlendFunction.OVERLAY} />
+        </EffectComposer>
+      )}
     </>
   );
 };
@@ -534,6 +547,10 @@ const PlanetariumBackground = () => {
   const { theme } = useTheme();
   const reducedMotion = usePrefersReducedMotion();
   const inputRef = useRef<InputState>({ mouseX: 0, mouseY: 0, scroll: 0 });
+  const [detail, setDetail] = useState<"high" | "low">("high");
+  const [dpr, setDpr] = useState(() => (typeof window === "undefined" ? 1 : Math.min(window.devicePixelRatio || 1, 1.25)));
+  const effectiveDetail = reducedMotion ? "low" : detail;
+  const effectiveDpr = reducedMotion ? 1 : dpr;
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -563,14 +580,23 @@ const PlanetariumBackground = () => {
   return (
     <div className={`planetarium-bg ${theme}`} aria-hidden="true">
       <Canvas
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        dpr={effectiveDpr}
+        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
         camera={{ position: [0, 0, 14.5], fov: 50, near: 0.1, far: 500 }}
         onCreated={({ gl }) => {
           gl.setClearColor(0x000000, 0);
         }}
       >
-        <PlanetariumScene theme={theme} inputRef={inputRef} reducedMotion={reducedMotion} />
+        {!reducedMotion && (
+          <PerformanceMonitor
+            onChange={(api) => {
+              const nextDetail = api.factor < 0.5 ? "low" : "high";
+              setDetail(nextDetail);
+              setDpr(nextDetail === "low" ? 1 : Math.min(window.devicePixelRatio || 1, 1.25));
+            }}
+          />
+        )}
+        <PlanetariumScene theme={theme} inputRef={inputRef} reducedMotion={reducedMotion} detail={effectiveDetail} />
       </Canvas>
     </div>
   );
