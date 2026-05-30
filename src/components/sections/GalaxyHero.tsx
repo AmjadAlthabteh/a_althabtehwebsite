@@ -38,7 +38,9 @@ const GalaxyHero = () => {
     () => [
       { top: "26%", delay: "1.6s", duration: "26s", scale: 0.9, variant: "craft-a" },
       { top: "58%", delay: "7.2s", duration: "32s", scale: 0.75, variant: "craft-b" },
-      { top: "40%", delay: "14.5s", duration: "28s", scale: 0.82, variant: "craft-c" }
+      { top: "40%", delay: "14.5s", duration: "28s", scale: 0.82, variant: "craft-c" },
+      { top: "70%", delay: "4.8s", duration: "30s", scale: 0.85, variant: "craft-a" },
+      { top: "18%", delay: "11.2s", duration: "27s", scale: 0.78, variant: "craft-b" }
     ],
     []
   );
@@ -104,6 +106,11 @@ const GalaxyHero = () => {
           </div>
         ))}
       </div>
+
+      {/* Additional background planets */}
+      <div className="planet planet-4"></div>
+      <div className="planet planet-5"></div>
+      <div className="planet planet-6"></div>
 
       {/* Hero Content */}
       <div className="galaxy-hero-content">

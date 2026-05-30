@@ -200,6 +200,58 @@
   animation: planetFloat 28s ease-in-out infinite;
 }
 
+/* Additional background planets */
+.planet-4 {
+  width: 60px;
+  height: 60px;
+  background:
+    radial-gradient(circle at 35% 35%, #7da3c9, #5a7d9e 40%, #3d5670 75%, #2a3d52);
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  animation: planetFloat 22s ease-in-out infinite;
+  animation-delay: -5s;
+  box-shadow:
+    inset -10px -10px 25px rgba(0, 0, 0, 0.6),
+    inset 5px 5px 15px rgba(125, 163, 201, 0.2),
+    0 0 35px rgba(90, 125, 158, 0.3);
+  opacity: 0.7;
+}
+
+.planet-5 {
+  width: 50px;
+  height: 50px;
+  background:
+    radial-gradient(circle at 30% 30%, #9b7ec4, #7a5fa3 45%, #583d7a 80%, #3a2655);
+  position: absolute;
+  top: 60%;
+  left: 85%;
+  animation: planetFloat 26s ease-in-out infinite;
+  animation-delay: -12s;
+  box-shadow:
+    inset -8px -8px 20px rgba(0, 0, 0, 0.6),
+    inset 4px 4px 12px rgba(155, 126, 196, 0.2),
+    0 0 30px rgba(122, 95, 163, 0.35);
+  opacity: 0.65;
+}
+
+.planet-6 {
+  width: 45px;
+  height: 45px;
+  background:
+    radial-gradient(circle at 32% 32%, #e6a87a, #c98a5e 40%, #a66c44 75%, #7d4e2f);
+  position: absolute;
+  top: 35%;
+  left: 5%;
+  animation: planetFloat 24s ease-in-out infinite;
+  animation-delay: -18s;
+  box-shadow:
+    inset -7px -7px 18px rgba(0, 0, 0, 0.6),
+    inset 4px 4px 10px rgba(230, 168, 122, 0.2),
+    0 0 28px rgba(201, 138, 94, 0.3);
+  opacity: 0.6;
+}
+
 @keyframes planetFloat {
   0%, 100% {
     transform: translateY(0) translateX(0) scale(1);
@@ -402,14 +454,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.3rem;
+  gap: 1rem;
   position: relative;
   isolation: isolate;
-  padding: clamp(1.4rem, 2.4vw, 2rem) clamp(1.2rem, 2.6vw, 2.4rem);
-  border-radius: 16px;
+  padding: clamp(1.1rem, 2vw, 1.6rem) clamp(1rem, 2.2vw, 1.8rem);
+  border-radius: 14px;
   border: 1px solid rgba(59, 130, 246, 0.25);
   background:
-    radial-gradient(800px 280px at 50% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
+    radial-gradient(700px 240px at 50% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
     linear-gradient(180deg, rgba(30, 58, 138, 0.35) 0%, rgba(15, 23, 42, 0.45) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -417,17 +469,17 @@
     0 20px 60px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(59, 130, 246, 0.15) inset,
     0 0 40px rgba(59, 130, 246, 0.1);
-  max-width: 900px;
+  max-width: 750px;
 }
 
 /* Text glow backdrop */
 .text-glow-backdrop {
   position: absolute;
-  inset: -100px -100px -120px -100px;
+  inset: -80px -80px -100px -80px;
   background:
     radial-gradient(closest-side at 50% 35%, rgba(96, 165, 250, 0.28) 0%, rgba(96, 165, 250, 0) 65%),
     radial-gradient(closest-side at 45% 60%, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0) 68%);
-  filter: blur(24px);
+  filter: blur(22px);
   opacity: 1;
   pointer-events: none;
   z-index: -1;
@@ -456,7 +508,7 @@
 }
 
 .galaxy-hero-title {
-  font-size: clamp(2.8rem, 5.8vw, 5.2rem);
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -483,11 +535,11 @@
 }
 
 .galaxy-hero-subtitle {
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
   font-weight: 400;
   color: #e2e8f0;
-  max-width: 680px;
-  line-height: 1.6;
+  max-width: 620px;
+  line-height: 1.55;
   margin: 0;
   pointer-events: none;
   user-select: none;
@@ -503,7 +555,7 @@
 }
 
 .galaxy-hero-role {
-  font-size: clamp(0.85rem, 1.25vw, 0.98rem);
+  font-size: clamp(0.75rem, 1.1vw, 0.88rem);
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -535,12 +587,12 @@
 }
 
 .galaxy-social-link {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 9px;
   background: rgba(30, 58, 138, 0.3);
   backdrop-filter: blur(10px);
   border: 1.5px solid rgba(96, 165, 250, 0.2);
@@ -549,6 +601,11 @@
   pointer-events: auto;
   cursor: pointer;
   text-decoration: none;
+}
+
+.galaxy-social-link svg {
+  width: 20px;
+  height: 20px;
 }
 
 .galaxy-social-link:hover {
@@ -573,8 +630,8 @@
 
 .galaxy-hero-buttons {
   display: flex;
-  gap: 1.2rem;
-  margin-top: 1.2rem;
+  gap: 1rem;
+  margin-top: 0.8rem;
   pointer-events: auto;
   flex-wrap: wrap;
   justify-content: center;
@@ -658,8 +715,8 @@
 
 .galaxy-btn {
   position: relative;
-  padding: 0.85rem 2.2rem;
-  font-size: 0.95rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
   border-radius: 8px;
