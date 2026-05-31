@@ -156,6 +156,19 @@ const GalaxyHero = () => {
         ))}
       </div>
 
+      {/* Main planetary orbit system */}
+      <div className="orbit-system">
+        <div className="orbit orbit-1">
+          <div className="planet planet-1"></div>
+        </div>
+        <div className="orbit orbit-2">
+          <div className="planet planet-2"></div>
+        </div>
+        <div className="orbit orbit-3">
+          <div className="planet planet-3"></div>
+        </div>
+      </div>
+
       {/* Additional background planets */}
       <div className="planet planet-4"></div>
       <div className="planet planet-5"></div>
