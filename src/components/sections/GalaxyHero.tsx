@@ -45,6 +45,16 @@ const GalaxyHero = () => {
     []
   );
 
+  const robots = useMemo(
+    () => [
+      { top: "32%", delay: "2.5s", duration: "24s", scale: 0.85, variant: "robot-a" },
+      { top: "65%", delay: "9.8s", duration: "28s", scale: 0.75, variant: "robot-b" },
+      { top: "15%", delay: "16.2s", duration: "26s", scale: 0.8, variant: "robot-c" },
+      { top: "48%", delay: "6.0s", duration: "30s", scale: 0.9, variant: "robot-a" }
+    ],
+    []
+  );
+
   return (
     <section id="home" className="galaxy-hero">
       {/* Multi-layer background */}
@@ -105,12 +115,54 @@ const GalaxyHero = () => {
             </svg>
           </div>
         ))}
+
+        {/* Moving robots */}
+        {robots.map((r, idx) => (
+          <div
+            key={`robot-${idx}`}
+            className={`robot ${r.variant}`}
+            style={
+              {
+                top: r.top,
+                animationDelay: r.delay,
+                animationDuration: r.duration,
+                ["--robot-scale" as any]: r.scale
+              } satisfies CSSProperties
+            }
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 100 60" role="presentation" focusable="false">
+              {/* Robot body */}
+              <rect className="robot-body" x="35" y="20" width="30" height="28" rx="4" />
+              {/* Robot head */}
+              <rect className="robot-head" x="40" y="10" width="20" height="14" rx="3" />
+              {/* Robot eyes */}
+              <circle className="robot-eye" cx="46" cy="16" r="2" />
+              <circle className="robot-eye" cx="54" cy="16" r="2" />
+              {/* Robot antenna */}
+              <line className="robot-antenna" x1="50" y1="10" x2="50" y2="4" />
+              <circle className="robot-antenna-tip" cx="50" cy="4" r="2" />
+              {/* Robot arms */}
+              <rect className="robot-arm" x="28" y="26" width="7" height="16" rx="2" />
+              <rect className="robot-arm" x="65" y="26" width="7" height="16" rx="2" />
+              {/* Robot legs */}
+              <rect className="robot-leg" x="40" y="48" width="8" height="10" rx="2" />
+              <rect className="robot-leg" x="52" y="48" width="8" height="10" rx="2" />
+              {/* Jetpack trail */}
+              <path className="robot-trail" d="M30 34 C20 34, 10 34, 0 34" />
+              <path className="robot-trail" d="M30 38 C20 38, 10 38, 0 38" />
+            </svg>
+          </div>
+        ))}
       </div>
 
       {/* Additional background planets */}
       <div className="planet planet-4"></div>
       <div className="planet planet-5"></div>
       <div className="planet planet-6"></div>
+      <div className="planet planet-7"></div>
+      <div className="planet planet-8"></div>
+      <div className="planet planet-9"></div>
 
       {/* Hero Content */}
       <div className="galaxy-hero-content">
