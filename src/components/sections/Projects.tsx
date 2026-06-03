@@ -89,6 +89,7 @@ const projects: Project[] = [
     tech: ['python', 'fastapi', 'react', 'docker', 'kubernetes'],
     category: ['web', 'devops', 'systems'],
     github: 'https://github.com/AmjadAlthabteh/Opsmind',
+    image: '/images/opsmind.svg',
   },
   {
     id: 4,
