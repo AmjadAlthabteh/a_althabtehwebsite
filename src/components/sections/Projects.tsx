@@ -106,7 +106,7 @@ const projects: Project[] = [
     tech: ['react', 'typescript', 'netlify'],
     category: ['web', 'creative'],
     demo: 'https://themaple.netlify.app/',
-    image: '/images/maple_picture.png',
+    image: '/images/maple_picture.svg',
   },
 ];
 
