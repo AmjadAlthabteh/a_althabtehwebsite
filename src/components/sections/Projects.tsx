@@ -90,6 +90,24 @@ const projects: Project[] = [
     youtube: 'https://youtu.be/2cyNay55F6o',
     image: '/images/Mars_1.png',
   },
+  {
+    id: 8,
+    title: 'aero control simulation',
+    description: 'flight dynamics and control systems simulator implementing a full 6-dof rigid body model with pid attitude control, runge-kutta numerical integration, and real-time state estimation. models aerodynamic forces, actuator response, and lyapunov-based stability analysis for fixed-wing aircraft.',
+    tech: ['c++', 'control systems', 'numerical integration', 'simulation'],
+    category: ['systems', 'performance'],
+    github: 'https://github.com/AmjadAlthabteh/robotic_systems',
+    image: '/images/aero_control_simulation.svg',
+  },
+  {
+    id: 9,
+    title: 'robotic systems',
+    description: 'modular c++ robotics framework implementing forward and inverse kinematics via denavit-hartenberg parameters, rigid body dynamics using the euler-lagrange formulation, and real-time trajectory planning with rrt*. features jacobian-based ik solver, collision detection, and a 1 khz control loop.',
+    tech: ['c++', 'robotics', 'kinematics', 'dynamics', 'motion planning'],
+    category: ['systems', 'ai'],
+    github: 'https://github.com/AmjadAlthabteh/robotic_systems',
+    image: '/images/robotic_systems.svg',
+  },
 ];
 
 const filters = ['all', 'graphics', 'systems', 'web', 'ai', 'creative', 'performance'];

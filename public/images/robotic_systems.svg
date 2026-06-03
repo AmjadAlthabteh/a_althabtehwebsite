@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" style="background: #0a0a0a;">
+  <!-- Title -->
+  <text x="400" y="40" font-family="monospace" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">ROBOTIC SYSTEMS</text>
+
+  <!-- Robotic Arm -->
+  <g id="robot-arm" transform="translate(200, 310)">
+    <!-- Base -->
+    <rect x="-35" y="0" width="70" height="20" fill="#1a3a5c" stroke="#2563eb" stroke-width="1.5" rx="4"/>
+    <rect x="-20" y="-10" width="40" height="12" fill="#1a3a5c" stroke="#2563eb" stroke-width="1"/>
+
+    <!-- Joint 1 (shoulder) -->
+    <circle cx="0" cy="-10" r="12" fill="#0f2040" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="0" cy="-10" r="5" fill="#2563eb" opacity="0.6">
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Link 1 -->
+    <line x1="0" y1="-10" x2="-60" y2="-110" stroke="#2563eb" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+
+    <!-- Joint 2 (elbow) -->
+    <circle cx="-60" cy="-110" r="10" fill="#0f2040" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="-60" cy="-110" r="4" fill="#2563eb" opacity="0.6">
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Link 2 -->
+    <line x1="-60" y1="-110" x2="10" y2="-200" stroke="#2563eb" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+
+    <!-- Joint 3 (wrist) -->
+    <circle cx="10" cy="-200" r="8" fill="#0f2040" stroke="#2563eb" stroke-width="2"/>
+    <circle cx="10" cy="-200" r="3" fill="#2563eb" opacity="0.6">
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- End effector / gripper -->
+    <line x1="10" y1="-200" x2="30" y2="-235" stroke="#2563eb" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+    <line x1="30" y1="-235" x2="20" y2="-255" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+    <line x1="30" y1="-235" x2="40" y2="-255" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Workspace arc -->
+    <path d="M -100 0 A 140 140 0 0 1 100 -180" stroke="#2563eb" stroke-width="1" fill="none" stroke-dasharray="5 4" opacity="0.3"/>
+  </g>
+
+  <!-- Joint angle labels -->
+  <text x="178" y="256" font-family="monospace" font-size="10" fill="#4a7abf">θ₁</text>
+  <text x="118" y="172" font-family="monospace" font-size="10" fill="#4a7abf">θ₂</text>
+  <text x="213" y="90" font-family="monospace" font-size="10" fill="#4a7abf">θ₃</text>
+
+  <!-- Kinematics / Info Panel -->
+  <g id="info-panel" transform="translate(390, 80)">
+    <rect x="0" y="0" width="360" height="430" fill="#0d0d0d" stroke="#1e3a5f" stroke-width="1.5" rx="8"/>
+    <text x="180" y="28" font-family="monospace" font-size="14" fill="#7aa7e0" text-anchor="middle">KINEMATICS ENGINE</text>
+    <line x1="20" y1="38" x2="340" y2="38" stroke="#1e3a5f" stroke-width="1"/>
+
+    <!-- Forward kinematics -->
+    <text x="20" y="60" font-family="monospace" font-size="11" fill="#888">FORWARD KINEMATICS</text>
+    <rect x="20" y="68" width="320" height="55" fill="#0a1520" stroke="#1e3a5f" stroke-width="1" rx="4"/>
+    <text x="35" y="86" font-family="monospace" font-size="10" fill="#3b82f6">T = T₀₁ · T₁₂ · T₂₃ · T₃E</text>
+    <text x="35" y="100" font-family="monospace" font-size="10" fill="#555">DH Parameters: a, d, α, θ</text>
+    <text x="35" y="114" font-family="monospace" font-size="10" fill="#33ff99">End-effector pos: [0.42, -0.18, 0.61]</text>
+
+    <!-- Inverse kinematics -->
+    <text x="20" y="142" font-family="monospace" font-size="11" fill="#888">INVERSE KINEMATICS</text>
+    <rect x="20" y="150" width="320" height="55" fill="#0a1520" stroke="#1e3a5f" stroke-width="1" rx="4"/>
+    <text x="35" y="168" font-family="monospace" font-size="10" fill="#3b82f6">Jacobian: J(θ) ∈ ℝ⁶ˣⁿ</text>
+    <text x="35" y="182" font-family="monospace" font-size="10" fill="#555">Solver: Damped Least Squares</text>
+    <text x="35" y="196" font-family="monospace" font-size="10" fill="#33ff99">Iterations: 12 / Tolerance: 1e-4</text>
+
+    <!-- Dynamics -->
+    <text x="20" y="225" font-family="monospace" font-size="11" fill="#888">RIGID BODY DYNAMICS</text>
+    <rect x="20" y="233" width="320" height="55" fill="#0a1520" stroke="#1e3a5f" stroke-width="1" rx="4"/>
+    <text x="35" y="251" font-family="monospace" font-size="10" fill="#3b82f6">M(θ)θ̈ + C(θ,θ̇)θ̇ + G(θ) = τ</text>
+    <text x="35" y="265" font-family="monospace" font-size="10" fill="#555">Mass matrix / Coriolis / Gravity</text>
+    <text x="35" y="279" font-family="monospace" font-size="10" fill="#33ff99">Real-time torque: [12.4, 8.1, 3.2] Nm</text>
+
+    <!-- Metrics -->
+    <line x1="20" y1="305" x2="340" y2="305" stroke="#1e3a5f" stroke-width="1"/>
+    <text x="180" y="325" font-family="monospace" font-size="12" fill="#7aa7e0" text-anchor="middle">SYSTEM SPECS</text>
+
+    <text x="35" y="348" font-family="monospace" font-size="10" fill="#555">JOINTS:</text>
+    <text x="130" y="348" font-family="monospace" font-size="10" fill="#3b82f6">6-DOF</text>
+
+    <text x="220" y="348" font-family="monospace" font-size="10" fill="#555">CTRL FREQ:</text>
+    <text x="310" y="348" font-family="monospace" font-size="10" fill="#3b82f6">1 kHz</text>
+
+    <text x="35" y="368" font-family="monospace" font-size="10" fill="#555">INTEGRATION:</text>
+    <text x="130" y="368" font-family="monospace" font-size="10" fill="#3b82f6">RK4</text>
+
+    <text x="220" y="368" font-family="monospace" font-size="10" fill="#555">LANGUAGE:</text>
+    <text x="310" y="368" font-family="monospace" font-size="10" fill="#3b82f6">C++17</text>
+
+    <text x="35" y="388" font-family="monospace" font-size="10" fill="#555">COLLISION:</text>
+    <text x="130" y="388" font-family="monospace" font-size="10" fill="#33ff99">FCLS</text>
+
+    <text x="220" y="388" font-family="monospace" font-size="10" fill="#555">PLANNER:</text>
+    <text x="310" y="388" font-family="monospace" font-size="10" fill="#33ff99">RRT*</text>
+
+    <text x="35" y="408" font-family="monospace" font-size="10" fill="#555">PAYLOAD:</text>
+    <text x="130" y="408" font-family="monospace" font-size="10" fill="#3b82f6">5 kg max</text>
+
+    <text x="220" y="408" font-family="monospace" font-size="10" fill="#555">REACH:</text>
+    <text x="310" y="408" font-family="monospace" font-size="10" fill="#3b82f6">850 mm</text>
+  </g>
+
+  <!-- Status dots -->
+  <circle cx="30" cy="30" r="5" fill="#2563eb" opacity="0.8">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="770" cy="30" r="5" fill="#33ff99" opacity="0.8">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Grid lines (subtle) -->
+  <g opacity="0.05">
+    <line x1="0" y1="150" x2="800" y2="150" stroke="#2563eb" stroke-width="1"/>
+    <line x1="0" y1="300" x2="800" y2="300" stroke="#2563eb" stroke-width="1"/>
+    <line x1="0" y1="450" x2="800" y2="450" stroke="#2563eb" stroke-width="1"/>
+    <line x1="200" y1="0" x2="200" y2="600" stroke="#2563eb" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="600" stroke="#2563eb" stroke-width="1"/>
+    <line x1="600" y1="0" x2="600" y2="600" stroke="#2563eb" stroke-width="1"/>
+  </g>
+</svg>

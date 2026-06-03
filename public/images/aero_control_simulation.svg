@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" style="background: #0a0a0a;">
+  <!-- Title -->
+  <text x="400" y="40" font-family="monospace" font-size="22" fill="#ffffff" text-anchor="middle" font-weight="bold">AERO CONTROL SIMULATION</text>
+
+  <!-- Aircraft silhouette -->
+  <g id="aircraft" transform="translate(400, 130)">
+    <!-- Fuselage -->
+    <ellipse cx="0" cy="0" rx="90" ry="16" fill="#1a3a5c" stroke="#2563eb" stroke-width="1.5"/>
+    <!-- Wings -->
+    <polygon points="-60,0 20,-50 20,50" fill="#1a2a4a" stroke="#2563eb" stroke-width="1.5"/>
+    <!-- Tail -->
+    <polygon points="80,0 90,-25 90,25" fill="#1a2a4a" stroke="#2563eb" stroke-width="1.5"/>
+    <!-- Nose -->
+    <ellipse cx="-85" cy="0" rx="12" ry="8" fill="#2563eb" opacity="0.6"/>
+    <!-- Engine glow -->
+    <circle cx="85" cy="0" r="6" fill="#3b82f6" opacity="0.5">
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Flight path arc -->
+  <path d="M 80 280 Q 400 120 720 280" stroke="#2563eb" stroke-width="1.5" fill="none" stroke-dasharray="8 4" opacity="0.5"/>
+
+  <!-- Control System Diagram -->
+  <g id="control-loop" transform="translate(0, 320)">
+    <rect x="50" y="10" width="700" height="220" fill="#0d0d0d" stroke="#1e3a5f" stroke-width="1.5" rx="8"/>
+    <text x="400" y="38" font-family="monospace" font-size="15" fill="#7aa7e0" text-anchor="middle">FLIGHT CONTROL LOOP</text>
+
+    <!-- Reference -->
+    <rect x="70" y="55" width="100" height="40" fill="#0f2040" stroke="#2563eb" stroke-width="1.5" rx="5"/>
+    <text x="120" y="72" font-family="monospace" font-size="11" fill="#7aa7e0" text-anchor="middle">REFERENCE</text>
+    <text x="120" y="87" font-family="monospace" font-size="10" fill="#3b82f6" text-anchor="middle">θ_set</text>
+
+    <!-- Error summing junction -->
+    <circle cx="240" cy="75" r="18" fill="#0f2040" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="240" y="80" font-family="monospace" font-size="14" fill="#ffffff" text-anchor="middle">Σ</text>
+
+    <!-- PID Controller -->
+    <rect x="280" y="55" width="130" height="40" fill="#0f2040" stroke="#2563eb" stroke-width="1.5" rx="5"/>
+    <text x="345" y="72" font-family="monospace" font-size="11" fill="#7aa7e0" text-anchor="middle">PID CONTROLLER</text>
+    <text x="345" y="87" font-family="monospace" font-size="10" fill="#3b82f6" text-anchor="middle">Kp Ki Kd</text>
+
+    <!-- Actuator -->
+    <rect x="430" y="55" width="110" height="40" fill="#0f2040" stroke="#2563eb" stroke-width="1.5" rx="5"/>
+    <text x="485" y="72" font-family="monospace" font-size="11" fill="#7aa7e0" text-anchor="middle">ACTUATOR</text>
+    <text x="485" y="87" font-family="monospace" font-size="10" fill="#3b82f6" text-anchor="middle">δ_e δ_a δ_r</text>
+
+    <!-- Plant/Dynamics -->
+    <rect x="560" y="55" width="110" height="40" fill="#0f2040" stroke="#2563eb" stroke-width="1.5" rx="5"/>
+    <text x="615" y="72" font-family="monospace" font-size="11" fill="#7aa7e0" text-anchor="middle">DYNAMICS</text>
+    <text x="615" y="87" font-family="monospace" font-size="10" fill="#3b82f6" text-anchor="middle">6-DOF plant</text>
+
+    <!-- Arrows -->
+    <line x1="170" y1="75" x2="222" y2="75" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="258" y1="75" x2="280" y2="75" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="410" y1="75" x2="430" y2="75" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="540" y1="75" x2="560" y2="75" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- Feedback line -->
+    <line x1="670" y1="75" x2="680" y2="75" stroke="#2563eb" stroke-width="1.5"/>
+    <line x1="680" y1="75" x2="680" y2="135" stroke="#2563eb" stroke-width="1.5"/>
+    <line x1="240" y1="135" x2="680" y2="135" stroke="#2563eb" stroke-width="1.5"/>
+    <line x1="240" y1="93" x2="240" y2="135" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="460" y="155" font-family="monospace" font-size="10" fill="#4a7abf" text-anchor="middle">— — — SENSOR FEEDBACK — — —</text>
+
+    <!-- Metrics row -->
+    <line x1="70" y1="175" x2="730" y2="175" stroke="#1e3a5f" stroke-width="1"/>
+
+    <text x="110" y="195" font-family="monospace" font-size="11" fill="#555">METHOD:</text>
+    <text x="110" y="210" font-family="monospace" font-size="11" fill="#3b82f6">RK4</text>
+
+    <text x="230" y="195" font-family="monospace" font-size="11" fill="#555">TIMESTEP:</text>
+    <text x="230" y="210" font-family="monospace" font-size="11" fill="#3b82f6">0.001 s</text>
+
+    <text x="370" y="195" font-family="monospace" font-size="11" fill="#555">DOF:</text>
+    <text x="370" y="210" font-family="monospace" font-size="11" fill="#3b82f6">6</text>
+
+    <text x="460" y="195" font-family="monospace" font-size="11" fill="#555">LANGUAGE:</text>
+    <text x="460" y="210" font-family="monospace" font-size="11" fill="#3b82f6">C++17</text>
+
+    <text x="590" y="195" font-family="monospace" font-size="11" fill="#555">STABILITY:</text>
+    <text x="590" y="210" font-family="monospace" font-size="11" fill="#33ff99">LYAPUNOV</text>
+  </g>
+
+  <!-- State vector overlay -->
+  <g transform="translate(50, 210)">
+    <rect x="0" y="0" width="170" height="80" fill="#0d1a2e" stroke="#1e3a5f" stroke-width="1" rx="6" opacity="0.9"/>
+    <text x="85" y="18" font-family="monospace" font-size="11" fill="#7aa7e0" text-anchor="middle">STATE VECTOR</text>
+    <text x="15" y="35" font-family="monospace" font-size="10" fill="#888">φ (roll):</text>
+    <text x="100" y="35" font-family="monospace" font-size="10" fill="#3b82f6">2.3°</text>
+    <text x="15" y="50" font-family="monospace" font-size="10" fill="#888">θ (pitch):</text>
+    <text x="100" y="50" font-family="monospace" font-size="10" fill="#3b82f6">-1.1°</text>
+    <text x="15" y="65" font-family="monospace" font-size="10" fill="#888">ψ (yaw):</text>
+    <text x="100" y="65" font-family="monospace" font-size="10" fill="#3b82f6">0.4°</text>
+  </g>
+
+  <!-- Defs for arrow marker -->
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Blinking status dots -->
+  <circle cx="30" cy="30" r="5" fill="#2563eb" opacity="0.8">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="770" cy="30" r="5" fill="#33ff99" opacity="0.8">
+    <animate attributeName="opacity" values="0.2;1;0.2" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>
