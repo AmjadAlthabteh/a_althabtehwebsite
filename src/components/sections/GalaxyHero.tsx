@@ -189,13 +189,25 @@ const GalaxyHero = () => {
           <div className="text-glow-backdrop"></div>
           <div className="hero-hud-frame" aria-hidden="true"></div>
 
+          <motion.div
+            className="galaxy-hero-welcome"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+          >
+            <span className="welcome-rocket">🚀</span>
+            <span className="welcome-text">welcome</span>
+          </motion.div>
+
           <motion.h1
             className="galaxy-hero-title"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           >
-            Amjad <span className="highlight-text">Althabteh</span>
+            <span className="name-first">Amjad</span>
+            <br />
+            <span className="highlight-text">Althabteh</span>
           </motion.h1>
 
           <motion.p
