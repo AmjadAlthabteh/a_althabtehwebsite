@@ -9,6 +9,7 @@ interface Project {
   description: string;
   tech: string[];
   category: string[];
+  metrics?: string[];
   featured?: boolean;
   github?: string;
   demo?: string;
@@ -17,6 +18,16 @@ interface Project {
 }
 
 const projects: Project[] = [
+  {
+    id: 10,
+    title: 'low-latency benchmark lab',
+    description: 'c++ benchmarking harness for measuring tail latency, throughput, jitter, warmup effects, and allocator impact under realistic load. includes percentile latency reports, p50/p95/p99 comparisons, csv exports, and repeatable tests for lock-free queues, orderbook paths, and hot-loop data structures.',
+    tech: ['c++20', 'benchmarking', 'throughput', 'latency', 'profiling'],
+    category: ['systems', 'performance'],
+    metrics: ['p50/p95/p99 latency', 'throughput tests', 'jitter analysis'],
+    github: 'https://github.com/AmjadAlthabteh/hft-orderbook-engine_2',
+    image: '/images/low_latency_benchmark.svg',
+  },
   {
     id: 8,
     title: 'aero control simulation',
@@ -58,9 +69,10 @@ const projects: Project[] = [
   {
     id: 5,
     title: 'hft orderbook engine',
-    description: 'high-frequency trading algorithm with low-latency limit orderbook. implements fifo matching logic, spread crossing detection, and trade aggregation using cache-efficient containers. features microsecond-precision benchmarking and lock-free architecture for optimal performance.',
+    description: 'high-frequency trading algorithm with low-latency limit orderbook. implements fifo matching logic, spread crossing detection, and trade aggregation using cache-efficient containers. features microsecond-precision benchmarking, throughput tests, and lock-free architecture for optimal performance.',
     tech: ['c++20', 'low-latency', 'lock-free', 'cache-optimization', 'performance'],
     category: ['systems', 'performance'],
+    metrics: ['microsecond timing', 'cache-aware paths', 'lock-free design'],
     github: 'https://github.com/AmjadAlthabteh/hft-orderbook-engine_2',
     image: '/images/hft_orderbook.svg',
   },
@@ -194,6 +206,15 @@ const Projects = () => {
                   <h3 className="project-title">{project.title}</h3>
                 </div>
                 <p className="project-description">{project.description}</p>
+                {project.metrics && (
+                  <div className="project-metrics" aria-label={`${project.title} benchmark metrics`}>
+                    {project.metrics.map((metric) => (
+                      <span key={metric} className="metric-chip">
+                        {metric}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <div className="project-tech">
                   {project.tech.map((tech, index) => (
                     <span key={index} className="tech-tag">

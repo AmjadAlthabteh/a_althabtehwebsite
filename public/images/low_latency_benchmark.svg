@@ -1,0 +1,39 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" rx="28" fill="#07111F"/>
+  <rect x="54" y="54" width="1092" height="592" rx="20" fill="#0D1726" stroke="#1D3557" stroke-width="2"/>
+  <g opacity="0.45">
+    <path d="M128 160H1072" stroke="#203A5F"/>
+    <path d="M128 264H1072" stroke="#203A5F"/>
+    <path d="M128 368H1072" stroke="#203A5F"/>
+    <path d="M128 472H1072" stroke="#203A5F"/>
+    <path d="M128 576H1072" stroke="#203A5F"/>
+    <path d="M238 110V592" stroke="#203A5F"/>
+    <path d="M404 110V592" stroke="#203A5F"/>
+    <path d="M570 110V592" stroke="#203A5F"/>
+    <path d="M736 110V592" stroke="#203A5F"/>
+    <path d="M902 110V592" stroke="#203A5F"/>
+  </g>
+  <path d="M132 520C180 508 207 478 248 470C315 458 338 515 397 496C461 476 468 386 530 365C591 345 631 420 690 396C750 371 763 260 824 238C881 218 924 266 978 247C1018 233 1048 197 1072 162" stroke="#06B6D4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M132 520C180 508 207 478 248 470C315 458 338 515 397 496C461 476 468 386 530 365C591 345 631 420 690 396C750 371 763 260 824 238C881 218 924 266 978 247C1018 233 1048 197 1072 162" stroke="#67E8F9" stroke-width="2" stroke-linecap="round"/>
+  <path d="M134 423C197 410 241 398 303 407C372 416 403 450 466 437C531 424 552 361 616 350C681 339 718 389 778 374C833 360 856 300 909 286C968 270 1027 293 1070 274" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+  <g>
+    <rect x="124" y="104" width="252" height="78" rx="12" fill="#111F31" stroke="#2563EB"/>
+    <text x="148" y="137" fill="#E5F2FF" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">p99 latency</text>
+    <text x="148" y="166" fill="#67E8F9" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">microsecond timing</text>
+  </g>
+  <g>
+    <rect x="408" y="104" width="252" height="78" rx="12" fill="#111F31" stroke="#10B981"/>
+    <text x="432" y="137" fill="#E5F2FF" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">throughput</text>
+    <text x="432" y="166" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">ops / second</text>
+  </g>
+  <g>
+    <rect x="692" y="104" width="252" height="78" rx="12" fill="#111F31" stroke="#F59E0B"/>
+    <text x="716" y="137" fill="#E5F2FF" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">benchmarking</text>
+    <text x="716" y="166" fill="#FCD34D" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">repeatable runs</text>
+  </g>
+  <circle cx="824" cy="238" r="10" fill="#FCD34D"/>
+  <circle cx="978" cy="247" r="10" fill="#FCD34D"/>
+  <circle cx="1072" cy="162" r="10" fill="#FCD34D"/>
+  <text x="124" y="614" fill="#7DD3FC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">latency distribution</text>
+  <text x="862" y="614" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">load profile</text>
+</svg>
