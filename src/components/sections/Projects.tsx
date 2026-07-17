@@ -64,6 +64,7 @@ const projects: Project[] = [
     category: ['graphics', 'engine', 'web'],
     featured: true,
     github: 'https://github.com/AmjadAlthabteh/glint_3d_frk',
+    youtube: 'https://www.youtube.com/watch?v=6rtlWoqqxVo',
     image: '/images/glint3d.png',
   },
   {
@@ -93,6 +94,7 @@ const projects: Project[] = [
     tech: ['3d graphics', 'physics', 'procedural generation', 'opengl', 'rendering'],
     category: ['graphics', 'systems'],
     github: 'https://github.com/AmjadAlthabteh/planets-lunar',
+    youtube: 'https://www.youtube.com/watch?v=rVLO75TXrLE',
     image: '/images/orbital_collision.png',
   },
   {
