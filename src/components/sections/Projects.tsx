@@ -19,6 +19,16 @@ interface Project {
 
 const projects: Project[] = [
   {
+    id: 11,
+    title: 'ironpath',
+    description: 'rust command-line autonomous robot telemetry and control simulator. models waypoint navigation, pid steering and speed control, deterministic sensor noise, static circular obstacle avoidance, multithreaded sensor processing, and csv telemetry logging while reporting average, p95, and p99 control-loop latency.',
+    tech: ['rust', 'robotics', 'control systems', 'pid', 'multithreading'],
+    category: ['systems', 'performance'],
+    metrics: ['100 hz control loop', 'p95/p99 latency', 'csv telemetry'],
+    github: 'https://github.com/AmjadAlthabteh/ironpath-controlsystems',
+    image: '/images/ironpath_ss.png',
+  },
+  {
     id: 10,
     title: 'low-latency benchmark lab',
     description: 'c++ benchmarking harness for measuring tail latency, throughput, jitter, warmup effects, and allocator impact under realistic load. includes percentile latency reports, p50/p95/p99 comparisons, csv exports, and repeatable tests for lock-free queues, orderbook paths, and hot-loop data structures.',
