@@ -22,7 +22,7 @@ const experiences: ExperienceItem[] = [
     highlights: [
       'Architected real-time rendering engine in C++20 achieving 60fps at 4K resolution with GPU-driven rendering',
       'Built internal UI and asset-authoring tools reducing asset pipeline time by 40% using JSON-driven workflows',
-      'Implemented data-driven rendering optimizations with AI-guided heuristics, improving frame time by 25%',
+      'Implemented data-driven rendering optimizations with profiling heuristics, improving frame time by 25%',
       'Designed modular rendering subsystems with clear ownership boundaries, reducing coupling by 35%',
       'Added GPU-side profiling and frame-timing instrumentation tracking 50+ performance metrics',
     ],

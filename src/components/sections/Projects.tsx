@@ -42,7 +42,7 @@ const projects: Project[] = [
     title: 'robotic systems',
     description: 'modular c++ robotics framework implementing forward and inverse kinematics via denavit-hartenberg parameters, rigid body dynamics using the euler-lagrange formulation, and real-time trajectory planning with rrt*. features jacobian-based ik solver, collision detection, and a 1 khz control loop.',
     tech: ['c++', 'robotics', 'kinematics', 'dynamics', 'motion planning'],
-    category: ['systems', 'ai'],
+    category: ['systems', 'performance'],
     github: 'https://github.com/AmjadAlthabteh/robotic_systems',
     image: '/images/robotic_systems.svg',
   },
@@ -58,10 +58,10 @@ const projects: Project[] = [
   },
   {
     id: 1,
-    title: 'ai debugger',
-    description: 'advanced c++ debugging tool that analyzes crash stack traces to automatically identify root causes, explain bugs in natural language, and generate fix suggestions with confidence scoring.',
-    tech: ['c++', 'llvm', 'cmake', 'machine learning', 'static analysis'],
-    category: ['systems', 'ai', 'tools'],
+    title: 'c++ crash analyzer',
+    description: 'advanced c++ debugging tool that analyzes crash stack traces to identify root causes, surface failure patterns, and prioritize fixes with static analysis.',
+    tech: ['c++', 'llvm', 'cmake', 'static analysis', 'debugging'],
+    category: ['systems', 'tools'],
     featured: true,
     github: 'https://github.com/AmjadAlthabteh/LLVM_Opt_ml',
     image: '/images/llvm_debugger_c++.png',
@@ -123,7 +123,7 @@ const projects: Project[] = [
   },
 ];
 
-const filters = ['all', 'graphics', 'systems', 'web', 'ai', 'creative', 'performance'];
+const filters = ['all', 'graphics', 'systems', 'web', 'creative', 'performance'];
 
 const Projects = () => {
   const [ref, inView] = useInView({

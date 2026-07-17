@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+
 import "./GalaxyHero.css";
 
+// Cinematic Space Hero - C++ Graphics Engineer Portfolio
 const GalaxyHero = () => {
   const stars = useMemo(
     () =>
-      Array.from({ length: 70 }).map((_, i) => {
+      Array.from({ length: 120 }).map((_, i) => {
         const sizeRoll = Math.random();
-        const sizeClass = sizeRoll > 0.96 ? "star-large" : sizeRoll > 0.82 ? "star-medium" : "";
+        const sizeClass = sizeRoll > 0.92 ? "star-large" : sizeRoll > 0.75 ? "star-medium" : "";
         return {
           key: `star-${i}`,
           left: Math.random() * 100,
@@ -21,16 +23,40 @@ const GalaxyHero = () => {
     []
   );
 
+  const shootingStars = useMemo(
+    () => [
+      { top: "18%", left: "88%", delay: "0.2s", duration: "4.2s" },
+      { top: "36%", left: "72%", delay: "3.8s", duration: "3.8s" },
+      { top: "64%", left: "42%", delay: "6.4s", duration: "4.6s" },
+      { top: "24%", left: "56%", delay: "9.1s", duration: "4.0s" },
+      { top: "52%", left: "94%", delay: "11.8s", duration: "3.7s" }
+    ],
+    []
+  );
+
   return (
     <section id="home" className="galaxy-hero">
+      {/* Multi-layer background */}
       <div className="space-background">
+        {/* Deep space gradient base */}
         <div className="deep-space-layer"></div>
+
+        {/* Depth layers for 3D feel */}
         <div className="space-depth-layer depth-far"></div>
         <div className="space-depth-layer depth-mid"></div>
-        <div className="hero-grid-line line-a"></div>
-        <div className="hero-grid-line line-b"></div>
-        <div className="hero-grid-line line-c"></div>
+        <div className="color-nebula nebula-a"></div>
+        <div className="color-nebula nebula-b"></div>
+        <div className="spiral-galaxy"></div>
+        <div className="distant-world distant-world-a"></div>
+        <div className="distant-world distant-world-b"></div>
+        <div className="spacecraft spacecraft-a">
+          <span></span>
+        </div>
+        <div className="spacecraft spacecraft-b">
+          <span></span>
+        </div>
 
+        {/* Starfield */}
         <div className="starfield starfield-1">
           {stars.map((s) => (
             <div
@@ -46,8 +72,39 @@ const GalaxyHero = () => {
             />
           ))}
         </div>
+
+        {/* Shooting stars */}
+        {shootingStars.map((s, idx) => (
+          <div
+            key={`shooting-star-${idx}`}
+            className="shooting-star"
+            style={{ top: s.top, left: s.left, animationDelay: s.delay, animationDuration: s.duration }}
+          ></div>
+        ))}
       </div>
 
+      {/* Main planetary orbit system */}
+      <div className="orbit-system">
+        <div className="orbit orbit-1">
+          <div className="planet planet-1"></div>
+        </div>
+        <div className="orbit orbit-2">
+          <div className="planet planet-2"></div>
+        </div>
+        <div className="orbit orbit-3">
+          <div className="planet planet-3"></div>
+        </div>
+      </div>
+
+      {/* Additional background planets */}
+      <div className="planet planet-4"></div>
+      <div className="planet planet-5"></div>
+      <div className="planet planet-6"></div>
+      <div className="planet planet-7"></div>
+      <div className="planet planet-8"></div>
+      <div className="planet planet-9"></div>
+
+      {/* Hero Content */}
       <div className="galaxy-hero-content">
         <motion.div
           className="hero-text-container"
@@ -55,7 +112,9 @@ const GalaxyHero = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
+          {/* Text glow backdrop */}
           <div className="text-glow-backdrop"></div>
+          <div className="hero-hud-frame" aria-hidden="true"></div>
 
           <motion.div
             className="galaxy-hero-welcome"
@@ -83,7 +142,7 @@ const GalaxyHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           >
-            <span className="accent-text">C++ Graphics Engineer</span> building high-performance rendering systems, GPU pipelines, and low-level optimization for real-time graphics
+            <span className="accent-text">C++ Performance Engineer</span> building fast rendering systems, GPU pipelines, and low-level real-time software
           </motion.p>
 
           <motion.p

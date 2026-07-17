@@ -95,7 +95,7 @@
 
   <!-- Root Cause Analysis panel -->
   <text x="556" y="62" font-family="monospace" font-size="11" fill="#ccc" letter-spacing="1">ROOT CAUSE ANALYSIS</text>
-  <text x="556" y="76" font-family="monospace" font-size="9" fill="#555">INC-0042 — AI analysis</text>
+  <text x="556" y="76" font-family="monospace" font-size="9" fill="#555">INC-0042 - signal analysis</text>
 
   <rect x="548" y="84" width="240" height="140" rx="5" fill="#0e0e18" stroke="#1e2a3a" stroke-width="1"/>
   <text x="562" y="102" font-family="monospace" font-size="9" fill="#3b82f6">▶ DETECTION</text>

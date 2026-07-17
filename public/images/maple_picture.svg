@@ -225,9 +225,9 @@
   <line x1="380" y1="416" x2="380" y2="562" stroke="#ff4444" stroke-width="1.5" opacity="0.8"/>
   <polygon points="373,416 387,416 380,424" fill="#ff4444" opacity="0.9"/>
 
-  <!-- Auto-edit AI badge -->
+  <!-- Auto-edit status badge -->
   <rect x="648" y="424" width="140" height="20" rx="3" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
-  <text x="718" y="437" font-family="monospace" font-size="9" fill="#c084fc" text-anchor="middle">✦ AUTO-EDIT AI ACTIVE</text>
+  <text x="718" y="437" font-family="monospace" font-size="9" fill="#c084fc" text-anchor="middle">AUTO-EDIT ACTIVE</text>
   <circle cx="656" cy="434" r="3" fill="#a855f7">
     <animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" repeatCount="indefinite"/>
   </circle>

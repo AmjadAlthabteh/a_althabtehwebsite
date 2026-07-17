@@ -1,5 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
-import RocketIntro from './components/RocketIntro/RocketIntro';
+import { lazy, Suspense } from 'react';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import GalaxyHero from './components/sections/GalaxyHero';
@@ -19,18 +18,9 @@ const Contact = lazy(() => import('./components/sections/Contact'));
 const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'];
 
 function App() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [fadeIn, setFadeIn] = useState(false);
-
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setTimeout(() => setFadeIn(true), 50);
-  };
-
   return (
     <>
-      {showIntro && <RocketIntro onComplete={handleIntroComplete} />}
-      <div className={`app ${fadeIn ? 'fade-in' : ''}`}>
+      <div className="app fade-in">
         <ThemeToggle />
         <KeyboardNav />
         <ScrollProgress />
