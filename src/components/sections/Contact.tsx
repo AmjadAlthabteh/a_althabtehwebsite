@@ -75,6 +75,18 @@ const Contact = () => {
                 <p>amjad althabteh</p>
               </div>
             </a>
+
+            <a
+              href="https://x.com/aeroBoyC"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-card glass-card"
+            >
+              <div className="contact-info">
+                <h3>x</h3>
+                <p>@aeroBoyC</p>
+              </div>
+            </a>
           </motion.div>
 
           <motion.div variants={itemVariants} className="contact-footer">

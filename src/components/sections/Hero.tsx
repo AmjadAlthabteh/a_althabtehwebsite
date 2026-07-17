@@ -78,6 +78,17 @@ const Hero = () => {
             </svg>
           </a>
           <a
+            href="https://x.com/aeroBoyC"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-link"
+            aria-label="X"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.214-6.817-5.966 6.817h-3.31l7.73-8.835-8.152-10.665h6.826l4.713 6.231 5.447-6.231zm-1.161 17.52h1.833l-11.826-15.6h-1.967l11.96 15.6z"/>
+            </svg>
+          </a>
+          <a
             href="mailto:amjadsa@umich.edu"
             className="social-link"
             aria-label="Email"
