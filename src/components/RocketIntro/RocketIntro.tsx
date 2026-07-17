@@ -1,113 +1,128 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './RocketIntro.css';
 
 interface RocketIntroProps {
+  onRevealStart?: () => void;
   onComplete: () => void;
 }
 
-type Phase = 'launch' | 'space' | 'landing' | 'landed' | 'complete';
+type LaunchPhase = 'countdown' | 'ignition' | 'takeoff' | 'reveal';
 
-const RocketIntro: React.FC<RocketIntroProps> = ({ onComplete }) => {
-  const [phase, setPhase] = useState<Phase>('launch');
+const starSeeds = Array.from({ length: 92 }, (_, index) => ({
+  id: index,
+  left: (index * 37) % 101,
+  top: (index * 61) % 100,
+  size: 1 + (index % 3),
+  delay: (index % 8) * 0.25,
+}));
+
+const RocketIntro: React.FC<RocketIntroProps> = ({ onRevealStart, onComplete }) => {
+  const [phase, setPhase] = useState<LaunchPhase>('countdown');
+  const [count, setCount] = useState(3);
+
+  const telemetry = useMemo(
+    () => ['GUIDANCE ONLINE', 'MAIN ENGINE START', 'VECTOR LOCK', 'SITE HANDOFF'],
+    []
+  );
 
   useEffect(() => {
-    const timeline: Array<{ phase: Exclude<Phase, 'complete'>; duration: number }> = [
-      { phase: 'launch', duration: 2000 },
-      { phase: 'space', duration: 2500 },
-      { phase: 'landing', duration: 2000 },
-      { phase: 'landed', duration: 1500 }
+    const timers = [
+      window.setTimeout(() => setCount(2), 850),
+      window.setTimeout(() => setCount(1), 1700),
+      window.setTimeout(() => setPhase('ignition'), 2550),
+      window.setTimeout(() => setPhase('takeoff'), 3250),
+      window.setTimeout(() => {
+        setPhase('reveal');
+        onRevealStart?.();
+      }, 4650),
+      window.setTimeout(onComplete, 5450),
     ];
 
-    let currentIndex = 0;
-    let timeoutId: number | undefined;
-
-    const advancePhase = () => {
-      if (currentIndex < timeline.length - 1) {
-        currentIndex++;
-        setPhase(timeline[currentIndex].phase);
-        timeoutId = window.setTimeout(advancePhase, timeline[currentIndex].duration);
-      } else {
-        setPhase('complete');
-        timeoutId = window.setTimeout(onComplete, 900);
-      }
-    };
-
-    timeoutId = window.setTimeout(advancePhase, timeline[0].duration);
-
-    return () => {
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-    };
-  }, [onComplete]);
+    return () => timers.forEach(window.clearTimeout);
+  }, [onComplete, onRevealStart]);
 
   return (
-    <div className={`rocket-intro ${phase}`}>
-      {/* Stars background */}
-      <div className="stars-background">
-        {[...Array(100)].map((_, i) => (
-          <div
-            key={i}
-            className="star"
+    <section className={`rocket-intro rocket-intro--${phase}`} aria-label="Rocket launch intro">
+      <div className="rocket-intro__stars" aria-hidden="true">
+        {starSeeds.map((star) => (
+          <span
+            key={star.id}
+            className="rocket-intro__star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.8 + 0.2
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animationDelay: `${star.delay}s`,
             }}
           />
         ))}
       </div>
 
-      {/* Launch pad - visible during launch phase */}
-      {phase === 'launch' && (
-        <div className="launch-pad">
-          <div className="ground"></div>
-          <div className="tower-left"></div>
-          <div className="tower-right"></div>
-        </div>
-      )}
-
-      {/* Rocket */}
-      <div className={`rocket ${phase}`}>
-        <div className="rocket-body">
-          <div className="rocket-nose"></div>
-          <div className="rocket-main"></div>
-          <div className="rocket-fin rocket-fin-left"></div>
-          <div className="rocket-fin rocket-fin-right"></div>
-          <div className="rocket-window"></div>
-        </div>
-        <div className="rocket-flames">
-          <div className="flame flame-1"></div>
-          <div className="flame flame-2"></div>
-          <div className="flame flame-3"></div>
-        </div>
-        <div className="smoke-trail"></div>
+      <div className="rocket-intro__hud" aria-hidden="true">
+        {telemetry.map((item, index) => (
+          <span key={item} style={{ animationDelay: `${index * 0.22}s` }}>
+            {item}
+          </span>
+        ))}
       </div>
 
-      {/* Planet - appears during landing phase */}
-      {(phase === 'landing' || phase === 'landed' || phase === 'complete') && (
-        <div className={`planet ${phase}`}>
-          <div className="planet-surface">
-            <div className="planet-glow"></div>
-            <div className="crater crater-1"></div>
-            <div className="crater crater-2"></div>
-            <div className="crater crater-3"></div>
-            <div className="planet-text">PLANET RELASTICS</div>
-          </div>
-        </div>
-      )}
+      <div className="rocket-intro__flight-lines" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
 
-      {/* Welcome text - appears after landing */}
-      {(phase === 'landed' || phase === 'complete') && (
-        <div className="rocket-welcome">
-          <h1>Welcome In</h1>
-          <div className="loading-dots">
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-          </div>
+      <div className="rocket-intro__countdown" aria-live="polite">
+        {phase === 'countdown' ? (
+          <>
+            <span key={count} className="rocket-intro__count">{count}</span>
+            <span className="rocket-intro__caption">Launch sequence</span>
+          </>
+        ) : (
+          <>
+            <span className="rocket-intro__takeoff">TAKEOFF</span>
+            <span className="rocket-intro__caption">Loading mission control</span>
+          </>
+        )}
+      </div>
+
+      <div className="rocket-intro__scene" aria-hidden="true">
+        <div className="rocket-intro__gantry">
+          <span />
+          <span />
+          <span />
         </div>
-      )}
-    </div>
+
+        <div className="rocket-intro__rocket">
+          <div className="rocket-intro__nose" />
+          <div className="rocket-intro__body">
+            <div className="rocket-intro__window" />
+            <div className="rocket-intro__stripe" />
+          </div>
+          <div className="rocket-intro__fin rocket-intro__fin--left" />
+          <div className="rocket-intro__fin rocket-intro__fin--right" />
+          <div className="rocket-intro__engine" />
+          <div className="rocket-intro__flame" />
+        </div>
+
+        <div className="rocket-intro__plume">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="rocket-intro__pad" />
+      </div>
+
+      <div className="rocket-intro__handoff" aria-hidden="true">
+        <span className="rocket-intro__horizon" />
+        <span className="rocket-intro__portal" />
+      </div>
+    </section>
   );
 };
 

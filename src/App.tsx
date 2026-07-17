@@ -1,8 +1,9 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import ScrollIndicator from './components/ScrollIndicator/ScrollIndicator';
 import Sidebar from './components/Sidebar/Sidebar';
 import GalaxyHero from './components/sections/GalaxyHero';
 import KeyboardNav from './components/KeyboardNav/KeyboardNav';
+import RocketIntro from './components/RocketIntro/RocketIntro';
 import ScrollProgress from './components/ScrollProgress/ScrollProgress';
 import ThemeToggle from './components/ThemeToggle/ThemeToggle';
 import './App.css';
@@ -18,9 +19,20 @@ const Contact = lazy(() => import('./components/sections/Contact'));
 const sections = ['home', 'about', 'projects', 'experience', 'skills', 'contact'];
 
 function App() {
+  const [showIntro, setShowIntro] = useState(true);
+  const [introRevealing, setIntroRevealing] = useState(false);
+  const handleIntroReveal = useCallback(() => setIntroRevealing(true), []);
+  const handleIntroComplete = useCallback(() => setShowIntro(false), []);
+
   return (
     <>
-      <div className="app fade-in">
+      {showIntro && (
+        <RocketIntro
+          onRevealStart={handleIntroReveal}
+          onComplete={handleIntroComplete}
+        />
+      )}
+      <div className={`app ${introRevealing || !showIntro ? 'app--ready' : 'app--intro-running'}`}>
         <ThemeToggle />
         <KeyboardNav />
         <ScrollProgress />
