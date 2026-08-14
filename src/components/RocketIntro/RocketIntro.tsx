@@ -91,6 +91,12 @@ const RocketIntro: React.FC<RocketIntroProps> = ({ onRevealStart, onComplete }) 
       </div>
 
       <div className="rocket-intro__scene" aria-hidden="true">
+        <div className="rocket-intro__destination">
+          <span className="rocket-intro__planet" />
+          <span className="rocket-intro__moon" />
+          <span className="rocket-intro__orbit" />
+        </div>
+
         <div className="rocket-intro__gantry">
           <span />
           <span />
@@ -107,14 +113,21 @@ const RocketIntro: React.FC<RocketIntroProps> = ({ onRevealStart, onComplete }) 
           <div className="rocket-intro__fin rocket-intro__fin--right" />
           <div className="rocket-intro__engine" />
           <div className="rocket-intro__flame" />
+          <div className="rocket-intro__flame rocket-intro__flame--core" />
         </div>
 
+        <div className="rocket-intro__heat" />
         <div className="rocket-intro__plume">
           <span />
           <span />
           <span />
           <span />
+          <span />
+          <span />
+          <span />
+          <span />
         </div>
+        <div className="rocket-intro__shockwave" />
         <div className="rocket-intro__pad" />
       </div>
 
